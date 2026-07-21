@@ -1,0 +1,84 @@
+---
+name: daily-trade-radar
+description: Research, verify, deduplicate, prioritize, and write a daily foreign-trade radar covering official trade policy, customs, sanctions and export controls, tariffs and tax, product compliance, logistics, and marketplace rule changes. Use when Codex is asked to create or update a daily trade briefing, monitor cross-border regulatory developments, compare today's findings with a previous radar, assess impacts by market/product/HS code/platform, or turn verified developments into an actionable Chinese or English Markdown report.
+---
+
+# Daily Trade Radar
+
+Produce an evidence-led daily radar that distinguishes new developments from ongoing items and turns them into specific actions. Treat policy dates, scope, rates, product codes, and deadlines as high-risk facts.
+
+## Collect the brief
+
+Infer missing preferences when safe. Record:
+
+- report date and timezone;
+- target countries or regions;
+- products, keywords, and HS codes;
+- marketplaces and sales channels;
+- priority themes;
+- output language;
+- previous radar or event JSON used for deduplication.
+
+If no scope is supplied, cover China export controls and customs, the United States, the European Union, major cross-border marketplaces, and material logistics changes. State this default scope in the report.
+
+## Research current developments
+
+Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.
+
+For every candidate event, capture the publication date, effective date, jurisdiction, affected products or sellers, concrete requirement, source title, direct URL, and retrieval date. Never treat a search-result snippet as evidence. Open and read the supporting page.
+
+Separate:
+
+- `new`: first published inside the reporting window;
+- `effective`: previously announced but taking effect now;
+- `deadline`: an approaching compliance or consultation deadline;
+- `ongoing`: still material but neither new nor newly effective;
+- `unconfirmed`: relevant claim lacking adequate primary confirmation.
+
+Do not place `unconfirmed` items in the main action table. Put them in a short watchlist with an explicit caveat, or omit them.
+
+## Normalize and assess
+
+Represent reviewed events in the JSON format defined in [references/output-schema.md](references/output-schema.md). Apply [references/scoring-rules.md](references/scoring-rules.md) consistently.
+
+Write impact and action fields for the user's actual market, product, HS code, or platform. If applicability is unknown, say what must be checked instead of assuming applicability.
+
+## Deduplicate
+
+Compare candidates with the previous event JSON when available:
+
+```text
+python scripts/deduplicate.py current.json --previous previous.json --output deduplicated.json
+```
+
+Review all `possible_update` matches manually. Keep a repeated event only when the effective date, scope, obligation, rate, deadline, or official guidance materially changed. Label retained repeats as `effective`, `deadline`, or `ongoing`; do not call them new.
+
+If the previous radar exists only as prose, compare by jurisdiction, authority, regulation or program name, product/HS code, platform, and effective date. Explain the deduplication basis briefly.
+
+## Validate and render
+
+Validate the final event file before writing:
+
+```text
+python scripts/validate_events.py deduplicated.json
+python scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
+```
+
+Use the Markdown structure produced by the script. Edit for clarity only after validation. Preserve direct source links and factual qualifiers.
+
+When the user requests DOCX, use `assets/radar-template.docx` as the visual reference and follow the available document-generation skill's render-and-inspect workflow. Do not assume the template has passed visual QA in the current environment.
+
+## Quality gate
+
+Before delivery, confirm:
+
+- every main-table event has a direct primary source;
+- publication and effective dates are not conflated;
+- every deadline includes year and timezone when relevant;
+- new items are genuinely new relative to the supplied previous radar;
+- risk levels follow the scoring rules;
+- actions name an owner or business function and a time horizon where possible;
+- no unsupported inference is written as fact;
+- the report states the search cutoff, timezone, scope, and known coverage gaps;
+- “no material new item found” is used when the research supports that conclusion.
+

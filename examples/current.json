@@ -1,0 +1,51 @@
+{
+  "report_date": "2026-07-21",
+  "timezone": "Asia/Singapore",
+  "cutoff": "2026-07-21T17:00:00+08:00",
+  "language": "zh-CN",
+  "scope": ["EU", "Amazon"],
+  "coverage_gaps": ["示例数据仅用于离线测试，不代表真实政策信息"],
+  "events": [
+    {
+      "id": "example-marketplace-title-rule-2026",
+      "title": "示例平台标题规则",
+      "status": "ongoing",
+      "level": "medium",
+      "score": 6,
+      "jurisdiction": "Global",
+      "authority": "Example Marketplace",
+      "published_date": "2026-07-01",
+      "effective_date": "2026-08-01",
+      "deadline": "2026-08-01",
+      "products_or_channels": ["marketplace listings"],
+      "summary": "示例平台将调整商品标题规则。",
+      "impact": "商品标题需要复核。",
+      "action": "平台运营在本周内导出主力商品并完成标题检查。",
+      "rationale": "规则即将生效且可能影响商品展示。",
+      "source_title": "Example official announcement",
+      "source_url": "https://example.com/official-announcement",
+      "retrieved_date": "2026-07-21"
+    },
+    {
+      "id": "example-eu-product-rule-2026",
+      "title": "示例欧盟产品规则更新",
+      "status": "new",
+      "level": "high",
+      "score": 8,
+      "jurisdiction": "EU",
+      "authority": "Example EU Authority",
+      "published_date": "2026-07-21",
+      "effective_date": "2026-07-28",
+      "deadline": null,
+      "products_or_channels": ["example products"],
+      "summary": "示例规则要求出口商补充产品合规资料。",
+      "impact": "缺少资料的商品可能延迟清关。",
+      "action": "合规团队在 2026-07-24 前核对主力 SKU 并保存完整资料清单。",
+      "rationale": "强制要求将在七日内生效且可能阻断清关。",
+      "source_title": "Example EU official rule",
+      "source_url": "https://example.eu/official-rule",
+      "retrieved_date": "2026-07-21"
+    }
+  ]
+}
+

@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.tmp/
+deduplicated.json
+daily-trade-radar.md
+*.pdf
+

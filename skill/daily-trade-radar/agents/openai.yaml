@@ -1,0 +1,5 @@
+interface:
+  display_name: "每日外贸雷达"
+  short_description: "监测全球外贸政策与平台规则变化，生成经过核验和去重的行动雷达"
+  default_prompt: "Use $daily-trade-radar to research current trade developments, deduplicate them against the previous report, and produce an actionable Chinese radar."
+

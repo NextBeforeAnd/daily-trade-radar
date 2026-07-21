@@ -1,0 +1,31 @@
+{
+  "report_date": "2026-07-20",
+  "timezone": "Asia/Singapore",
+  "cutoff": "2026-07-20T17:00:00+08:00",
+  "language": "zh-CN",
+  "scope": ["EU", "Amazon"],
+  "coverage_gaps": [],
+  "events": [
+    {
+      "id": "example-marketplace-title-rule-2026",
+      "title": "示例平台标题规则",
+      "status": "ongoing",
+      "level": "medium",
+      "score": 6,
+      "jurisdiction": "Global",
+      "authority": "Example Marketplace",
+      "published_date": "2026-07-01",
+      "effective_date": "2026-08-01",
+      "deadline": "2026-08-01",
+      "products_or_channels": ["marketplace listings"],
+      "summary": "示例平台将调整商品标题规则。",
+      "impact": "商品标题需要复核。",
+      "action": "平台运营在本周内导出主力商品并完成标题检查。",
+      "rationale": "规则即将生效且可能影响商品展示。",
+      "source_title": "Example official announcement",
+      "source_url": "https://example.com/official-announcement",
+      "retrieved_date": "2026-07-20"
+    }
+  ]
+}
+
