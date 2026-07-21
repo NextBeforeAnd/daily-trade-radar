@@ -113,6 +113,12 @@ Run the offline test suite:
 python -m unittest discover -s tests -v
 ```
 
+## Follow / 关注
+
+外贸与跨境电商动态、实操笔记及项目更新：
+
+[老Hai外贸跨境笔记（@HaiNengGao）](https://x.com/HaiNengGao)
+
 ## License
 
 [MIT](LICENSE)
