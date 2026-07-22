@@ -6,6 +6,8 @@ It monitors official trade-policy, customs, export-control, sanctions, tariff, t
 
 > Status: `v0.1.0-alpha`. Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
 
+See [CHANGELOG.md](CHANGELOG.md) for development updates.
+
 ## 中文简介
 
 每日外贸雷达是一套以中文用户为主的 Codex Skill，面向外贸企业和跨境电商团队，用于检索、核验、去重并输出可执行的外贸情报日报。覆盖 Amazon、TikTok Shop、Temu、AliExpress（速卖通）、Jumia 等平台，并将持续扩展至 Shopee、Lazada、eBay、Walmart Marketplace 及更多全球渠道。
