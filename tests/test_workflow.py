@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -58,7 +59,55 @@ class WorkflowTest(unittest.TestCase):
             self.assertIn("示例欧盟产品规则更新", rendered)
             self.assertIn("移除 1 条", rendered)
 
+    def test_render_english_report(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["language"] = "en-US"
+        data["coverage_gaps"] = []
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            source = temp / "english.json"
+            markdown = temp / "radar-en.md"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+            self.run_script("build_markdown.py", source, "--output", markdown)
+            rendered = markdown.read_text(encoding="utf-8")
+            self.assertIn("# Daily Trade Radar | 2026-07-21", rendered)
+            self.assertIn("## Today's assessment", rendered)
+            self.assertIn("| Medium | Ongoing |", rendered)
+            self.assertIn("| High | New today |", rendered)
+            self.assertIn("**示例欧盟产品规则更新:**", rendered)
+            self.assertIn("## Official sources", rendered)
+            self.assertIn("- No known coverage gaps.", rendered)
+            self.assertNotIn("## 今日判断", rendered)
+
+    def test_build_chinese_and_english_docx(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            chinese = temp / "radar-zh.docx"
+            english_source = temp / "english.json"
+            english = temp / "radar-en.docx"
+
+            self.run_script("build_docx.py", EXAMPLES / "current.json", "--output", chinese)
+            data["language"] = "en-US"
+            english_source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            self.run_script("build_docx.py", english_source, "--output", english)
+
+            for path, required, forbidden in (
+                (chinese, "每日外贸雷达", "����"),
+                (english, "DAILY TRADE RADAR", "今日判断"),
+            ):
+                self.assertTrue(path.exists())
+                with zipfile.ZipFile(path) as package:
+                    document_xml = package.read("word/document.xml").decode("utf-8")
+                    core_xml = package.read("docProps/core.xml").decode("utf-8")
+                    self.assertIn(required, document_xml)
+                    self.assertNotIn(forbidden, document_xml)
+                    self.assertNotIn("<dc:creator>biger</dc:creator>", core_xml)
+                    package_xml = b"".join(package.read(name) for name in package.namelist() if name.endswith(".xml"))
+                    self.assertNotIn(b"rsid", package_xml)
+
 
 if __name__ == "__main__":
     unittest.main()
-

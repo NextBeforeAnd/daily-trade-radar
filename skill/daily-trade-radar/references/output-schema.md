@@ -2,6 +2,8 @@
 
 Use UTF-8 JSON. The root object contains report metadata and an `events` array.
 
+Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for an English report. Write event text fields in the same language; the renderer translates report headings and fixed labels, not event content.
+
 ```json
 {
   "report_date": "2026-07-21",
@@ -52,4 +54,3 @@ Create stable `id` values from jurisdiction, rule/program, and year. Keep the sa
 7. Coverage gaps.
 8. Official sources.
 9. Tomorrow's watch.
-

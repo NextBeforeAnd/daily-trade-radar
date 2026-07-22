@@ -68,6 +68,14 @@ Use the Markdown structure produced by the script. Edit for clarity only after v
 
 When the user requests DOCX, use `assets/radar-template.docx` as the visual reference and follow the available document-generation skill's render-and-inspect workflow. Do not assume the template has passed visual QA in the current environment.
 
+Generate Word output from the validated JSON source:
+
+```text
+python scripts/build_docx.py deduplicated.json --output daily-trade-radar.docx
+```
+
+The DOCX renderer follows the JSON `language` field in the same way as the Markdown renderer. Event text must already be written in the requested language. Render and visually inspect the generated DOCX before delivery.
+
 ## Quality gate
 
 Before delivery, confirm:
@@ -81,4 +89,3 @@ Before delivery, confirm:
 - no unsupported inference is written as fact;
 - the report states the search cutoff, timezone, scope, and known coverage gaps;
 - “no material new item found” is used when the research supports that conclusion.
-

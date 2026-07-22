@@ -84,14 +84,23 @@ daily-trade-radar.md
 
 JSON is the source of truth. Markdown is the default human-readable output. DOCX or PDF should be generated only when formal circulation or fixed-layout archiving is required.
 
+Set the root JSON field `language` to `zh-CN` for Chinese output or to `en`/`en-US` for English output. Event content is rendered as supplied; research should therefore write event fields in the requested output language.
+
 ## Offline script workflow
 
-The scripts use only the Python standard library:
+The validation, deduplication, and Markdown scripts use only the Python standard library. Word output uses `python-docx`; install it with:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Run the workflow:
 
 ```bash
 python skill/daily-trade-radar/scripts/validate_events.py examples/current.json
 python skill/daily-trade-radar/scripts/deduplicate.py examples/current.json --previous examples/previous.json --output deduplicated.json
 python skill/daily-trade-radar/scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
+python skill/daily-trade-radar/scripts/build_docx.py deduplicated.json --output daily-trade-radar.docx
 ```
 
 The scripts do not scrape the web. Codex performs research with available browsing tools, writes normalized JSON, and then uses the scripts for deterministic validation, comparison, and rendering.
