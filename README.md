@@ -1,6 +1,6 @@
 # Daily Trade Radar
 
-Daily Trade Radar is a Chinese-first Codex Skill for researching, verifying, deduplicating, prioritizing, and writing actionable foreign-trade intelligence. It is designed for cross-border e-commerce teams operating on Amazon, TikTok Shop, Temu, AliExpress, Jumia, and other global marketplaces.
+Daily Trade Radar is a Chinese-first Codex Skill for researching, verifying, deduplicating, prioritizing, and writing actionable foreign-trade intelligence. It is designed for cross-border e-commerce teams operating on Amazon, TikTok Shop, Temu, AliExpress, Jumia, Shopify and other global marketplaces.
 
 It monitors official trade-policy, customs, export-control, sanctions, tariff, tax, product-compliance, logistics, and marketplace-rule sources. The default deliverable is Markdown backed by validated JSON; a Word template is included for optional formal reports. Coverage will continue expanding to more countries, industries, and marketplace platforms.
 
@@ -10,7 +10,7 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 
 ## 中文简介
 
-每日外贸雷达是一套以中文用户为主的 Codex Skill，面向外贸企业和跨境电商团队，用于检索、核验、去重并输出可执行的外贸情报日报。覆盖 Amazon、TikTok Shop、Temu、AliExpress（速卖通）、Jumia 等平台，并将持续扩展至 Shopee、Lazada、eBay、Walmart Marketplace 及更多全球渠道。
+每日外贸雷达是一套以中文用户为主的 Codex Skill，面向外贸企业和跨境电商团队，用于检索、核验、去重并输出可执行的外贸情报日报。覆盖 Amazon、TikTok Shop、Temu、AliExpress（速卖通）、Shopify、Jumia 等平台，并将持续扩展至 Shopee、Lazada、eBay、Walmart Marketplace 及更多全球渠道。
 
 它会监测贸易政策、海关合规、出口管制、制裁、关税税务、产品合规、国际物流和平台规则，区分今日新增、今日生效、临近截止、持续关注和待核实事项，并为每条事件提供风险等级、业务影响、行动建议与官方来源。
 
