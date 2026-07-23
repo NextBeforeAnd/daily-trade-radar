@@ -19,6 +19,20 @@ STATUS_EN = {
     "ongoing": "Ongoing",
     "unconfirmed": "Unconfirmed",
 }
+POLICY_AREA_ZH = {
+    "onboarding_kyc": "入驻与身份核验",
+    "listing_product_compliance": "刊登与商品合规",
+    "pricing_promotions": "定价与促销",
+    "fees_commissions": "费用与佣金",
+    "fulfillment_logistics": "履约与物流",
+    "returns_refunds_aftersales": "退货退款与售后",
+    "payments_settlement_tax": "支付、结算与税务",
+    "content_ads_affiliate": "内容、广告与联盟",
+    "data_privacy_security": "数据、隐私与安全",
+    "account_health_enforcement": "账户健康与执法",
+    "api_feature_deprecation": "API、功能与停用",
+    "other": "其他",
+}
 
 
 def clean(value: object) -> str:
@@ -28,6 +42,20 @@ def clean(value: object) -> str:
 def load(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def action_item_text(item: dict, english: bool) -> str:
+    action = clean(item.get("action")).rstrip("。.;；")
+    evidence = clean(item.get("completion_evidence")).rstrip("。.;；")
+    if english:
+        return (
+            f"{clean(item.get('owner'))} | {clean(item.get('deadline'))}: "
+            f"{action}. Completion evidence: {evidence}."
+        )
+    return (
+        f"{clean(item.get('owner'))}｜{clean(item.get('deadline'))}："
+        f"{action}；完成凭证：{evidence}。"
+    )
 
 
 def main() -> int:
@@ -110,14 +138,44 @@ def main() -> int:
     lines.extend(["", "## Priority actions" if english else "## 优先动作", ""])
     actionable = [event for event in main_events if event.get("level") in {"high", "medium"}]
     if actionable:
-        for index, event in enumerate(actionable, 1):
+        action_number = 1
+        for event in actionable:
             separator = ":" if english else "："
-            lines.append(f"{index}. **{clean(event.get('title'))}{separator}** {clean(event.get('action'))}")
+            items = event.get("action_items") or []
+            if items:
+                for item in items:
+                    lines.append(f"{action_number}. **{clean(event.get('title'))}{separator}** {action_item_text(item, english)}")
+                    action_number += 1
+            else:
+                lines.append(f"{action_number}. **{clean(event.get('title'))}{separator}** {clean(event.get('action'))}")
+                action_number += 1
     else:
         lines.append(
             "- No high- or medium-level actions. Review ongoing items according to the established compliance cadence."
             if english else "- 暂无高、中等级动作；按既定合规节奏复核持续事项。"
         )
+
+    platform_events = [event for event in main_events if isinstance(event.get("platform_policy"), dict)]
+    if platform_events:
+        lines.extend(["", "## Platform policy analysis" if english else "## 平台政策分析", ""])
+        if english:
+            lines.extend([
+                "| Platform / market | Area | Change | Seller scope | Verified new state | Enforcement |",
+                "|---|---|---|---|---|---|",
+            ])
+        else:
+            lines.extend([
+                "| 平台 / 市场 | 政策领域 | 变化类型 | 卖家范围 | 已核实新状态 | 执法后果 |",
+                "|---|---|---|---|---|---|",
+            ])
+        for event in platform_events:
+            policy = event["platform_policy"]
+            area = policy.get("policy_area") if english else POLICY_AREA_ZH.get(policy.get("policy_area"), policy.get("policy_area"))
+            lines.append(
+                f"| {clean(policy.get('platform'))} / {clean(policy.get('seller_market'))} "
+                f"| {clean(area)} | {clean(policy.get('change_type'))} | {clean(policy.get('seller_scope'))} "
+                f"| {clean(policy.get('new_state'))} | {clean(policy.get('enforcement_consequence'))} |"
+            )
 
     lines.extend(["", "## Deduplication" if english else "## 去重说明", ""])
     dedupe = data.get("deduplication", {})

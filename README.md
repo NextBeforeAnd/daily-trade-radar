@@ -24,6 +24,8 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Validates a stable UTF-8 JSON event format.
 - Generates a consistent Chinese Markdown radar.
 - Includes a privacy-scrubbed DOCX template for optional formal output.
+- Applies dedicated monitoring routes for TikTok Shop, Temu, Shopify, and Jumia, including login-only coverage-gap handling.
+- Extracts marketplace changes into a structured platform/market/program analysis and owner-level action checklist.
 
 ## Repository layout
 
@@ -71,6 +73,8 @@ HS 9405, Amazon EU, product safety, customs duties, and marketplace rules.
 
 Useful inputs include target countries, products, HS codes, platforms, priority themes, timezone, language, and the previous report.
 
+For marketplace monitoring, provide the seller market and operating model when possible—for example, TikTok Shop US local seller, Temu semi-managed, Shopify Managed Markets, or Jumia Nigeria Vendor Center. The workflow does not generalize a rule across markets or seller programs without evidence.
+
 ## Output model
 
 ```text
@@ -85,6 +89,8 @@ daily-trade-radar.md
 ```
 
 JSON is the source of truth. Markdown is the default human-readable output. DOCX or PDF should be generated only when formal circulation or fixed-layout archiving is required.
+
+Marketplace-policy events can also carry a `platform_policy` object and `action_items` array. These fields preserve the verified seller scope, before/after state, enforcement consequence, action owner, time horizon, and completion evidence while keeping the legacy top-level `action` summary compatible with existing reports.
 
 Set the root JSON field `language` to `zh-CN` for Chinese output or to `en`/`en-US` for English output. Event content is rendered as supplied; research should therefore write event fields in the requested output language.
 

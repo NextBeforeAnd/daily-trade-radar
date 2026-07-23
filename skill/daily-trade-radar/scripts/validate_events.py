@@ -42,6 +42,47 @@ EVENT_FIELDS = {
 }
 STATUSES = {"new", "effective", "deadline", "ongoing", "unconfirmed"}
 LEVELS = {"high", "medium", "low", "watch"}
+PLATFORM_POLICY_FIELDS = {
+    "platform": str,
+    "seller_market": str,
+    "program": str,
+    "policy_area": str,
+    "change_type": str,
+    "seller_scope": str,
+    "previous_state": (str, type(None)),
+    "new_state": str,
+    "enforcement_consequence": str,
+    "backend_verification_required": bool,
+}
+POLICY_AREAS = {
+    "onboarding_kyc",
+    "listing_product_compliance",
+    "pricing_promotions",
+    "fees_commissions",
+    "fulfillment_logistics",
+    "returns_refunds_aftersales",
+    "payments_settlement_tax",
+    "content_ads_affiliate",
+    "data_privacy_security",
+    "account_health_enforcement",
+    "api_feature_deprecation",
+    "other",
+}
+CHANGE_TYPES = {
+    "new_rule",
+    "rule_change",
+    "enforcement_change",
+    "fee_change",
+    "feature_change",
+    "deadline",
+    "clarification",
+}
+ACTION_ITEM_FIELDS = {
+    "owner": str,
+    "action": str,
+    "deadline": str,
+    "completion_evidence": str,
+}
 
 
 def load_json(path: Path) -> dict:
@@ -116,6 +157,43 @@ def validate(data: dict) -> list[str]:
                 errors.append(f"{label}.source_url: use a direct http(s) URL")
         if event.get("level") != "watch" and not event.get("source_title", "").strip():
             errors.append(f"{label}.source_title: required for main-table events")
+        platform_policy = event.get("platform_policy")
+        action_items = event.get("action_items")
+        if (platform_policy is None) != (action_items is None):
+            errors.append(f"{label}: platform_policy and action_items must be supplied together")
+        if platform_policy is not None:
+            if not isinstance(platform_policy, dict):
+                errors.append(f"{label}.platform_policy: must be an object")
+            else:
+                for key, expected in PLATFORM_POLICY_FIELDS.items():
+                    value = platform_policy.get(key)
+                    if key not in platform_policy:
+                        errors.append(f"{label}.platform_policy: missing {key}")
+                    elif not isinstance(value, expected):
+                        errors.append(f"{label}.platform_policy.{key}: wrong type")
+                    elif isinstance(value, str) and not value.strip():
+                        errors.append(f"{label}.platform_policy.{key}: must not be blank")
+                if platform_policy.get("policy_area") not in POLICY_AREAS:
+                    errors.append(f"{label}.platform_policy.policy_area: invalid value")
+                if platform_policy.get("change_type") not in CHANGE_TYPES:
+                    errors.append(f"{label}.platform_policy.change_type: invalid value")
+        if action_items is not None:
+            if not isinstance(action_items, list) or not action_items:
+                errors.append(f"{label}.action_items: must be a non-empty array")
+            else:
+                for action_index, item in enumerate(action_items):
+                    action_label = f"{label}.action_items[{action_index}]"
+                    if not isinstance(item, dict):
+                        errors.append(f"{action_label}: must be an object")
+                        continue
+                    for key, expected in ACTION_ITEM_FIELDS.items():
+                        value = item.get(key)
+                        if key not in item:
+                            errors.append(f"{action_label}: missing {key}")
+                        elif not isinstance(value, expected):
+                            errors.append(f"{action_label}.{key}: wrong type")
+                        elif isinstance(value, str) and not value.strip():
+                            errors.append(f"{action_label}.{key}: must not be blank")
     return errors
 
 
@@ -139,4 +217,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

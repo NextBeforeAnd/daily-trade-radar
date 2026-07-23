@@ -51,6 +51,8 @@ def materially_changed(current: dict, previous: dict) -> bool:
         "summary",
         "impact",
         "action",
+        "platform_policy",
+        "action_items",
         "source_url",
     )
     return any(normalized(current.get(field)) != normalized(previous.get(field)) for field in fields)

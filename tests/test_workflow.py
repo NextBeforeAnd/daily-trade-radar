@@ -25,6 +25,28 @@ class WorkflowTest(unittest.TestCase):
             encoding="utf-8",
         )
 
+    def platform_event(self, event: dict) -> dict:
+        event = dict(event)
+        event["platform_policy"] = {
+            "platform": "TikTok Shop",
+            "seller_market": "US",
+            "program": "US local seller",
+            "policy_area": "listing_product_compliance",
+            "change_type": "rule_change",
+            "seller_scope": "US sellers in named categories",
+            "previous_state": None,
+            "new_state": "Listing-level documents are required.",
+            "enforcement_consequence": "Listings cannot go live without documents.",
+            "backend_verification_required": True,
+        }
+        event["action_items"] = [{
+            "owner": "marketplace operations",
+            "action": "Export affected listings and map each SKU to a document.",
+            "deadline": "within 2 business days",
+            "completion_evidence": "Reviewed SKU-document matrix",
+        }]
+        return event
+
     def test_skill_frontmatter(self) -> None:
         content = (SKILL / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(content.startswith("---\n"))
@@ -80,6 +102,39 @@ class WorkflowTest(unittest.TestCase):
             self.assertIn("## Official sources", rendered)
             self.assertIn("- No known coverage gaps.", rendered)
             self.assertNotIn("## 今日判断", rendered)
+
+    def test_validate_and_render_structured_platform_policy(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["events"][1] = self.platform_event(data["events"][1])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            source = temp / "platform.json"
+            markdown = temp / "platform.md"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+            self.run_script("validate_events.py", source)
+            self.run_script("build_markdown.py", source, "--output", markdown)
+            rendered = markdown.read_text(encoding="utf-8")
+            self.assertIn("## 平台政策分析", rendered)
+            self.assertIn("TikTok Shop / US", rendered)
+            self.assertIn("完成凭证：Reviewed SKU-document matrix", rendered)
+
+    def test_reject_incomplete_platform_policy(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["events"][1]["platform_policy"] = {"platform": "Temu"}
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "invalid-platform.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("platform_policy and action_items must be supplied together", result.stderr)
 
     def test_build_chinese_and_english_docx(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))

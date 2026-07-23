@@ -32,6 +32,8 @@ Query with the product name, HS code, authority name, and terms such as 公告, 
 - Use official seller announcements, help centers, release notes, and policy pages from the relevant marketplace.
 - Use carrier, postal authority, port, canal authority, and customs notices for logistics changes.
 - Treat seller forums as primary only when the post is authored by an identifiable official platform account.
+- For TikTok Shop, Temu, Shopify, and Jumia, follow the platform-by-platform routes, coverage ledger, taxonomy, and applicability gate in [platform-policy-monitoring.md](platform-policy-monitoring.md).
+- Treat each platform + seller market + operating program as a separate monitoring scope. A rule observed in one market or program is not evidence for another.
 
 ## Search sequence
 
@@ -40,6 +42,6 @@ Query with the product name, HS code, authority name, and terms such as 公告, 
 3. Search for rules taking effect or expiring in the next 30 days.
 4. Recheck ongoing high-risk topics from the previous radar.
 5. Open every cited page and record the publication/effective dates separately.
+6. For platform events, recheck the current underlying policy and extract structured `platform_policy` and `action_items` fields.
 
 Record inaccessible or unsearched sources as coverage gaps. Do not imply exhaustive monitoring when access was incomplete.
-

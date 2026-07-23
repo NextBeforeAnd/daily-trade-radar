@@ -25,6 +25,8 @@ If no scope is supplied, cover China export controls and customs, the United Sta
 
 Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.
 
+For TikTok Shop, Temu, Shopify, and Jumia, also follow [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). Complete a platform-and-market coverage ledger, distinguish public sources from login-only seller notices, and disclose inaccessible dashboards as coverage gaps.
+
 For every candidate event, capture the publication date, effective date, jurisdiction, affected products or sellers, concrete requirement, source title, direct URL, and retrieval date. Never treat a search-result snippet as evidence. Open and read the supporting page.
 
 Separate:
@@ -42,6 +44,8 @@ Do not place `unconfirmed` items in the main action table. Put them in a short w
 Represent reviewed events in the JSON format defined in [references/output-schema.md](references/output-schema.md). Apply [references/scoring-rules.md](references/scoring-rules.md) consistently.
 
 Write impact and action fields for the user's actual market, product, HS code, or platform. If applicability is unknown, say what must be checked instead of assuming applicability.
+
+For a verified marketplace-policy event, populate the structured `platform_policy` object and `action_items` array. Preserve the top-level `action` as the short executive instruction. Separate platform, seller market, program/model, policy area, change type, seller scope, before/after state, enforcement consequence, and backend-verification need. Never infer market-wide applicability from a single account notice.
 
 ## Deduplicate
 
@@ -86,6 +90,8 @@ Before delivery, confirm:
 - new items are genuinely new relative to the supplied previous radar;
 - risk levels follow the scoring rules;
 - actions name an owner or business function and a time horizon where possible;
+- every marketplace-policy event identifies its platform and seller market, or explicitly states what remains unknown;
+- platform actions include a completion artifact such as an exported SKU/order list, settings screenshot, submitted document, ticket, or approved decision record;
 - no unsupported inference is written as fact;
 - the report states the search cutoff, timezone, scope, and known coverage gaps;
 - “no material new item found” is used when the research supports that conclusion.

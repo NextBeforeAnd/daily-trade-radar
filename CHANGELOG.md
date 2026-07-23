@@ -4,6 +4,20 @@ All notable changes to Daily Trade Radar are documented in this file.
 
 ## Unreleased
 
+### 2026-07-23
+
+#### Added
+
+- Added a dedicated monitoring playbook for TikTok Shop, Temu, Shopify, and Jumia, including official-source routes, a policy taxonomy, an applicability gate, and login-only coverage handling.
+- Added optional, backward-compatible `platform_policy` analysis and structured `action_items` with owner, deadline/horizon, and completion evidence.
+- Added platform-policy analysis to Markdown and Word event details and owner-level actions to both renderers.
+- Added validation and regression tests for complete and incomplete structured marketplace events.
+
+#### Changed
+
+- Marketplace exposure now requires an established seller market plus a relevant account, program, product, fulfillment, payment, or feature dimension before receiving the highest exposure score.
+- Deduplication now treats changes to structured platform analysis and action items as material updates.
+
 ### 2026-07-22
 
 #### Added

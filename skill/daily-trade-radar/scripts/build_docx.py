@@ -25,6 +25,20 @@ LEVEL_ZH = {"high": "高", "medium": "中", "low": "低", "watch": "观察"}
 LEVEL_EN = {"high": "High", "medium": "Medium", "low": "Low", "watch": "Watch"}
 STATUS_ZH = {"new": "今日新增", "effective": "已生效", "deadline": "临近截止", "ongoing": "持续关注", "unconfirmed": "待核实"}
 STATUS_EN = {"new": "New today", "effective": "Effective", "deadline": "Approaching deadline", "ongoing": "Ongoing", "unconfirmed": "Unconfirmed"}
+POLICY_AREA_ZH = {
+    "onboarding_kyc": "入驻与身份核验",
+    "listing_product_compliance": "刊登与商品合规",
+    "pricing_promotions": "定价与促销",
+    "fees_commissions": "费用与佣金",
+    "fulfillment_logistics": "履约与物流",
+    "returns_refunds_aftersales": "退货退款与售后",
+    "payments_settlement_tax": "支付、结算与税务",
+    "content_ads_affiliate": "内容、广告与联盟",
+    "data_privacy_security": "数据、隐私与安全",
+    "account_health_enforcement": "账户健康与执法",
+    "api_feature_deprecation": "API、功能与停用",
+    "other": "其他",
+}
 LEVEL_FILL = {"high": "FDE8E7", "medium": "FFF1CC", "low": "E8F1FA", "watch": "EEF0F2"}
 BLUE = RGBColor(46, 116, 181)
 DARK_BLUE = RGBColor(31, 77, 120)
@@ -141,6 +155,13 @@ def repeat_table_header(row) -> None:
     header = OxmlElement("w:tblHeader")
     header.set(qn("w:val"), "true")
     tr_pr.append(header)
+
+
+def keep_table_row_together(row) -> None:
+    tr_pr = row._tr.get_or_add_trPr()
+    cant_split = OxmlElement("w:cantSplit")
+    cant_split.set(qn("w:val"), "true")
+    tr_pr.append(cant_split)
 
 
 def add_hyperlink(paragraph, text: str, url: str) -> None:
@@ -263,12 +284,12 @@ def build_report(data: dict) -> Document:
     section.orientation = WD_ORIENT.PORTRAIT
     section.page_width = Inches(8.5)
     section.page_height = Inches(11)
-    section.top_margin = Inches(0.75)
-    section.bottom_margin = Inches(0.75)
+    section.top_margin = Inches(1)
+    section.bottom_margin = Inches(1)
     section.left_margin = Inches(1)
     section.right_margin = Inches(1)
-    section.header_distance = Inches(0.35)
-    section.footer_distance = Inches(0.35)
+    section.header_distance = Inches(0.492)
+    section.footer_distance = Inches(0.492)
     configure_styles(document)
 
     header = section.header.paragraphs[0]
@@ -303,6 +324,7 @@ def build_report(data: dict) -> Document:
             set_font(paragraph.add_run(header_text), size=9.5, color=WHITE, bold=True)
         for event in main_events:
             row = table.add_row()
+            keep_table_row_together(row)
             values = (levels.get(event.get("level"), str(event.get("level", ""))), statuses.get(event.get("status"), str(event.get("status", ""))), event.get("title", ""), event.get("impact", ""))
             for index, value in enumerate(values):
                 cell = row.cells[index]
@@ -319,10 +341,31 @@ def build_report(data: dict) -> Document:
     actionable = [event for event in main_events if event.get("level") in {"high", "medium"}]
     if actionable:
         for event in actionable:
-            paragraph = document.add_paragraph(style="List Number")
-            title_run = paragraph.add_run(f"{event.get('title', '')}: ")
-            set_font(title_run, bold=True)
-            paragraph.add_run(str(event.get("action", "")))
+            items = event.get("action_items") or []
+            if items:
+                for item in items:
+                    paragraph = document.add_paragraph(style="List Number")
+                    title_run = paragraph.add_run(f"{event.get('title', '')}: ")
+                    set_font(title_run, bold=True)
+                    if english:
+                        action = str(item.get("action", "")).rstrip("。.;；")
+                        evidence = str(item.get("completion_evidence", "")).rstrip("。.;；")
+                        paragraph.add_run(
+                            f"{item.get('owner')} | {item.get('deadline')}: {action}. "
+                            f"Completion evidence: {evidence}."
+                        )
+                    else:
+                        action = str(item.get("action", "")).rstrip("。.;；")
+                        evidence = str(item.get("completion_evidence", "")).rstrip("。.;；")
+                        paragraph.add_run(
+                            f"{item.get('owner')}｜{item.get('deadline')}：{action}；"
+                            f"完成凭证：{evidence}。"
+                        )
+            else:
+                paragraph = document.add_paragraph(style="List Number")
+                title_run = paragraph.add_run(f"{event.get('title', '')}: ")
+                set_font(title_run, bold=True)
+                paragraph.add_run(str(event.get("action", "")))
     else:
         document.add_paragraph("No high- or medium-level actions." if english else "暂无高、中等级行动。")
 
@@ -350,6 +393,15 @@ def build_report(data: dict) -> Document:
             if english else
             (("司法辖区", event.get("jurisdiction")), ("主管机构", event.get("authority")), ("发布日期", event.get("published_date")), ("生效日期", event.get("effective_date")), ("截止日期", event.get("deadline")), ("摘要", event.get("summary")), ("行动", event.get("action")))
         )
+        policy = event.get("platform_policy")
+        if isinstance(policy, dict):
+            area = policy.get("policy_area") if english else POLICY_AREA_ZH.get(policy.get("policy_area"), policy.get("policy_area"))
+            platform_rows = (
+                (("Platform / market", f"{policy.get('platform')} / {policy.get('seller_market')}"), ("Program", policy.get("program")), ("Policy area", area), ("Change type", policy.get("change_type")), ("Seller scope", policy.get("seller_scope")), ("Previous state", policy.get("previous_state")), ("New state", policy.get("new_state")), ("Enforcement consequence", policy.get("enforcement_consequence")), ("Backend verification required", "Yes" if policy.get("backend_verification_required") else "No"))
+                if english else
+                (("平台 / 市场", f"{policy.get('platform')} / {policy.get('seller_market')}"), ("项目 / 模式", policy.get("program")), ("政策领域", area), ("变化类型", policy.get("change_type")), ("卖家范围", policy.get("seller_scope")), ("原状态", policy.get("previous_state")), ("新状态", policy.get("new_state")), ("执法后果", policy.get("enforcement_consequence")), ("需后台核验", "是" if policy.get("backend_verification_required") else "否"))
+            )
+            detail_rows = tuple(platform_rows) + tuple(detail_rows)
         for label, value in detail_rows:
             if value in (None, ""):
                 continue

@@ -19,6 +19,10 @@ Assign each event a numeric score, then map it to a level. Score the user's like
 
 Never raise an item above `watch` when evidence is 0. Explain any override in `rationale`.
 
+For marketplace rules, business exposure can be 2 only when the platform and seller market are established and the supplied account, operating model, product/category, fulfillment mode, payment product, or feature/plan is clearly affected. A platform name alone is exposure 1 at most.
+
+For login-only notices, evidence can be 2 when the original notice is available and its date, account/market scope, obligation, and effective/enforcement timing are captured. If the notice cannot be opened, a third-party description or search snippet remains evidence 0 even when it appears credible.
+
 ## Action standard
 
 Write one concise action that includes:
@@ -31,3 +35,4 @@ Write one concise action that includes:
 
 Avoid generic actions such as “pay attention” or “continue monitoring.”
 
+For platform events, also identify the seller market and affected objects, and record completion evidence. Prefer separate structured `action_items` for different owners instead of combining marketplace operations, finance, logistics, and compliance into one vague sentence.
