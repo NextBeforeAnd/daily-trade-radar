@@ -55,7 +55,7 @@ Compare candidates with the previous event JSON when available:
 python scripts/deduplicate.py current.json --previous previous.json --output deduplicated.json
 ```
 
-Review all `possible_update` matches manually. Keep a repeated event only when the effective date, scope, obligation, rate, deadline, or official guidance materially changed. Label retained repeats as `effective`, `deadline`, or `ongoing`; do not call them new.
+Review deduplication dispositions before delivery. `material_update` means a factual date, scope, obligation, rate, source, or verified platform-policy state changed. `operational_refresh` means an unchanged rule reached its effective date or deadline today. `duplicate_removed` covers editorial rewrites, action wording, impact phrasing, and score-only changes. Label retained repeats as `effective`, `deadline`, or `ongoing`; do not call them new.
 
 If the previous radar exists only as prose, compare by jurisdiction, authority, regulation or program name, product/HS code, platform, and effective date. Explain the deduplication basis briefly.
 

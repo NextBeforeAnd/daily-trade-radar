@@ -4,6 +4,19 @@ All notable changes to Daily Trade Radar are documented in this file.
 
 ## Unreleased
 
+### 2026-07-24
+
+#### Changed
+
+- Replaced binary duplicate/update detection with `material_update`, `operational_refresh`, and `duplicate_removed` classifications.
+- Editorial changes to summaries, impacts, actions, and scores no longer keep an otherwise unchanged event.
+- Material-change detection now focuses on dates, scope, official sources, rates and other factual signals, obligations, and verified marketplace-policy state.
+- Deduplication output now records machine-readable `change_reasons`, and Markdown/Word reports distinguish material updates from effective-date or deadline refreshes.
+
+#### Added
+
+- Added regression tests for editorial rewrites, rate changes, effective-date transitions, and Chinese substring false positives.
+
 ### 2026-07-23
 
 #### Added

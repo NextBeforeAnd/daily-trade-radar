@@ -47,6 +47,24 @@ class WorkflowTest(unittest.TestCase):
         }]
         return event
 
+    def deduplicate_pair(self, previous: dict, current: dict) -> dict:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            previous_path = temp / "previous.json"
+            current_path = temp / "current.json"
+            output_path = temp / "deduplicated.json"
+            previous_path.write_text(json.dumps(previous, ensure_ascii=False), encoding="utf-8")
+            current_path.write_text(json.dumps(current, ensure_ascii=False), encoding="utf-8")
+            self.run_script(
+                "deduplicate.py",
+                current_path,
+                "--previous",
+                previous_path,
+                "--output",
+                output_path,
+            )
+            return json.loads(output_path.read_text(encoding="utf-8"))
+
     def test_skill_frontmatter(self) -> None:
         content = (SKILL / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(content.startswith("---\n"))
@@ -80,6 +98,63 @@ class WorkflowTest(unittest.TestCase):
             rendered = markdown.read_text(encoding="utf-8")
             self.assertIn("示例欧盟产品规则更新", rendered)
             self.assertIn("移除 1 条", rendered)
+
+    def test_deduplicate_ignores_editorial_rewrites(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current["report_date"] = "2026-07-21"
+        current["events"][0]["summary"] = "商品标题规则将进行调整。"
+        current["events"][0]["impact"] = "需要重新检查商品标题。"
+        current["events"][0]["action"] = "本周由平台运营导出商品，并复核标题！"
+        current["events"][0]["score"] = 7
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(result["events"], [])
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["disposition"], "duplicate_removed")
+        self.assertEqual(match["change_reasons"], [])
+
+    def test_deduplicate_keeps_material_fact_change(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        previous["events"][0]["summary"] = "平台将加征10%服务费。"
+        current["report_date"] = "2026-07-21"
+        current["events"][0]["summary"] = "平台将加征12.5%服务费。"
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual([event["id"] for event in result["events"]], ["example-marketplace-title-rule-2026"])
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["disposition"], "material_update")
+        self.assertIn("summary_facts_or_obligation", match["change_reasons"])
+
+    def test_deduplicate_does_not_treat_chinese_substring_as_obligation(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        previous["events"][0]["summary"] = "货物进入消费。"
+        current["report_date"] = "2026-07-21"
+        current["events"][0]["summary"] = "货物从仓库提取消费。"
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(result["events"], [])
+        self.assertEqual(result["deduplication"]["matches"][0]["disposition"], "duplicate_removed")
+
+    def test_deduplicate_keeps_effective_date_operational_refresh(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        previous["events"][0]["effective_date"] = "2026-07-21"
+        current["report_date"] = "2026-07-21"
+        current["events"][0]["effective_date"] = "2026-07-21"
+        current["events"][0]["status"] = "effective"
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual([event["id"] for event in result["events"]], ["example-marketplace-title-rule-2026"])
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["disposition"], "operational_refresh")
+        self.assertIn("effective_date_reached", match["change_reasons"])
 
     def test_render_english_report(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))

@@ -20,7 +20,7 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Separates publication dates, effective dates, and deadlines.
 - Scores events by force, exposure, urgency, consequence, and evidence.
 - Deduplicates findings against a previous radar.
-- Keeps material updates for human review.
+- Separates material policy changes from effective-date/deadline refreshes and editorial rewrites.
 - Validates a stable UTF-8 JSON event format.
 - Generates a consistent Chinese Markdown radar.
 - Includes a privacy-scrubbed DOCX template for optional formal output.

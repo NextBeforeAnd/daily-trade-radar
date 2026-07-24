@@ -372,17 +372,20 @@ def build_report(data: dict) -> Document:
     document.add_heading("Deduplication" if english else "去重说明", level=1)
     matches = data.get("deduplication", {}).get("matches", [])
     removed = sum(item.get("disposition") == "duplicate_removed" for item in matches)
-    retained = sum(item.get("disposition") == "retained_after_review" for item in matches)
+    material = sum(item.get("disposition") in {"material_update", "retained_after_review"} for item in matches)
+    operational = sum(item.get("disposition") == "operational_refresh" for item in matches)
     review = sum(item.get("disposition") == "possible_update" for item in matches)
     if english:
         document.add_paragraph(
             f"Compared with the previous report, {removed} unchanged duplicate(s) were removed; "
-            f"{retained} material update(s) were retained after review; {review} item(s) still require review."
+            f"{material} material update(s) and {operational} operational refresh(es) were retained; "
+            f"{review} item(s) still require review."
         )
     else:
         document.add_paragraph(
             f"与上一期比较后移除 {removed} 条无实质变化的重复事项；"
-            f"人工复核后保留 {retained} 条实质更新事项；另有 {review} 条仍待复核。"
+            f"保留 {material} 条实质更新事项和 {operational} 条运营节点刷新事项；"
+            f"另有 {review} 条仍待复核。"
         )
 
     document.add_heading("Event details and official sources" if english else "事件详情与官方来源", level=1)
