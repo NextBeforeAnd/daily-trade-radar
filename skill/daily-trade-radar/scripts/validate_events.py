@@ -20,6 +20,10 @@ ROOT_FIELDS = {
     "coverage_gaps": list,
     "events": list,
 }
+OPTIONAL_ROOT_FIELDS = {
+    "window_start": (str, type(None)),
+    "coverage_ledger": list,
+}
 EVENT_FIELDS = {
     "id": str,
     "title": str,
@@ -39,6 +43,12 @@ EVENT_FIELDS = {
     "source_title": str,
     "source_url": str,
     "retrieved_date": str,
+}
+OPTIONAL_EVENT_FIELDS = {
+    "published_at": (str, type(None)),
+    "effective_at": (str, type(None)),
+    "deadline_at": (str, type(None)),
+    "source_timezone": (str, type(None)),
 }
 STATUSES = {"new", "effective", "deadline", "ongoing", "unconfirmed"}
 LEVELS = {"high", "medium", "low", "watch"}
@@ -83,6 +93,18 @@ ACTION_ITEM_FIELDS = {
     "deadline": str,
     "completion_evidence": str,
 }
+COVERAGE_LEDGER_FIELDS = {
+    "platform": str,
+    "seller_market": str,
+    "program": str,
+    "public_update_checked": bool,
+    "current_policy_checked": bool,
+    "dashboard_checked": bool,
+    "access_result": str,
+    "checked_at": str,
+    "gaps": list,
+}
+ACCESS_RESULTS = {"public_checked", "login_required", "checked_authenticated", "not_checked", "not_applicable"}
 
 
 def load_json(path: Path) -> dict:
@@ -101,6 +123,14 @@ def valid_date(value: str) -> bool:
         return False
 
 
+def valid_datetime_offset(value: str) -> bool:
+    try:
+        parsed = datetime.fromisoformat(value)
+        return parsed.tzinfo is not None and parsed.utcoffset() is not None
+    except ValueError:
+        return False
+
+
 def validate(data: dict) -> list[str]:
     errors: list[str] = []
     for key, expected in ROOT_FIELDS.items():
@@ -108,16 +138,40 @@ def validate(data: dict) -> list[str]:
             errors.append(f"root: missing {key}")
         elif not isinstance(data[key], expected):
             errors.append(f"root.{key}: wrong type")
+    for key, expected in OPTIONAL_ROOT_FIELDS.items():
+        if key in data and not isinstance(data[key], expected):
+            errors.append(f"root.{key}: wrong type")
 
     if isinstance(data.get("report_date"), str) and not valid_date(data["report_date"]):
         errors.append("root.report_date: use YYYY-MM-DD")
-    if isinstance(data.get("cutoff"), str):
-        try:
-            parsed = datetime.fromisoformat(data["cutoff"])
-            if parsed.tzinfo is None:
-                errors.append("root.cutoff: include a UTC offset")
-        except ValueError:
-            errors.append("root.cutoff: use ISO 8601 date-time")
+    for field in ("window_start", "cutoff"):
+        value = data.get(field)
+        if isinstance(value, str) and not valid_datetime_offset(value):
+            errors.append(f"root.{field}: use ISO 8601 date-time with a UTC offset")
+
+    coverage_ledger = data.get("coverage_ledger")
+    if isinstance(coverage_ledger, list):
+        for ledger_index, entry in enumerate(coverage_ledger):
+            ledger_label = f"coverage_ledger[{ledger_index}]"
+            if not isinstance(entry, dict):
+                errors.append(f"{ledger_label}: must be an object")
+                continue
+            for key, expected in COVERAGE_LEDGER_FIELDS.items():
+                value = entry.get(key)
+                if key not in entry:
+                    errors.append(f"{ledger_label}: missing {key}")
+                elif not isinstance(value, expected):
+                    errors.append(f"{ledger_label}.{key}: wrong type")
+                elif isinstance(value, str) and not value.strip():
+                    errors.append(f"{ledger_label}.{key}: must not be blank")
+            if entry.get("access_result") not in ACCESS_RESULTS:
+                errors.append(f"{ledger_label}.access_result: invalid value")
+            checked_at = entry.get("checked_at")
+            if isinstance(checked_at, str) and not valid_datetime_offset(checked_at):
+                errors.append(f"{ledger_label}.checked_at: use ISO 8601 date-time with a UTC offset")
+            gaps = entry.get("gaps")
+            if isinstance(gaps, list) and any(not isinstance(gap, str) or not gap.strip() for gap in gaps):
+                errors.append(f"{ledger_label}.gaps: entries must be non-blank strings")
 
     seen_ids: set[str] = set()
     for index, event in enumerate(data.get("events", [])):
@@ -129,6 +183,9 @@ def validate(data: dict) -> list[str]:
             if key not in event:
                 errors.append(f"{label}: missing {key}")
             elif not isinstance(event[key], expected):
+                errors.append(f"{label}.{key}: wrong type")
+        for key, expected in OPTIONAL_EVENT_FIELDS.items():
+            if key in event and not isinstance(event[key], expected):
                 errors.append(f"{label}.{key}: wrong type")
         event_id = event.get("id")
         if isinstance(event_id, str):
@@ -150,6 +207,13 @@ def validate(data: dict) -> list[str]:
             value = event.get(field)
             if isinstance(value, str) and not valid_date(value):
                 errors.append(f"{label}.{field}: use YYYY-MM-DD")
+        for field in ("published_at", "effective_at", "deadline_at"):
+            value = event.get(field)
+            if isinstance(value, str) and not valid_datetime_offset(value):
+                errors.append(f"{label}.{field}: use ISO 8601 date-time with a UTC offset")
+        source_timezone = event.get("source_timezone")
+        if isinstance(source_timezone, str) and not source_timezone.strip():
+            errors.append(f"{label}.source_timezone: must not be blank")
         url = event.get("source_url")
         if isinstance(url, str):
             parsed = urlparse(url)

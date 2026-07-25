@@ -91,6 +91,7 @@ def main() -> int:
             f"# Daily Trade Radar | {clean(data.get('report_date'))}",
             "",
             f"- Timezone: {clean(data.get('timezone'))}",
+            f"- Reporting window starts: {clean(data.get('window_start'))}",
             f"- Search cutoff: {clean(data.get('cutoff'))}",
             f"- Scope: {clean(', '.join(data.get('scope', [])))}",
             "",
@@ -108,6 +109,7 @@ def main() -> int:
             f"# 今日外贸雷达｜{clean(data.get('report_date'))}",
             "",
             f"- 时区：{clean(data.get('timezone'))}",
+            f"- 报告窗口起点：{clean(data.get('window_start'))}",
             f"- 检索截止：{clean(data.get('cutoff'))}",
             f"- 范围：{clean('、'.join(data.get('scope', [])))}",
             "",
@@ -211,12 +213,49 @@ def main() -> int:
     gaps = data.get("coverage_gaps", [])
     lines.extend([f"- {clean(gap)}" for gap in gaps] or ["- No known coverage gaps." if english else "- 无已知覆盖缺口。"])
 
+    coverage_ledger = data.get("coverage_ledger", [])
+    if coverage_ledger:
+        lines.extend(["", "## Platform coverage ledger" if english else "## 平台覆盖台账", ""])
+        if english:
+            lines.extend([
+                "| Platform / market | Program | Public update | Current policy | Dashboard | Access result | Checked at | Gaps |",
+                "|---|---|---|---|---|---|---|---|",
+            ])
+        else:
+            lines.extend([
+                "| 平台 / 市场 | 项目 / 模式 | 公告核验 | 现行政策核验 | 后台核验 | 访问结果 | 核验时间 | 缺口 |",
+                "|---|---|---|---|---|---|---|---|",
+            ])
+        yes_no = (lambda value: "Yes" if value else "No") if english else (lambda value: "是" if value else "否")
+        for entry in coverage_ledger:
+            lines.append(
+                f"| {clean(entry.get('platform'))} / {clean(entry.get('seller_market'))} "
+                f"| {clean(entry.get('program'))} | {yes_no(entry.get('public_update_checked'))} "
+                f"| {yes_no(entry.get('current_policy_checked'))} | {yes_no(entry.get('dashboard_checked'))} "
+                f"| {clean(entry.get('access_result'))} | {clean(entry.get('checked_at'))} "
+                f"| {clean('；'.join(entry.get('gaps', [])))} |"
+            )
+
     lines.extend(["", "## Official sources" if english else "## 官方来源", ""])
     for index, event in enumerate(main_events, 1):
+        exact_times = [
+            ("published", "发布", event.get("published_at")),
+            ("effective", "生效", event.get("effective_at")),
+            ("deadline", "截止", event.get("deadline_at")),
+        ]
+        time_text = "; ".join(
+            f"{en_label if english else zh_label}: {clean(value)}"
+            for en_label, zh_label, value in exact_times
+            if value
+        )
+        if time_text and event.get("source_timezone"):
+            time_text += f"; {'source timezone' if english else '来源时区'}: {clean(event.get('source_timezone'))}"
         if english:
-            lines.append(f"- S{index}: [{clean(event.get('source_title'))}]({event.get('source_url')}), retrieved {clean(event.get('retrieved_date'))}.")
+            suffix = f" Exact timing: {time_text}." if time_text else ""
+            lines.append(f"- S{index}: [{clean(event.get('source_title'))}]({event.get('source_url')}), retrieved {clean(event.get('retrieved_date'))}.{suffix}")
         else:
-            lines.append(f"- S{index}：[{clean(event.get('source_title'))}]({event.get('source_url')})，检索于 {clean(event.get('retrieved_date'))}。")
+            suffix = f" 精确时间：{time_text}。" if time_text else ""
+            lines.append(f"- S{index}：[{clean(event.get('source_title'))}]({event.get('source_url')})，检索于 {clean(event.get('retrieved_date'))}。{suffix}")
 
     if english:
         lines.extend([

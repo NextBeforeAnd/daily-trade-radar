@@ -48,6 +48,7 @@ TABLE_WIDTH_DXA = 9360
 TABLE_WIDTHS_DXA = (900, 1350, 2700, 4410)
 RSID_ATTRIBUTE = re.compile(rb"\s+w:rsid(?:R|RDefault|P|RPr|Sect|Del)?=\"[^\"]*\"")
 RSID_ELEMENT = re.compile(rb"<w:rsid(?:Root|s)?\b[^>]*(?:/>|>.*?</w:rsids>)")
+DEFAULT_TEMPLATE = Path(__file__).resolve().parent.parent / "assets" / "radar-template.docx"
 
 
 def load(path: Path) -> dict:
@@ -203,6 +204,21 @@ def add_page_number(paragraph) -> None:
         paragraph._p.append(run)
 
 
+def clear_paragraph(paragraph) -> None:
+    """Remove paragraph content while preserving paragraph properties."""
+    for child in list(paragraph._p):
+        if child.tag != qn("w:pPr"):
+            paragraph._p.remove(child)
+
+
+def clear_document_body(document: Document) -> None:
+    """Remove template body content while preserving section properties and styles."""
+    body = document._element.body
+    for child in list(body):
+        if child.tag != qn("w:sectPr"):
+            body.remove(child)
+
+
 def configure_styles(document: Document) -> None:
     styles = document.styles
     normal = styles["Normal"]
@@ -248,9 +264,9 @@ def add_title_block(document: Document, data: dict, english: bool) -> None:
     run = subtitle.add_run(("Actionable foreign-trade intelligence" if english else "外贸政策与跨境平台行动简报"))
     set_font(run, size=12, color=MUTED)
     metadata = (
-        (("Report date", data.get("report_date")), ("Timezone", data.get("timezone")), ("Search cutoff", data.get("cutoff")), ("Scope", ", ".join(data.get("scope", []))))
+        (("Report date", data.get("report_date")), ("Timezone", data.get("timezone")), ("Reporting window starts", data.get("window_start")), ("Search cutoff", data.get("cutoff")), ("Scope", ", ".join(data.get("scope", []))))
         if english else
-        (("报告日期", data.get("report_date")), ("时区", data.get("timezone")), ("检索截止", data.get("cutoff")), ("覆盖范围", "、".join(data.get("scope", []))))
+        (("报告日期", data.get("report_date")), ("时区", data.get("timezone")), ("报告窗口起点", data.get("window_start")), ("检索截止", data.get("cutoff")), ("覆盖范围", "、".join(data.get("scope", []))))
     )
     for label, value in metadata:
         paragraph = document.add_paragraph()
@@ -271,7 +287,7 @@ def add_title_block(document: Document, data: dict, english: bool) -> None:
     p_pr.append(borders)
 
 
-def build_report(data: dict) -> Document:
+def build_report(data: dict, template_path: Path) -> Document:
     english = str(data.get("language", "")).casefold().startswith("en")
     levels = LEVEL_EN if english else LEVEL_ZH
     statuses = STATUS_EN if english else STATUS_ZH
@@ -279,7 +295,10 @@ def build_report(data: dict) -> Document:
     main_events = [event for event in events if event.get("status") != "unconfirmed"]
     watch_events = [event for event in events if event.get("status") == "unconfirmed"]
 
-    document = Document()
+    if not template_path.is_file():
+        raise ValueError(f"template not found: {template_path}")
+    document = Document(template_path)
+    clear_document_body(document)
     section = document.sections[0]
     section.orientation = WD_ORIENT.PORTRAIT
     section.page_width = Inches(8.5)
@@ -292,10 +311,18 @@ def build_report(data: dict) -> Document:
     section.footer_distance = Inches(0.492)
     configure_styles(document)
 
+    for paragraph in section.header.paragraphs:
+        clear_paragraph(paragraph)
     header = section.header.paragraphs[0]
+    for paragraph in section.header.paragraphs[1:]:
+        paragraph._element.getparent().remove(paragraph._element)
     header.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     set_font(header.add_run("Daily Trade Radar" if english else "每日外贸雷达"), size=8.5, color=MUTED)
+    for paragraph in section.footer.paragraphs:
+        clear_paragraph(paragraph)
     footer = section.footer.paragraphs[0]
+    for paragraph in section.footer.paragraphs[1:]:
+        paragraph._element.getparent().remove(paragraph._element)
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
     add_page_number(footer)
 
@@ -392,9 +419,9 @@ def build_report(data: dict) -> Document:
     for index, event in enumerate(main_events, 1):
         document.add_heading(f"S{index} | {event.get('title', '')}", level=2)
         detail_rows = (
-            (("Jurisdiction", event.get("jurisdiction")), ("Authority", event.get("authority")), ("Published", event.get("published_date")), ("Effective", event.get("effective_date")), ("Deadline", event.get("deadline")), ("Summary", event.get("summary")), ("Action", event.get("action")))
+            (("Jurisdiction", event.get("jurisdiction")), ("Authority", event.get("authority")), ("Published", event.get("published_date")), ("Published at", event.get("published_at")), ("Effective", event.get("effective_date")), ("Effective at", event.get("effective_at")), ("Deadline", event.get("deadline")), ("Deadline at", event.get("deadline_at")), ("Source timezone", event.get("source_timezone")), ("Summary", event.get("summary")), ("Action", event.get("action")))
             if english else
-            (("司法辖区", event.get("jurisdiction")), ("主管机构", event.get("authority")), ("发布日期", event.get("published_date")), ("生效日期", event.get("effective_date")), ("截止日期", event.get("deadline")), ("摘要", event.get("summary")), ("行动", event.get("action")))
+            (("司法辖区", event.get("jurisdiction")), ("主管机构", event.get("authority")), ("发布日期", event.get("published_date")), ("发布时间", event.get("published_at")), ("生效日期", event.get("effective_date")), ("生效时间", event.get("effective_at")), ("截止日期", event.get("deadline")), ("截止时间", event.get("deadline_at")), ("来源时区", event.get("source_timezone")), ("摘要", event.get("summary")), ("行动", event.get("action")))
         )
         policy = event.get("platform_policy")
         if isinstance(policy, dict):
@@ -433,6 +460,28 @@ def build_report(data: dict) -> Document:
     else:
         document.add_paragraph("No known coverage gaps." if english else "无已知覆盖缺口。")
 
+    coverage_ledger = data.get("coverage_ledger", [])
+    if coverage_ledger:
+        document.add_heading("Platform coverage ledger" if english else "平台覆盖台账", level=1)
+        for entry in coverage_ledger:
+            heading = f"{entry.get('platform')} / {entry.get('seller_market')} — {entry.get('program')}"
+            document.add_heading(heading, level=2)
+            checks = (
+                f"Public update: {'Yes' if entry.get('public_update_checked') else 'No'}; "
+                f"current policy: {'Yes' if entry.get('current_policy_checked') else 'No'}; "
+                f"dashboard: {'Yes' if entry.get('dashboard_checked') else 'No'}."
+                if english else
+                f"公告核验：{'是' if entry.get('public_update_checked') else '否'}；"
+                f"现行政策核验：{'是' if entry.get('current_policy_checked') else '否'}；"
+                f"后台核验：{'是' if entry.get('dashboard_checked') else '否'}。"
+            )
+            document.add_paragraph(checks)
+            result_label = "Access result" if english else "访问结果"
+            checked_label = "Checked at" if english else "核验时间"
+            document.add_paragraph(f"{result_label}: {entry.get('access_result')} | {checked_label}: {entry.get('checked_at')}")
+            for gap in entry.get("gaps", []):
+                document.add_paragraph(str(gap), style="List Bullet")
+
     note = document.add_paragraph()
     note.paragraph_format.space_before = Pt(12)
     note.paragraph_format.keep_together = True
@@ -444,11 +493,12 @@ def build_report(data: dict) -> Document:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=Path)
+    parser.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     try:
         data = load(args.input)
-        document = build_report(data)
+        document = build_report(data, args.template)
         document.core_properties.title = "Daily Trade Radar" if str(data.get("language", "")).casefold().startswith("en") else "每日外贸雷达"
         document.core_properties.subject = "Actionable foreign-trade intelligence"
         document.core_properties.author = ""

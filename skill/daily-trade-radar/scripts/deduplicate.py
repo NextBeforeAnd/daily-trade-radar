@@ -16,6 +16,10 @@ MATERIAL_FIELDS = (
     "published_date",
     "effective_date",
     "deadline",
+    "published_at",
+    "effective_at",
+    "deadline_at",
+    "source_timezone",
     "source_url",
 )
 PLATFORM_MATERIAL_FIELDS = (

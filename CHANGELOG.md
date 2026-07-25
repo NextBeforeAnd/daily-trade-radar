@@ -4,6 +4,20 @@ All notable changes to Daily Trade Radar are documented in this file.
 
 ## Unreleased
 
+### 2026-07-25
+
+#### Added
+
+- Added natural-language triggers such as “今天的外贸行情” and enabled implicit invocation metadata.
+- Added reporting-window start, exact event timestamps with UTC offsets, source timezone, and a machine-readable platform coverage ledger.
+- Added Markdown and Word rendering for coverage-ledger checks and exact event timing.
+
+#### Changed
+
+- Word reports now use the bundled DOCX file as the actual build template through the `--template` option.
+- Deduplication treats changes to exact publication, effective, or deadline timestamps as material updates.
+- Daily research defaults to the previous report cutoff or a trailing 24-hour window, plus a 30-day effective-date and deadline scan.
+
 ### 2026-07-24
 
 #### Changed

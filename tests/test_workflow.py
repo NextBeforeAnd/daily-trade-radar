@@ -71,6 +71,10 @@ class WorkflowTest(unittest.TestCase):
         frontmatter = content.split("---", 2)[1]
         self.assertIn("name: daily-trade-radar", frontmatter)
         self.assertIn("description:", frontmatter)
+        self.assertIn("今天的外贸行情", frontmatter)
+        agent_config = (SKILL / "agents" / "openai.yaml").read_text(encoding="utf-8")
+        self.assertIn("allow_implicit_invocation: true", agent_config)
+        self.assertIn("$daily-trade-radar", agent_config)
 
     def test_validate_deduplicate_and_render(self) -> None:
         self.run_script("validate_events.py", EXAMPLES / "previous.json")
@@ -194,6 +198,82 @@ class WorkflowTest(unittest.TestCase):
             self.assertIn("## 平台政策分析", rendered)
             self.assertIn("TikTok Shop / US", rendered)
             self.assertIn("完成凭证：Reviewed SKU-document matrix", rendered)
+
+    def test_validate_and_render_reporting_window_and_coverage_ledger(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["window_start"] = "2026-07-20T17:00:00+08:00"
+        data["coverage_ledger"] = [{
+            "platform": "TikTok Shop",
+            "seller_market": "US",
+            "program": "US local seller",
+            "public_update_checked": True,
+            "current_policy_checked": True,
+            "dashboard_checked": False,
+            "access_result": "login_required",
+            "checked_at": "2026-07-21T16:30:00+08:00",
+            "gaps": ["Seller Center account notices were not accessible"],
+        }]
+        data["events"][0]["deadline_at"] = "2026-07-31T23:59:00-04:00"
+        data["events"][0]["source_timezone"] = "America/New_York"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            source = temp / "coverage.json"
+            markdown = temp / "coverage.md"
+            docx = temp / "coverage.docx"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+            self.run_script("validate_events.py", source)
+            self.run_script("build_markdown.py", source, "--output", markdown)
+            self.run_script("build_docx.py", source, "--output", docx)
+
+            rendered = markdown.read_text(encoding="utf-8")
+            self.assertIn("## 平台覆盖台账", rendered)
+            self.assertIn("2026-07-20T17:00:00+08:00", rendered)
+            self.assertIn("2026-07-31T23:59:00-04:00", rendered)
+            with zipfile.ZipFile(docx) as package:
+                document_xml = package.read("word/document.xml").decode("utf-8")
+                self.assertIn("平台覆盖台账", document_xml)
+                self.assertIn("2026-07-31T23:59:00-04:00", document_xml)
+
+    def test_reject_invalid_coverage_ledger_timestamp_and_result(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["coverage_ledger"] = [{
+            "platform": "Amazon",
+            "seller_market": "US",
+            "program": "Seller Central",
+            "public_update_checked": True,
+            "current_policy_checked": True,
+            "dashboard_checked": False,
+            "access_result": "partial",
+            "checked_at": "2026-07-21T16:30:00",
+            "gaps": [],
+        }]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "invalid-coverage.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("access_result: invalid value", result.stderr)
+            self.assertIn("checked_at: use ISO 8601 date-time with a UTC offset", result.stderr)
+
+    def test_deduplicate_keeps_exact_timestamp_change(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        previous["events"][0]["published_at"] = "2026-07-20T00:01:00-04:00"
+        current["events"][0]["published_at"] = "2026-07-20T00:02:00-04:00"
+
+        result = self.deduplicate_pair(previous, current)
+
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["disposition"], "material_update")
+        self.assertIn("published_at", match["change_reasons"])
 
     def test_reject_incomplete_platform_policy(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))

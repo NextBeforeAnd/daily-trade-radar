@@ -18,6 +18,8 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 
 - Searches current primary and official sources.
 - Separates publication dates, effective dates, and deadlines.
+- Uses the previous report cutoff as the next reporting-window start, or a trailing 24-hour window when no prior report exists.
+- Preserves exact event timestamps and source timezones when official sources provide them.
 - Scores events by force, exposure, urgency, consequence, and evidence.
 - Deduplicates findings against a previous radar.
 - Separates material policy changes from effective-date/deadline refreshes and editorial rewrites.
@@ -25,6 +27,7 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Generates a consistent Chinese Markdown radar.
 - Includes a privacy-scrubbed DOCX template for optional formal output.
 - Applies dedicated monitoring routes for TikTok Shop, Temu, Shopify, and Jumia, including login-only coverage-gap handling.
+- Produces a machine-readable platform coverage ledger for public updates, current-policy pages, and authenticated dashboard checks.
 - Extracts marketplace changes into a structured platform/market/program analysis and owner-level action checklist.
 
 ## Repository layout
@@ -108,7 +111,7 @@ Run the workflow:
 python skill/daily-trade-radar/scripts/validate_events.py examples/current.json
 python skill/daily-trade-radar/scripts/deduplicate.py examples/current.json --previous examples/previous.json --output deduplicated.json
 python skill/daily-trade-radar/scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
-python skill/daily-trade-radar/scripts/build_docx.py deduplicated.json --output daily-trade-radar.docx
+python skill/daily-trade-radar/scripts/build_docx.py deduplicated.json --template skill/daily-trade-radar/assets/radar-template.docx --output daily-trade-radar.docx
 ```
 
 The scripts do not scrape the web. Codex performs research with available browsing tools, writes normalized JSON, and then uses the scripts for deterministic validation, comparison, and rendering.

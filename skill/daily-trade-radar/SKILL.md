@@ -1,6 +1,6 @@
 ---
 name: daily-trade-radar
-description: Research, verify, deduplicate, prioritize, and write a daily foreign-trade radar covering official trade policy, customs, sanctions and export controls, tariffs and tax, product compliance, logistics, and marketplace rule changes. Use when Codex is asked to create or update a daily trade briefing, monitor cross-border regulatory developments, compare today's findings with a previous radar, assess impacts by market/product/HS code/platform, or turn verified developments into an actionable Chinese or English Markdown report.
+description: Research, verify, deduplicate, prioritize, and write a daily foreign-trade radar covering official trade policy, customs, sanctions and export controls, tariffs and tax, product compliance, logistics, and marketplace rule changes. Use for requests such as “今天的外贸行情”, “看看今天外贸”, “今日外贸雷达”, “跨境政策更新”, a daily trade briefing, current cross-border regulatory developments, comparison with a previous radar, impact assessment by market/product/HS code/platform, or an actionable Chinese or English Markdown/DOCX report.
 ---
 
 # Daily Trade Radar
@@ -21,13 +21,22 @@ Infer missing preferences when safe. Record:
 
 If no scope is supplied, cover China export controls and customs, the United States, the European Union, major cross-border marketplaces, and material logistics changes. State this default scope in the report.
 
+Treat an unqualified request for “外贸行情” as a request for this regulatory and operational radar. Include exchange rates, demand indicators, freight prices, or macro commentary only when the user asks for them or when they materially change a listed action.
+
+Set the reporting window before research:
+
+- when a previous radar JSON exists, use its `cutoff` as the new `window_start`;
+- otherwise use the trailing 24 hours;
+- independently scan rules taking effect, expiring, or reaching a consultation deadline in the next 30 days;
+- normalize the cutoff and exact event timestamps to ISO 8601 with UTC offsets.
+
 ## Research current developments
 
 Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.
 
 For TikTok Shop, Temu, Shopify, and Jumia, also follow [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). Complete a platform-and-market coverage ledger, distinguish public sources from login-only seller notices, and disclose inaccessible dashboards as coverage gaps.
 
-For every candidate event, capture the publication date, effective date, jurisdiction, affected products or sellers, concrete requirement, source title, direct URL, and retrieval date. Never treat a search-result snippet as evidence. Open and read the supporting page.
+For every candidate event, capture the publication date, effective date, jurisdiction, affected products or sellers, concrete requirement, source title, direct URL, and retrieval date. Capture `published_at`, `effective_at`, `deadline_at`, and `source_timezone` when an official source supplies exact timing. Never treat a search-result snippet as evidence. Open and read the supporting page.
 
 Separate:
 
@@ -46,6 +55,8 @@ Represent reviewed events in the JSON format defined in [references/output-schem
 Write impact and action fields for the user's actual market, product, HS code, or platform. If applicability is unknown, say what must be checked instead of assuming applicability.
 
 For a verified marketplace-policy event, populate the structured `platform_policy` object and `action_items` array. Preserve the top-level `action` as the short executive instruction. Separate platform, seller market, program/model, policy area, change type, seller scope, before/after state, enforcement consequence, and backend-verification need. Never infer market-wide applicability from a single account notice.
+
+Populate the root `coverage_ledger` for every platform and seller market checked. Record the program, public update check, current-policy check, dashboard access, access result, checked time, and gaps. Keep `coverage_gaps` as the concise executive disclosure.
 
 ## Deduplicate
 
@@ -70,15 +81,17 @@ python scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
 
 Use the Markdown structure produced by the script. Edit for clarity only after validation. Preserve direct source links and factual qualifiers.
 
-When the user requests DOCX, use `assets/radar-template.docx` as the visual reference and follow the available document-generation skill's render-and-inspect workflow. Do not assume the template has passed visual QA in the current environment.
+When the user requests DOCX, use `assets/radar-template.docx` as the actual build template and follow the available document-generation skill's render-and-inspect workflow. Do not assume the template has passed visual QA in the current environment.
 
 Generate Word output from the validated JSON source:
 
 ```text
-python scripts/build_docx.py deduplicated.json --output daily-trade-radar.docx
+python scripts/build_docx.py deduplicated.json --template assets/radar-template.docx --output daily-trade-radar.docx
 ```
 
-The DOCX renderer follows the JSON `language` field in the same way as the Markdown renderer. Event text must already be written in the requested language. Render and visually inspect the generated DOCX before delivery.
+The DOCX renderer follows the JSON `language` field in the same way as the Markdown renderer. Event text must already be written in the requested language. Render and visually inspect the generated DOCX before delivery. If the document skill's renderer cannot run because LibreOffice/`soffice` is unavailable, run its structural audits, verify table geometry and fields, and disclose that visual QA was unavailable; do not claim a render pass.
+
+When the user asks to repurpose a validated radar for X, LinkedIn, email, or another channel, derive the copy from the validated JSON rather than researching again. Preserve factual qualifiers and use a hook, the most material changes, one concrete action, and a concise close.
 
 ## Quality gate
 
@@ -94,4 +107,6 @@ Before delivery, confirm:
 - platform actions include a completion artifact such as an exported SKU/order list, settings screenshot, submitted document, ticket, or approved decision record;
 - no unsupported inference is written as fact;
 - the report states the search cutoff, timezone, scope, and known coverage gaps;
+- the report states the reporting-window start and exact event times when available;
+- the platform coverage ledger matches the narrative coverage gaps;
 - “no material new item found” is used when the research supports that conclusion.

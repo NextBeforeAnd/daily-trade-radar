@@ -1,4 +1,6 @@
 interface:
   display_name: "每日外贸雷达"
-  short_description: "监测全球外贸政策及 TikTok Shop、Temu、Shopify、Jumia 等平台规则，生成可执行雷达"
-  default_prompt: "Use $daily-trade-radar to research current trade and marketplace-policy developments, with focused coverage of TikTok Shop, Temu, Shopify, and Jumia; verify seller-market applicability, deduplicate against the previous report, and produce an actionable Chinese radar with owner-level action items."
+  short_description: "核验今日外贸政策、关税、平台与物流变化，生成可执行雷达"
+  default_prompt: "Use $daily-trade-radar to 查看今天的外贸行情，按上期截止时间核验、去重并生成带负责人动作的中文外贸雷达。"
+policy:
+  allow_implicit_invocation: true

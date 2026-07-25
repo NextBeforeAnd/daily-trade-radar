@@ -8,10 +8,24 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
 {
   "report_date": "2026-07-21",
   "timezone": "Asia/Singapore",
+  "window_start": "2026-07-20T17:00:00+08:00",
   "cutoff": "2026-07-21T17:00:00+08:00",
   "language": "zh-CN",
   "scope": ["China", "EU", "US", "Amazon"],
   "coverage_gaps": [],
+  "coverage_ledger": [
+    {
+      "platform": "TikTok Shop",
+      "seller_market": "US",
+      "program": "US local seller",
+      "public_update_checked": true,
+      "current_policy_checked": true,
+      "dashboard_checked": false,
+      "access_result": "login_required",
+      "checked_at": "2026-07-21T16:30:00+08:00",
+      "gaps": ["Seller Center account notices were not accessible"]
+    }
+  ],
   "events": [
     {
       "id": "eu-low-value-parcel-fee-2026",
@@ -24,6 +38,10 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
       "published_date": "2026-06-08",
       "effective_date": "2026-07-01",
       "deadline": null,
+      "published_at": null,
+      "effective_at": "2026-07-01T00:00:00+02:00",
+      "deadline_at": null,
+      "source_timezone": "Europe/Brussels",
       "products_or_channels": ["low-value e-commerce parcels"],
       "summary": "Verified requirement and scope.",
       "impact": "Specific operational or commercial effect.",
@@ -59,7 +77,17 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
 
 ## Required event fields
 
-Require all fields shown above. Permit `null` only for dates that genuinely do not exist. Use ISO `YYYY-MM-DD` dates. Use one of `new`, `effective`, `deadline`, `ongoing`, or `unconfirmed` for status and one of `high`, `medium`, `low`, or `watch` for level.
+Require the original root and event fields shown above. `window_start`, `coverage_ledger`, `published_at`, `effective_at`, `deadline_at`, and `source_timezone` are backward-compatible optional fields, but new reports must populate them when the information exists. Use ISO `YYYY-MM-DD` dates and ISO 8601 date-times with UTC offsets. Permit `null` only when an exact date or time genuinely does not exist. Use one of `new`, `effective`, `deadline`, `ongoing`, or `unconfirmed` for status and one of `high`, `medium`, `low`, or `watch` for level.
+
+## Coverage ledger fields
+
+Each `coverage_ledger` entry requires:
+
+- `platform`, `seller_market`, and `program` strings; use `unknown` when not established;
+- `public_update_checked`, `current_policy_checked`, and `dashboard_checked` booleans;
+- `access_result`: `public_checked`, `login_required`, `checked_authenticated`, `not_checked`, or `not_applicable`;
+- `checked_at`: ISO 8601 date-time with a UTC offset;
+- `gaps`: an array of concise strings.
 
 Create stable `id` values from jurisdiction, rule/program, and year. Keep the same ID across daily reports unless the event represents a distinct legal instrument or implementation change.
 
@@ -94,5 +122,6 @@ The top-level `action` remains required. It is the concise management summary; `
 6. Deduplication note.
 7. Watchlist for unconfirmed or low-evidence items.
 8. Coverage gaps.
-9. Official sources.
-10. Tomorrow's watch.
+9. Platform coverage ledger when platform checks were performed.
+10. Official sources.
+11. Tomorrow's watch.
