@@ -26,9 +26,13 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Validates a stable UTF-8 JSON event format.
 - Generates a consistent Chinese Markdown radar.
 - Includes a privacy-scrubbed DOCX template for optional formal output.
-- Applies dedicated monitoring routes for TikTok Shop, Temu, Shopify, and Jumia, including login-only coverage-gap handling.
+- Applies dedicated monitoring routes for TikTok Shop, Temu, Shopify, Jumia, Amazon, and AliExpress.
+- Stores normalized public-page snapshots, compares them with the prior capture, and records machine-readable change status plus saved text diffs.
+- Distinguishes authentication-required pages from pages blocked by access controls or anti-bot measures.
 - Produces a machine-readable platform coverage ledger for public updates, current-policy pages, and authenticated dashboard checks.
 - Extracts marketplace changes into a structured platform/market/program analysis and owner-level action checklist.
+- Runs a mandatory seven-day marketplace discovery pass, records every opened source URL, and rejects unsupported "checked" claims.
+- Uses an available signed-in browser session for read-only Seller Center checks and retains credible unresolved platform leads in the watchlist.
 
 ## Repository layout
 
@@ -114,7 +118,13 @@ python skill/daily-trade-radar/scripts/build_markdown.py deduplicated.json --out
 python skill/daily-trade-radar/scripts/build_docx.py deduplicated.json --template skill/daily-trade-radar/assets/radar-template.docx --output daily-trade-radar.docx
 ```
 
-The scripts do not scrape the web. Codex performs research with available browsing tools, writes normalized JSON, and then uses the scripts for deterministic validation, comparison, and rendering.
+Capture a public platform page after the browser has extracted its visible text:
+
+```bash
+python skill/daily-trade-radar/scripts/snapshot_platform_page.py --platform Amazon --url "https://sellercentral.amazon.com/seller-forums/discussions" --content-file amazon-visible.txt --store snapshots --output amazon-snapshot.json
+```
+
+The scripts do not scrape the web. Codex performs research with available browsing tools, including the in-app browser for interactive or authenticated seller pages, writes normalized JSON, and then uses the scripts for deterministic validation, snapshot comparison, deduplication, and rendering. Platform coverage cannot be marked as checked unless the report records the direct page URL and access result. Public pages that were substantively checked must also carry snapshot metadata; authenticated content is not persisted by the snapshot helper.
 
 ## Quality and safety
 

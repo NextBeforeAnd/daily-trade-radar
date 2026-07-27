@@ -47,6 +47,57 @@ class WorkflowTest(unittest.TestCase):
         }]
         return event
 
+    def coverage_entry(self, platform: str = "TikTok Shop") -> dict:
+        def snapshot(snapshot_id: str, captured_at: str) -> dict:
+            return {
+                "snapshot_id": snapshot_id,
+                "captured_at": captured_at,
+                "content_hash": "a" * 64,
+                "previous_snapshot_id": None,
+                "change_status": "first_seen",
+                "diff_summary": "First captured snapshot; no historical baseline is available.",
+                "snapshot_path": f"C:/snapshots/{snapshot_id}.json",
+                "diff_path": None,
+            }
+        return {
+            "platform": platform,
+            "seller_market": "US",
+            "program": "US local seller",
+            "lookback_start": "2026-07-14T16:30:00+08:00",
+            "public_update_checked": True,
+            "current_policy_checked": True,
+            "dashboard_checked": False,
+            "access_result": "login_required",
+            "checked_at": "2026-07-21T16:30:00+08:00",
+            "sources_checked": [
+                {
+                    "source_type": "official_updates",
+                    "url": "https://seller-us.tiktok.com/university/",
+                    "result": "no_relevant_update",
+                    "checked_at": "2026-07-21T16:20:00+08:00",
+                    "notes": "Opened the official update route.",
+                    "snapshot": snapshot("20260721162000-aaaaaaaaaaaa", "2026-07-21T16:20:00+08:00"),
+                },
+                {
+                    "source_type": "current_policy",
+                    "url": "https://seller-us.tiktok.com/university/essay?knowledge_id=example",
+                    "result": "no_relevant_update",
+                    "checked_at": "2026-07-21T16:25:00+08:00",
+                    "notes": "Opened the current policy page.",
+                    "snapshot": snapshot("20260721162500-aaaaaaaaaaaa", "2026-07-21T16:25:00+08:00"),
+                },
+                {
+                    "source_type": "dashboard",
+                    "url": "https://seller-us.tiktok.com/",
+                    "result": "login_required",
+                    "checked_at": "2026-07-21T16:30:00+08:00",
+                    "notes": "Authentication was required.",
+                },
+            ],
+            "verified_event_ids": [],
+            "gaps": ["Seller Center account notices were not accessible"],
+        }
+
     def deduplicate_pair(self, previous: dict, current: dict) -> dict:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp = Path(temp_dir)
@@ -201,18 +252,9 @@ class WorkflowTest(unittest.TestCase):
 
     def test_validate_and_render_reporting_window_and_coverage_ledger(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["scope"] = ["EU", "TikTok Shop US"]
         data["window_start"] = "2026-07-20T17:00:00+08:00"
-        data["coverage_ledger"] = [{
-            "platform": "TikTok Shop",
-            "seller_market": "US",
-            "program": "US local seller",
-            "public_update_checked": True,
-            "current_policy_checked": True,
-            "dashboard_checked": False,
-            "access_result": "login_required",
-            "checked_at": "2026-07-21T16:30:00+08:00",
-            "gaps": ["Seller Center account notices were not accessible"],
-        }]
+        data["coverage_ledger"] = [self.coverage_entry()]
         data["events"][0]["deadline_at"] = "2026-07-31T23:59:00-04:00"
         data["events"][0]["source_timezone"] = "America/New_York"
 
@@ -231,24 +273,23 @@ class WorkflowTest(unittest.TestCase):
             self.assertIn("## 平台覆盖台账", rendered)
             self.assertIn("2026-07-20T17:00:00+08:00", rendered)
             self.assertIn("2026-07-31T23:59:00-04:00", rendered)
+            self.assertIn("https://seller-us.tiktok.com/university/", rendered)
+            self.assertIn("快照: first_seen", rendered)
+            self.assertIn("需要登录", rendered)
             with zipfile.ZipFile(docx) as package:
                 document_xml = package.read("word/document.xml").decode("utf-8")
                 self.assertIn("平台覆盖台账", document_xml)
                 self.assertIn("2026-07-31T23:59:00-04:00", document_xml)
+                self.assertIn("https://seller-us.tiktok.com/university/", document_xml)
+                self.assertIn("快照: first_seen", document_xml)
+                self.assertIn("需要登录", document_xml)
 
     def test_reject_invalid_coverage_ledger_timestamp_and_result(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
-        data["coverage_ledger"] = [{
-            "platform": "Amazon",
-            "seller_market": "US",
-            "program": "Seller Central",
-            "public_update_checked": True,
-            "current_policy_checked": True,
-            "dashboard_checked": False,
-            "access_result": "partial",
-            "checked_at": "2026-07-21T16:30:00",
-            "gaps": [],
-        }]
+        entry = self.coverage_entry("Amazon")
+        entry["access_result"] = "partial"
+        entry["checked_at"] = "2026-07-21T16:30:00"
+        data["coverage_ledger"] = [entry]
         with tempfile.TemporaryDirectory() as temp_dir:
             source = Path(temp_dir) / "invalid-coverage.json"
             source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
@@ -262,6 +303,170 @@ class WorkflowTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("access_result: invalid value", result.stderr)
             self.assertIn("checked_at: use ISO 8601 date-time with a UTC offset", result.stderr)
+
+    def test_reject_platform_check_without_opened_source_evidence(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["scope"] = ["TikTok Shop US"]
+        entry = self.coverage_entry()
+        entry["sources_checked"] = []
+        data["coverage_ledger"] = [entry]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "missing-evidence.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("sources_checked: must be a non-empty array", result.stderr)
+            self.assertIn("public_update_checked: requires a official_updates source entry", result.stderr)
+
+    def test_reject_platform_named_in_scope_without_ledger(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["scope"] = ["China", "Temu semi-managed"]
+        data.pop("coverage_ledger", None)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "missing-ledger.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing entry for platform named in scope: temu", result.stderr)
+
+    def test_reject_platform_lookback_shorter_than_seven_days(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["scope"] = ["TikTok Shop US"]
+        entry = self.coverage_entry()
+        entry["lookback_start"] = "2026-07-20T16:30:01+08:00"
+        data["coverage_ledger"] = [entry]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "short-lookback.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("platform lookback must be at least 7 days", result.stderr)
+
+    def test_snapshot_platform_page_first_unchanged_and_changed(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            store = temp / "snapshots"
+            content = temp / "page.txt"
+            output = temp / "snapshot.json"
+            content.write_text("Policy title\nSellers must submit documents.\n", encoding="utf-8")
+
+            self.run_script(
+                "snapshot_platform_page.py",
+                "--platform", "Amazon",
+                "--url", "https://sellercentral.amazon.com/help/example?utm_source=test",
+                "--content-file", content,
+                "--store", store,
+                "--captured-at", "2026-07-21T10:00:00+08:00",
+                "--output", output,
+            )
+            first = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(first["change_status"], "first_seen")
+            self.assertIsNone(first["previous_snapshot_id"])
+
+            self.run_script(
+                "snapshot_platform_page.py",
+                "--platform", "Amazon",
+                "--url", "https://sellercentral.amazon.com/help/example",
+                "--content-file", content,
+                "--store", store,
+                "--captured-at", "2026-07-22T10:00:00+08:00",
+                "--output", output,
+            )
+            unchanged = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(unchanged["change_status"], "unchanged")
+            self.assertEqual(unchanged["previous_snapshot_id"], first["snapshot_id"])
+
+            content.write_text("Policy title\nSellers must submit documents within 48 hours.\n", encoding="utf-8")
+            self.run_script(
+                "snapshot_platform_page.py",
+                "--platform", "Amazon",
+                "--url", "https://sellercentral.amazon.com/help/example",
+                "--content-file", content,
+                "--store", store,
+                "--captured-at", "2026-07-23T10:00:00+08:00",
+                "--output", output,
+            )
+            changed = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(changed["change_status"], "changed")
+            self.assertEqual(changed["previous_snapshot_id"], unchanged["snapshot_id"])
+            self.assertIn("+1 / -1 lines", changed["diff_summary"])
+            self.assertTrue(Path(changed["diff_path"]).exists())
+
+    def test_reject_public_platform_source_without_snapshot(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["coverage_ledger"][0]["sources_checked"][0].pop("snapshot")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "missing-snapshot.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("snapshot: required for an opened public policy page", result.stderr)
+
+    def test_amazon_and_aliexpress_scope_require_coverage_ledger(self) -> None:
+        for scope, expected in (("Amazon US", "amazon"), ("速卖通半托管", "aliexpress")):
+            data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+            data["scope"] = [scope]
+            data.pop("coverage_ledger", None)
+            with tempfile.TemporaryDirectory() as temp_dir:
+                source = Path(temp_dir) / "missing-platform-ledger.json"
+                source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+                result = subprocess.run(
+                    [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"missing entry for platform named in scope: {expected}", result.stderr)
+
+    def test_blocked_access_is_not_login_required(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["scope"] = ["Jumia"]
+        entry = self.coverage_entry("Jumia")
+        entry["access_result"] = "login_required"
+        entry["sources_checked"][-1]["result"] = "blocked"
+        data["coverage_ledger"] = [entry]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "blocked-as-login.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("login_required requires a dashboard access attempt", result.stderr)
+
+            entry["access_result"] = "blocked"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            self.run_script("validate_events.py", source)
 
     def test_deduplicate_keeps_exact_timestamp_change(self) -> None:
         previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))

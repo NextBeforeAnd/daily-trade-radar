@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from datetime import date, datetime
 from pathlib import Path
@@ -97,14 +98,53 @@ COVERAGE_LEDGER_FIELDS = {
     "platform": str,
     "seller_market": str,
     "program": str,
+    "lookback_start": str,
     "public_update_checked": bool,
     "current_policy_checked": bool,
     "dashboard_checked": bool,
     "access_result": str,
     "checked_at": str,
+    "sources_checked": list,
+    "verified_event_ids": list,
     "gaps": list,
 }
-ACCESS_RESULTS = {"public_checked", "login_required", "checked_authenticated", "not_checked", "not_applicable"}
+ACCESS_RESULTS = {"public_checked", "login_required", "blocked", "checked_authenticated", "not_checked", "not_applicable"}
+SOURCE_CHECK_FIELDS = {
+    "source_type": str,
+    "url": str,
+    "result": str,
+    "checked_at": str,
+    "notes": str,
+}
+SOURCE_TYPES = {"official_updates", "current_policy", "dashboard", "discovery_lead"}
+SOURCE_RESULTS = {
+    "no_relevant_update",
+    "candidate_found",
+    "verified_event",
+    "login_required",
+    "blocked",
+    "not_applicable",
+}
+SNAPSHOT_FIELDS = {
+    "snapshot_id": str,
+    "captured_at": str,
+    "content_hash": str,
+    "previous_snapshot_id": (str, type(None)),
+    "change_status": str,
+    "diff_summary": str,
+    "snapshot_path": str,
+    "diff_path": (str, type(None)),
+}
+SNAPSHOT_STATUSES = {"first_seen", "unchanged", "changed"}
+SNAPSHOT_REQUIRED_RESULTS = {"no_relevant_update", "candidate_found", "verified_event"}
+MONITORED_PLATFORM_ALIASES = {
+    "tiktok shop": {"tiktok shop"},
+    "temu": {"temu"},
+    "shopify": {"shopify"},
+    "jumia": {"jumia"},
+    "amazon": {"amazon"},
+    "aliexpress": {"aliexpress", "速卖通"},
+}
 
 
 def load_json(path: Path) -> dict:
@@ -150,6 +190,7 @@ def validate(data: dict) -> list[str]:
             errors.append(f"root.{field}: use ISO 8601 date-time with a UTC offset")
 
     coverage_ledger = data.get("coverage_ledger")
+    ledger_platforms: set[str] = set()
     if isinstance(coverage_ledger, list):
         for ledger_index, entry in enumerate(coverage_ledger):
             ledger_label = f"coverage_ledger[{ledger_index}]"
@@ -166,12 +207,135 @@ def validate(data: dict) -> list[str]:
                     errors.append(f"{ledger_label}.{key}: must not be blank")
             if entry.get("access_result") not in ACCESS_RESULTS:
                 errors.append(f"{ledger_label}.access_result: invalid value")
+            platform = entry.get("platform")
+            if isinstance(platform, str):
+                ledger_platforms.add(platform.strip().casefold())
             checked_at = entry.get("checked_at")
+            lookback_start = entry.get("lookback_start")
+            checked_dt = None
+            lookback_dt = None
             if isinstance(checked_at, str) and not valid_datetime_offset(checked_at):
                 errors.append(f"{ledger_label}.checked_at: use ISO 8601 date-time with a UTC offset")
+            elif isinstance(checked_at, str):
+                checked_dt = datetime.fromisoformat(checked_at)
+            if isinstance(lookback_start, str) and not valid_datetime_offset(lookback_start):
+                errors.append(f"{ledger_label}.lookback_start: use ISO 8601 date-time with a UTC offset")
+            elif isinstance(lookback_start, str):
+                lookback_dt = datetime.fromisoformat(lookback_start)
+            if checked_dt is not None and lookback_dt is not None:
+                if lookback_dt > checked_dt:
+                    errors.append(f"{ledger_label}.lookback_start: must not be after checked_at")
+                elif (checked_dt - lookback_dt).total_seconds() < 7 * 24 * 60 * 60:
+                    errors.append(f"{ledger_label}.lookback_start: platform lookback must be at least 7 days")
             gaps = entry.get("gaps")
             if isinstance(gaps, list) and any(not isinstance(gap, str) or not gap.strip() for gap in gaps):
                 errors.append(f"{ledger_label}.gaps: entries must be non-blank strings")
+            verified_event_ids = entry.get("verified_event_ids")
+            if isinstance(verified_event_ids, list) and any(
+                not isinstance(event_id, str) or not event_id.strip() for event_id in verified_event_ids
+            ):
+                errors.append(f"{ledger_label}.verified_event_ids: entries must be non-blank strings")
+            sources = entry.get("sources_checked")
+            source_types: set[str] = set()
+            source_results: set[str] = set()
+            if isinstance(sources, list):
+                if not sources:
+                    errors.append(f"{ledger_label}.sources_checked: must be a non-empty array")
+                for source_index, source in enumerate(sources):
+                    source_label = f"{ledger_label}.sources_checked[{source_index}]"
+                    if not isinstance(source, dict):
+                        errors.append(f"{source_label}: must be an object")
+                        continue
+                    for key, expected in SOURCE_CHECK_FIELDS.items():
+                        value = source.get(key)
+                        if key not in source:
+                            errors.append(f"{source_label}: missing {key}")
+                        elif not isinstance(value, expected):
+                            errors.append(f"{source_label}.{key}: wrong type")
+                        elif isinstance(value, str) and not value.strip():
+                            errors.append(f"{source_label}.{key}: must not be blank")
+                    source_type = source.get("source_type")
+                    if source_type not in SOURCE_TYPES:
+                        errors.append(f"{source_label}.source_type: invalid value")
+                    elif isinstance(source_type, str):
+                        source_types.add(source_type)
+                    result = source.get("result")
+                    if result not in SOURCE_RESULTS:
+                        errors.append(f"{source_label}.result: invalid value")
+                    elif isinstance(result, str):
+                        source_results.add(result)
+                    source_checked_at = source.get("checked_at")
+                    if isinstance(source_checked_at, str) and not valid_datetime_offset(source_checked_at):
+                        errors.append(f"{source_label}.checked_at: use ISO 8601 date-time with a UTC offset")
+                    source_url = source.get("url")
+                    if isinstance(source_url, str):
+                        parsed = urlparse(source_url)
+                        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+                            errors.append(f"{source_label}.url: use a direct http(s) URL")
+                    snapshot = source.get("snapshot")
+                    snapshot_required = (
+                        source_type in {"official_updates", "current_policy"}
+                        and result in SNAPSHOT_REQUIRED_RESULTS
+                    )
+                    if snapshot_required and not isinstance(snapshot, dict):
+                        errors.append(f"{source_label}.snapshot: required for an opened public policy page")
+                    if snapshot is not None:
+                        if not isinstance(snapshot, dict):
+                            errors.append(f"{source_label}.snapshot: must be an object")
+                        else:
+                            for key, expected in SNAPSHOT_FIELDS.items():
+                                value = snapshot.get(key)
+                                if key not in snapshot:
+                                    errors.append(f"{source_label}.snapshot: missing {key}")
+                                elif not isinstance(value, expected):
+                                    errors.append(f"{source_label}.snapshot.{key}: wrong type")
+                                elif isinstance(value, str) and not value.strip():
+                                    errors.append(f"{source_label}.snapshot.{key}: must not be blank")
+                            status = snapshot.get("change_status")
+                            previous_id = snapshot.get("previous_snapshot_id")
+                            if status not in SNAPSHOT_STATUSES:
+                                errors.append(f"{source_label}.snapshot.change_status: invalid value")
+                            if status == "first_seen" and previous_id is not None:
+                                errors.append(f"{source_label}.snapshot.previous_snapshot_id: first_seen must not have a previous snapshot")
+                            if status in {"unchanged", "changed"} and not isinstance(previous_id, str):
+                                errors.append(f"{source_label}.snapshot.previous_snapshot_id: {status} requires a previous snapshot")
+                            captured_at = snapshot.get("captured_at")
+                            if isinstance(captured_at, str) and not valid_datetime_offset(captured_at):
+                                errors.append(f"{source_label}.snapshot.captured_at: use ISO 8601 date-time with a UTC offset")
+                            content_hash = snapshot.get("content_hash")
+                            if isinstance(content_hash, str) and not re.fullmatch(r"[0-9a-f]{64}", content_hash):
+                                errors.append(f"{source_label}.snapshot.content_hash: use a lowercase SHA-256 hex digest")
+            check_requirements = {
+                "public_update_checked": "official_updates",
+                "current_policy_checked": "current_policy",
+                "dashboard_checked": "dashboard",
+            }
+            for check_field, source_type in check_requirements.items():
+                if entry.get(check_field) is True and source_type not in source_types:
+                    errors.append(f"{ledger_label}.{check_field}: requires a {source_type} source entry")
+            if entry.get("access_result") == "login_required":
+                has_login_attempt = isinstance(sources, list) and any(
+                    isinstance(source, dict)
+                    and source.get("source_type") == "dashboard"
+                    and source.get("result") == "login_required"
+                    for source in sources
+                )
+                if not has_login_attempt:
+                    errors.append(f"{ledger_label}.access_result: login_required requires a dashboard access attempt")
+            if entry.get("access_result") == "blocked":
+                has_blocked_attempt = isinstance(sources, list) and any(
+                    isinstance(source, dict) and source.get("result") == "blocked"
+                    for source in sources
+                )
+                if not has_blocked_attempt:
+                    errors.append(f"{ledger_label}.access_result: blocked requires a blocked source attempt")
+
+    scope_text = " ".join(item for item in data.get("scope", []) if isinstance(item, str)).casefold()
+    for platform, aliases in MONITORED_PLATFORM_ALIASES.items():
+        named_in_scope = any(alias in scope_text for alias in aliases)
+        represented = platform in ledger_platforms or any(alias in ledger_platforms for alias in aliases)
+        if named_in_scope and not represented:
+            errors.append(f"root.coverage_ledger: missing entry for platform named in scope: {platform}")
 
     seen_ids: set[str] = set()
     for index, event in enumerate(data.get("events", [])):
@@ -258,6 +422,29 @@ def validate(data: dict) -> list[str]:
                             errors.append(f"{action_label}.{key}: wrong type")
                         elif isinstance(value, str) and not value.strip():
                             errors.append(f"{action_label}.{key}: must not be blank")
+    if isinstance(coverage_ledger, list):
+        event_by_id = {
+            event.get("id"): event
+            for event in data.get("events", [])
+            if isinstance(event, dict) and isinstance(event.get("id"), str)
+        }
+        for ledger_index, entry in enumerate(coverage_ledger):
+            if not isinstance(entry, dict):
+                continue
+            ledger_label = f"coverage_ledger[{ledger_index}]"
+            ledger_platform = entry.get("platform")
+            for event_id in entry.get("verified_event_ids", []):
+                if not isinstance(event_id, str):
+                    continue
+                event = event_by_id.get(event_id)
+                if event is None:
+                    errors.append(f"{ledger_label}.verified_event_ids: unknown event id {event_id}")
+                    continue
+                policy = event.get("platform_policy")
+                if not isinstance(policy, dict):
+                    errors.append(f"{ledger_label}.verified_event_ids: {event_id} is not a platform-policy event")
+                elif isinstance(ledger_platform, str) and policy.get("platform", "").casefold() != ledger_platform.casefold():
+                    errors.append(f"{ledger_label}.verified_event_ids: {event_id} belongs to a different platform")
     return errors
 
 

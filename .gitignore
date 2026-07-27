@@ -6,6 +6,22 @@ Thumbs.db
 .idea/
 .vscode/
 .tmp/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+secrets.json
+*.credentials.json
+*.secrets.json
+
 deduplicated.json
 daily-trade-radar.md
 daily-trade-radar.docx

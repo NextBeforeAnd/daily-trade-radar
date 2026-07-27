@@ -478,7 +478,34 @@ def build_report(data: dict, template_path: Path) -> Document:
             document.add_paragraph(checks)
             result_label = "Access result" if english else "访问结果"
             checked_label = "Checked at" if english else "核验时间"
-            document.add_paragraph(f"{result_label}: {entry.get('access_result')} | {checked_label}: {entry.get('checked_at')}")
+            access_result = entry.get("access_result")
+            if not english:
+                access_result = {
+                    "opened": "已打开",
+                    "login_required": "需要登录",
+                    "blocked": "访问受阻",
+                    "not_checked": "未核验",
+                }.get(access_result, access_result)
+            document.add_paragraph(f"{result_label}: {access_result} | {checked_label}: {entry.get('checked_at')}")
+            lookback_label = "Platform lookback start" if english else "平台回看起点"
+            document.add_paragraph(f"{lookback_label}: {entry.get('lookback_start')}")
+            sources_label = "Sources opened" if english else "已打开来源"
+            document.add_paragraph(sources_label)
+            for source in entry.get("sources_checked", []):
+                snapshot = source.get("snapshot") if isinstance(source.get("snapshot"), dict) else None
+                snapshot_text = ""
+                if snapshot:
+                    snapshot_label = "snapshot" if english else "快照"
+                    snapshot_text = (
+                        f" · {snapshot_label}: {snapshot.get('change_status')}"
+                        f" · {snapshot.get('diff_summary')}"
+                    )
+                document.add_paragraph(
+                    f"{source.get('source_type')} / {source.get('result')} · "
+                    f"{source.get('checked_at')} · {source.get('notes')} · {source.get('url')}"
+                    f"{snapshot_text}",
+                    style="List Bullet",
+                )
             for gap in entry.get("gaps", []):
                 document.add_paragraph(str(gap), style="List Bullet")
 

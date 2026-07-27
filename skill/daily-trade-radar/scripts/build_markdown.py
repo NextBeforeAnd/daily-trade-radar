@@ -227,14 +227,47 @@ def main() -> int:
                 "|---|---|---|---|---|---|---|---|",
             ])
         yes_no = (lambda value: "Yes" if value else "No") if english else (lambda value: "是" if value else "否")
+        access_labels = {
+            "opened": "已打开",
+            "login_required": "需要登录",
+            "blocked": "访问受阻",
+            "not_checked": "未核验",
+        }
         for entry in coverage_ledger:
+            access_result = clean(entry.get("access_result"))
+            if not english:
+                access_result = access_labels.get(access_result, access_result)
             lines.append(
                 f"| {clean(entry.get('platform'))} / {clean(entry.get('seller_market'))} "
                 f"| {clean(entry.get('program'))} | {yes_no(entry.get('public_update_checked'))} "
                 f"| {yes_no(entry.get('current_policy_checked'))} | {yes_no(entry.get('dashboard_checked'))} "
-                f"| {clean(entry.get('access_result'))} | {clean(entry.get('checked_at'))} "
+                f"| {access_result} | {clean(entry.get('checked_at'))} "
                 f"| {clean('；'.join(entry.get('gaps', [])))} |"
             )
+        for entry in coverage_ledger:
+            sources = entry.get("sources_checked", [])
+            if not sources:
+                continue
+            platform_label = f"{clean(entry.get('platform'))} / {clean(entry.get('seller_market'))}"
+            lines.extend([
+                "",
+                f"### {platform_label} — {'Sources opened' if english else '已打开来源'}",
+                "",
+            ])
+            for source in sources:
+                snapshot = source.get("snapshot") if isinstance(source.get("snapshot"), dict) else None
+                snapshot_text = ""
+                if snapshot:
+                    snapshot_label = "snapshot" if english else "快照"
+                    snapshot_text = (
+                        f" · {snapshot_label}: {clean(snapshot.get('change_status'))}"
+                        f" · {clean(snapshot.get('diff_summary'))}"
+                    )
+                lines.append(
+                    f"- [{clean(source.get('source_type'))} / {clean(source.get('result'))}]"
+                    f"({source.get('url')}) · {clean(source.get('checked_at'))} · {clean(source.get('notes'))}"
+                    f"{snapshot_text}"
+                )
 
     lines.extend(["", "## Official sources" if english else "## 官方来源", ""])
     for index, event in enumerate(main_events, 1):

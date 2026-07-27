@@ -32,7 +32,7 @@ Query with the product name, HS code, authority name, and terms such as 公告, 
 - Use official seller announcements, help centers, release notes, and policy pages from the relevant marketplace.
 - Use carrier, postal authority, port, canal authority, and customs notices for logistics changes.
 - Treat seller forums as primary only when the post is authored by an identifiable official platform account.
-- For TikTok Shop, Temu, Shopify, and Jumia, follow the platform-by-platform routes, coverage ledger, taxonomy, and applicability gate in [platform-policy-monitoring.md](platform-policy-monitoring.md).
+- For TikTok Shop, Temu, Shopify, Jumia, Amazon, and AliExpress, follow the platform-by-platform routes, snapshot workflow, coverage ledger, taxonomy, and applicability gate in [platform-policy-monitoring.md](platform-policy-monitoring.md).
 - Treat each platform + seller market + operating program as a separate monitoring scope. A rule observed in one market or program is not evidence for another.
 
 ## Search sequence

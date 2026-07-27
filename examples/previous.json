@@ -5,6 +5,47 @@
   "language": "zh-CN",
   "scope": ["EU", "Amazon"],
   "coverage_gaps": [],
+  "coverage_ledger": [
+    {
+      "platform": "Amazon",
+      "seller_market": "US",
+      "program": "Seller Central",
+      "lookback_start": "2026-07-13T16:30:00+08:00",
+      "public_update_checked": true,
+      "current_policy_checked": false,
+      "dashboard_checked": true,
+      "access_result": "login_required",
+      "checked_at": "2026-07-20T16:30:00+08:00",
+      "sources_checked": [
+        {
+          "source_type": "official_updates",
+          "url": "https://sellercentral.amazon.com/seller-forums/discussions?categories%5B%5D=amzn1.spce.category.8b1ad9e8",
+          "result": "no_relevant_update",
+          "checked_at": "2026-07-20T16:20:00+08:00",
+          "notes": "Offline fixture for the public Seller News route.",
+          "snapshot": {
+            "snapshot_id": "20260720162000-aaaaaaaaaaaa",
+            "captured_at": "2026-07-20T16:20:00+08:00",
+            "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "previous_snapshot_id": null,
+            "change_status": "first_seen",
+            "diff_summary": "First captured snapshot; no historical baseline is available.",
+            "snapshot_path": "C:/snapshots/amazon/20260720162000-aaaaaaaaaaaa.json",
+            "diff_path": null
+          }
+        },
+        {
+          "source_type": "dashboard",
+          "url": "https://sellercentral.amazon.com/",
+          "result": "login_required",
+          "checked_at": "2026-07-20T16:30:00+08:00",
+          "notes": "Offline fixture for an authentication gate."
+        }
+      ],
+      "verified_event_ids": [],
+      "gaps": ["Offline fixture; no authenticated account was used"]
+    }
+  ],
   "events": [
     {
       "id": "example-marketplace-title-rule-2026",
@@ -28,4 +69,3 @@
     }
   ]
 }
-

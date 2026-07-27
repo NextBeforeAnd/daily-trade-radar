@@ -18,11 +18,32 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
       "platform": "TikTok Shop",
       "seller_market": "US",
       "program": "US local seller",
+      "lookback_start": "2026-07-14T17:00:00+08:00",
       "public_update_checked": true,
       "current_policy_checked": true,
       "dashboard_checked": false,
       "access_result": "login_required",
       "checked_at": "2026-07-21T16:30:00+08:00",
+      "sources_checked": [
+        {
+          "source_type": "official_updates",
+          "url": "https://seller-us.tiktok.com/university/",
+          "result": "no_relevant_update",
+          "checked_at": "2026-07-21T16:20:00+08:00",
+          "notes": "Opened the US Academy update route; no material item in the platform lookback.",
+          "snapshot": {
+            "snapshot_id": "20260721162000-acde1234abcd",
+            "captured_at": "2026-07-21T16:20:00+08:00",
+            "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "previous_snapshot_id": "20260720162000-acde1234abcd",
+            "change_status": "unchanged",
+            "diff_summary": "No normalized page-text change from the previous snapshot.",
+            "snapshot_path": "C:/radar-snapshots/tiktok-shop/page/snapshot.json",
+            "diff_path": null
+          }
+        }
+      ],
+      "verified_event_ids": [],
       "gaps": ["Seller Center account notices were not accessible"]
     }
   ],
@@ -84,10 +105,19 @@ Require the original root and event fields shown above. `window_start`, `coverag
 Each `coverage_ledger` entry requires:
 
 - `platform`, `seller_market`, and `program` strings; use `unknown` when not established;
+- `lookback_start`: ISO 8601 date-time with a UTC offset; use at least a seven-day platform lookback;
 - `public_update_checked`, `current_policy_checked`, and `dashboard_checked` booleans;
-- `access_result`: `public_checked`, `login_required`, `checked_authenticated`, `not_checked`, or `not_applicable`;
+- `access_result`: `public_checked`, `login_required`, `blocked`, `checked_authenticated`, `not_checked`, or `not_applicable`;
 - `checked_at`: ISO 8601 date-time with a UTC offset;
+- `sources_checked`: a non-empty array of opened-page evidence items. Each item requires `source_type`, direct `url`, `result`, `checked_at`, and `notes`;
+- `verified_event_ids`: an array containing the stable IDs of verified platform events produced by that ledger row;
 - `gaps`: an array of concise strings.
+
+Allowed source types are `official_updates`, `current_policy`, `dashboard`, and `discovery_lead`. Allowed results are `no_relevant_update`, `candidate_found`, `verified_event`, `login_required`, `blocked`, and `not_applicable`. Positive coverage booleans must be supported by a matching source type in `sources_checked`. Every platform named in the root `scope` must have at least one matching ledger entry.
+
+Use `login_required` only when an authentication gate was observed. Use `blocked` when the connection, region, security layer, robots policy, or browser policy prevented access before authentication could be established.
+
+An opened `official_updates` or `current_policy` source with result `no_relevant_update`, `candidate_found`, or `verified_event` requires `snapshot`. Generate it with `scripts/snapshot_platform_page.py`. The object contains `snapshot_id`, `captured_at`, the lowercase SHA-256 `content_hash`, nullable `previous_snapshot_id`, `change_status` (`first_seen`, `unchanged`, or `changed`), `diff_summary`, `snapshot_path`, and nullable `diff_path`. A `changed` or `unchanged` snapshot must reference the previous snapshot; `first_seen` must not.
 
 Create stable `id` values from jurisdiction, rule/program, and year. Keep the same ID across daily reports unless the event represents a distinct legal instrument or implementation change.
 
@@ -97,7 +127,7 @@ Create stable `id` values from jurisdiction, rule/program, and year. Keep the sa
 
 `platform_policy` requires:
 
-- `platform`: `TikTok Shop`, `Temu`, `Shopify`, `Jumia`, or the official name of another channel;
+- `platform`: `TikTok Shop`, `Temu`, `Shopify`, `Jumia`, `Amazon`, `AliExpress`, or the official name of another channel;
 - `seller_market`: the country/region whose seller rule was verified, or `unknown` when the source does not establish it;
 - `program`: operating model, plan, feature, fulfillment model, or seller program; use `unknown` when not established;
 - `policy_area`: one value from the taxonomy in `platform-policy-monitoring.md`;

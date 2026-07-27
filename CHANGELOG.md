@@ -4,6 +4,29 @@ All notable changes to Daily Trade Radar are documented in this file.
 
 ## Unreleased
 
+### 2026-07-27
+
+#### Added
+
+- Added persistent platform-page snapshots with normalized SHA-256 hashes, prior-snapshot links, and saved unified diffs.
+- Added dedicated Amazon and AliExpress monitoring routes and mandatory scope-ledger validation.
+- Added regression tests for first-seen, unchanged, and changed pages, plus Amazon/AliExpress coverage.
+
+#### Fixed
+
+- Replaced checklist-only marketplace monitoring with a mandatory seven-day discovery pass and read-only authenticated-browser fallback.
+- Prevented reports from claiming that a platform was checked without recording opened source URLs and access results.
+- Preserved credible but unverified marketplace leads in the watchlist instead of silently discarding them.
+- Prevented government tax, customs, sanctions, or product rules from being mislabeled as platform-owned policy changes.
+- Split access-blocked pages from pages that specifically require authentication; one can no longer satisfy the other's evidence rule.
+
+#### Added (earlier changes)
+
+- Added `lookback_start`, `sources_checked`, and `verified_event_ids` to platform coverage records.
+- Added validation for platform scope coverage, source evidence, dashboard login attempts, seven-day lookback, and event-ID linkage.
+- Added Markdown and Word rendering of the exact platform sources opened during research.
+- Added regression tests for missing evidence, missing platform ledgers, and short platform lookback windows.
+
 ### 2026-07-25
 
 #### Added

@@ -34,7 +34,17 @@ Set the reporting window before research:
 
 Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.
 
-For TikTok Shop, Temu, Shopify, and Jumia, also follow [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). Complete a platform-and-market coverage ledger, distinguish public sources from login-only seller notices, and disclose inaccessible dashboards as coverage gaps.
+For TikTok Shop, Temu, Shopify, Jumia, Amazon, and AliExpress, run the mandatory discovery pass in [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). Use a seven-day platform lookback in addition to the main reporting window because seller pages are often indexed late or omit publication timestamps. Open and record every page actually checked. A coverage checkbox without a supporting URL is not evidence.
+
+Capture the normalized visible text of every opened public update or current-policy page and run `scripts/snapshot_platform_page.py` against the persistent snapshot store for that radar series. Put the returned `snapshot` object into the matching `sources_checked` entry. Use the historical diff to distinguish a real page change from a refreshed timestamp or a first-seen page. A first snapshot establishes a baseline; it does not prove what changed.
+
+```text
+python scripts/snapshot_platform_page.py --platform "Amazon" --url "https://..." --content-file page.txt --store radar-snapshots --captured-at "2026-07-27T17:00:00+08:00" --output snapshot.json
+```
+
+When the in-app browser is available, use it for platform pages that require interactive navigation or may already have a signed-in seller session. Check the authenticated inbox, policy center, account health, logistics, settlement, and category notices when accessible. Never submit, acknowledge, appeal, change settings, or otherwise mutate a seller account unless the user requests that action.
+
+Preserve credible platform leads that cannot yet be confirmed as `unconfirmed` watchlist events instead of silently dropping them. Label the source type and the missing confirmation. Do not promote a lead to the main action table until the underlying platform-owned page or authenticated notice has been opened.
 
 For every candidate event, capture the publication date, effective date, jurisdiction, affected products or sellers, concrete requirement, source title, direct URL, and retrieval date. Capture `published_at`, `effective_at`, `deadline_at`, and `source_timezone` when an official source supplies exact timing. Never treat a search-result snippet as evidence. Open and read the supporting page.
 
@@ -56,7 +66,9 @@ Write impact and action fields for the user's actual market, product, HS code, o
 
 For a verified marketplace-policy event, populate the structured `platform_policy` object and `action_items` array. Preserve the top-level `action` as the short executive instruction. Separate platform, seller market, program/model, policy area, change type, seller scope, before/after state, enforcement consequence, and backend-verification need. Never infer market-wide applicability from a single account notice.
 
-Populate the root `coverage_ledger` for every platform and seller market checked. Record the program, public update check, current-policy check, dashboard access, access result, checked time, and gaps. Keep `coverage_gaps` as the concise executive disclosure.
+Populate the root `coverage_ledger` for every platform and seller market checked. Record the program, lookback start, every source URL opened, its source type and result, public/current-policy/dashboard access, checked time, resulting event IDs, and gaps. Keep `coverage_gaps` as the concise executive disclosure. If a named platform appears in `scope`, the report must contain a matching ledger entry. Do not claim a platform was checked when only a generic web search was run.
+
+Keep access outcomes semantically distinct. Use `login_required` only when an actual login or authentication gate was reached. Use `blocked` for connection closure, robots/security denial, regional blocking, or browser-policy rejection. Do not convert a blocked request into a login result.
 
 ## Deduplicate
 
@@ -104,9 +116,14 @@ Before delivery, confirm:
 - risk levels follow the scoring rules;
 - actions name an owner or business function and a time horizon where possible;
 - every marketplace-policy event identifies its platform and seller market, or explicitly states what remains unknown;
+- every platform named in scope has a coverage-ledger entry and every positive check is backed by an opened URL;
+- every opened public update/current-policy page has snapshot metadata, and every claimed page change cites either a historical diff or an explicit platform changelog;
+- the platform discovery pass uses at least a seven-day lookback and retains credible unresolved leads as `unconfirmed` watchlist events;
+- laws or customs measures that merely affect platform sellers are not mislabeled as platform-owned policy changes;
 - platform actions include a completion artifact such as an exported SKU/order list, settings screenshot, submitted document, ticket, or approved decision record;
 - no unsupported inference is written as fact;
 - the report states the search cutoff, timezone, scope, and known coverage gaps;
 - the report states the reporting-window start and exact event times when available;
 - the platform coverage ledger matches the narrative coverage gaps;
+- `blocked` and `login_required` reflect different observed access outcomes;
 - “no material new item found” is used when the research supports that conclusion.
