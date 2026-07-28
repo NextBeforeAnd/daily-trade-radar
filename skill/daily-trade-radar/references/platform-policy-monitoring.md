@@ -1,8 +1,20 @@
 # Marketplace policy monitoring
 
-Use this playbook for TikTok Shop, Temu, Shopify, Jumia, Amazon, and AliExpress. Marketplace rules are market-specific: never transfer a US requirement to the UK, EU, Africa, or another seller program without a source that states the same scope.
+Use this generic playbook for every platform registered in `src/daily_trade_radar/platforms/data/`. The registry supplies canonical names, aliases, seller markets, programs, official entry routes, dashboard checks, policy areas, applicability dimensions, and platform-specific cautions. Marketplace rules are market-specific: never transfer a US requirement to the UK, EU, Africa, or another seller program without a source that states the same scope.
+
+## Registry-driven setup
+
+1. Resolve every platform named in scope through the registry. `python -m daily_trade_radar platforms --json` prints the installed configuration.
+2. Review the registry's `source_depth` result and declared source gaps. Use registered routes as navigation starting points, not proof that a page was checked. A `conditional` route or seller-market mismatch must be confirmed against the platform-owned country portal before citation.
+3. Use `seller_markets`, `programs`, `dashboard_checks`, and `applicability_dimensions` to form separate monitoring rows and search tracks.
+4. Adding a registered platform requires one JSON configuration and registry tests; it does not require a new validation branch.
+5. For an unregistered channel, use `registry_status: custom` and `official_entry_verification_required: true`, record the platform-owned entry that still needs confirmation, and keep applicability provisional.
+
+Every configured route declares a stable `route_id`, `markets`, `access` (`public`, `authenticated`, or `mixed`), `evidence_role`, `verification_status`, and nullable `last_verified_on`. Every platform expects update, current-policy, and dashboard coverage; a missing type requires a nonblank `source_profile.known_gaps` reason. `full` depth means all three source types plus a verified public route; `hybrid` or `constrained` depth must remain visible as a coverage limitation.
 
 ## Mandatory discovery pass
+
+Create an acquisition manifest for the selected platform, seller market, program, seven-day window, and cutoff before opening routes. Record each route outcome as an acquisition receipt, including blocked, login-required, and not-applicable results. Convert receipts into the initial coverage ledger, then add verified event IDs and concise executive coverage gaps during review. See [acquisition.md](acquisition.md).
 
 Run this pass even when the main 24-hour search finds no platform event:
 
@@ -40,6 +52,8 @@ Record `login_required` only when an authentication screen or authenticated-sess
 ## Official-source routes
 
 URLs and navigation can vary by seller market. Confirm that the page is owned by the platform and states the applicable market before citing it.
+
+The JSON registry is the machine-readable source for entry routes. The platform notes below retain research judgment for the original six platforms. Shopee, Lazada, eBay, and Walmart Marketplace use the same mandatory discovery pass; their configured dashboard checks and applicability dimensions replace the need for hard-coded validation logic.
 
 ### TikTok Shop
 
@@ -99,6 +113,8 @@ Each `coverage_ledger.sources_checked` item must contain:
 - `result`: `no_relevant_update`, `candidate_found`, `verified_event`, `login_required`, `blocked`, or `not_applicable`;
 - `checked_at`: ISO 8601 date-time with a UTC offset;
 - `notes`: a concise description of what was or was not established.
+
+New runs should also include the generated `acquisition_receipt` metadata. It binds the source entry to a stable task ID and records the retrieval method, attempt count, response status, content hash/reference, route-verification state, and observed error. It is operational provenance, not substantive evidence of a policy change.
 
 For an opened `official_updates` or `current_policy` source whose result is `no_relevant_update`, `candidate_found`, or `verified_event`, also include the `snapshot` object returned by `snapshot_platform_page.py`. Keep the persistent snapshot store outside the skill package, normally beside the radar run history.
 

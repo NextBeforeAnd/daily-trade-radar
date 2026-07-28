@@ -53,6 +53,13 @@
       "status": "ongoing",
       "level": "medium",
       "score": 6,
+      "score_breakdown": {
+        "regulatory_force": 2,
+        "business_exposure": 1,
+        "urgency": 1,
+        "consequence": 1,
+        "evidence": 1
+      },
       "jurisdiction": "Global",
       "authority": "Example Marketplace",
       "published_date": "2026-07-01",

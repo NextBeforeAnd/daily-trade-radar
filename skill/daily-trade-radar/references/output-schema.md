@@ -39,7 +39,11 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
             "change_status": "unchanged",
             "diff_summary": "No normalized page-text change from the previous snapshot.",
             "snapshot_path": "C:/radar-snapshots/tiktok-shop/page/snapshot.json",
-            "diff_path": null
+            "diff_path": null,
+            "storage_backend": "filesystem",
+            "snapshot_ref": "tiktok-shop/page/snapshot.json",
+            "diff_ref": null,
+            "index_recovered": false
           }
         }
       ],
@@ -54,6 +58,13 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
       "status": "new",
       "level": "high",
       "score": 9,
+      "score_breakdown": {
+        "regulatory_force": 2,
+        "business_exposure": 2,
+        "urgency": 2,
+        "consequence": 1,
+        "evidence": 2
+      },
       "jurisdiction": "EU",
       "authority": "European Commission",
       "published_date": "2026-06-08",
@@ -98,7 +109,37 @@ Set `language` to `zh-CN` for a Chinese Markdown report or to `en`/`en-US` for a
 
 ## Required event fields
 
-Require the original root and event fields shown above. `window_start`, `coverage_ledger`, `published_at`, `effective_at`, `deadline_at`, and `source_timezone` are backward-compatible optional fields, but new reports must populate them when the information exists. Use ISO `YYYY-MM-DD` dates and ISO 8601 date-times with UTC offsets. Permit `null` only when an exact date or time genuinely does not exist. Use one of `new`, `effective`, `deadline`, `ongoing`, or `unconfirmed` for status and one of `high`, `medium`, `low`, or `watch` for level.
+Require the original root and event fields shown above, including `score_breakdown`. `window_start`, `coverage_ledger`, `published_at`, `effective_at`, `deadline_at`, and `source_timezone` are backward-compatible optional fields, but new reports must populate them when the information exists. Use ISO `YYYY-MM-DD` dates and ISO 8601 date-times with UTC offsets. Permit `null` only when an exact date or time genuinely does not exist. Use one of `new`, `effective`, `deadline`, `ongoing`, or `unconfirmed` for status and one of `high`, `medium`, `low`, or `watch` for level.
+
+## Score fields
+
+`score_breakdown` requires exactly these five integer fields, each from 0 to 2: `regulatory_force`, `business_exposure`, `urgency`, `consequence`, and `evidence`. Their sum must equal `score`. The normal level mapping is 8-10 `high`, 5-7 `medium`, 2-4 `low`, and 0-1 `watch`.
+
+When a verified stoppage or another documented exception requires a level different from the numeric mapping, add:
+
+```json
+"level_override": {
+  "level": "high",
+  "reason": "Verified account enforcement will block the affected listings before the next operating cycle."
+}
+```
+
+The override level must match the event `level`, the reason must be nonblank, and the override must be omitted when the ordinary mapping already produces that level. Evidence 0 always requires `watch` and cannot be overridden.
+
+## Deduplication metadata
+
+After `deduplicate.py` runs, the root `deduplication` object records `previous_report`, `threshold`, `review_threshold`, `matching_strategy`, and `matches`. Each match records:
+
+- `current_id` and `previous_id`;
+- numeric `similarity`;
+- `match_method`: `exact_id` or `weighted_fields`;
+- `match_confidence`: `high`, `medium`, or `low`;
+- `match_components`: the auditable field-level similarities used by weighted matching;
+- `review_required`: boolean;
+- `disposition`: `duplicate_removed`, `material_update`, `operational_refresh`, or `review_required`;
+- `change_reasons`.
+
+`review_required` items remain in `events` and carry `deduplication_review`, `matched_previous_id`, and `deduplication_reasons`. They must be reviewed before delivery. Matching is one-to-one, and conflicting jurisdictions, platforms, or seller markets are isolated even when an ID or source page is reused.
 
 ## Coverage ledger fields
 
@@ -115,9 +156,15 @@ Each `coverage_ledger` entry requires:
 
 Allowed source types are `official_updates`, `current_policy`, `dashboard`, and `discovery_lead`. Allowed results are `no_relevant_update`, `candidate_found`, `verified_event`, `login_required`, `blocked`, and `not_applicable`. Positive coverage booleans must be supported by a matching source type in `sources_checked`. Every platform named in the root `scope` must have at least one matching ledger entry.
 
+New acquisition-driven runs may attach `acquisition_receipt` to each source. It requires `task_id` (a 24-character lowercase SHA-256 prefix), `retrieval_method`, `attempts`, nullable `http_status` from 100 through 599, nullable lowercase SHA-256 `content_hash`, nullable portable POSIX `content_ref`, nullable `error_type`, and boolean `route_verified`. Authenticated-browser receipts must not contain a `content_ref`.
+
 Use `login_required` only when an authentication gate was observed. Use `blocked` when the connection, region, security layer, robots policy, or browser policy prevented access before authentication could be established.
 
-An opened `official_updates` or `current_policy` source with result `no_relevant_update`, `candidate_found`, or `verified_event` requires `snapshot`. Generate it with `scripts/snapshot_platform_page.py`. The object contains `snapshot_id`, `captured_at`, the lowercase SHA-256 `content_hash`, nullable `previous_snapshot_id`, `change_status` (`first_seen`, `unchanged`, or `changed`), `diff_summary`, `snapshot_path`, and nullable `diff_path`. A `changed` or `unchanged` snapshot must reference the previous snapshot; `first_seen` must not.
+An opened `official_updates` or `current_policy` source with result `no_relevant_update`, `candidate_found`, or `verified_event` requires `snapshot`. Generate it with `scripts/snapshot_platform_page.py`. The backward-compatible fields are `snapshot_id`, `captured_at`, the lowercase SHA-256 `content_hash`, nullable `previous_snapshot_id`, `change_status` (`first_seen`, `unchanged`, or `changed`), `diff_summary`, `snapshot_path`, and nullable `diff_path`. A `changed` or `unchanged` snapshot must reference the previous snapshot; `first_seen` must not.
+
+New captures also contain `storage_backend`, relative POSIX `snapshot_ref`, nullable relative POSIX `diff_ref`, and boolean `index_recovered`. When any portable storage field is present, all four are required. Refs must not be absolute, contain `..`, or use backslashes. Absolute path fields remain for compatibility with existing local workflows; portable consumers should prefer the refs. Git captures additionally require lowercase `git_commit` and `git_tree` object IDs.
+
+Bundled `storage_backend` values are `filesystem`, `sqlite`, and `git`. Filesystem refs identify files relative to the store root. SQLite refs are logical paths identifying rows inside the database; `snapshot_path` and `diff_path` combine the absolute database path with a row fragment for backward-compatible traceability. Git refs identify committed files relative to the dedicated repository root, while `git_commit` and `git_tree` bind the report metadata to exact Git objects. Consumers must not assume every portable ref is directly openable as a filesystem file.
 
 Create stable `id` values from jurisdiction, rule/program, and year. Keep the same ID across daily reports unless the event represents a distinct legal instrument or implementation change.
 
@@ -127,7 +174,7 @@ Create stable `id` values from jurisdiction, rule/program, and year. Keep the sa
 
 `platform_policy` requires:
 
-- `platform`: `TikTok Shop`, `Temu`, `Shopify`, `Jumia`, `Amazon`, `AliExpress`, or the official name of another channel;
+- `platform`: a registered display name or alias, or the official name of another channel;
 - `seller_market`: the country/region whose seller rule was verified, or `unknown` when the source does not establish it;
 - `program`: operating model, plan, feature, fulfillment model, or seller program; use `unknown` when not established;
 - `policy_area`: one value from the taxonomy in `platform-policy-monitoring.md`;
@@ -137,6 +184,8 @@ Create stable `id` values from jurisdiction, rule/program, and year. Keep the sa
 - `new_state`: the verified current obligation or behavior;
 - `enforcement_consequence`: the verified consequence, or `not stated`;
 - `backend_verification_required`: boolean.
+
+Registered platforms are resolved through `src/daily_trade_radar/platforms/data/`. For an unregistered channel, also require `registry_status: "custom"` and `official_entry_verification_required: true`. A registered platform may omit these fields or use `registry_status: "registered"`; it must not claim that custom-entry verification is required.
 
 Each `action_items` entry requires nonblank `owner`, `action`, `deadline`, and `completion_evidence` strings. `deadline` can be an ISO date or an explicit horizon such as `today`, `within 48 hours`, or `before the platform effective date`. Split actions when owners or completion evidence differ.
 

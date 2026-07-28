@@ -1,6 +1,6 @@
 # Scoring rules
 
-Assign each event a numeric score, then map it to a level. Score the user's likely exposure, not the global importance of the headline.
+Assign each event a five-dimension `score_breakdown`, sum it to `score`, then map it to a level. Score the user's likely exposure, not the global importance of the headline. Never supply only an unsupported total score.
 
 ## Score
 
@@ -18,6 +18,10 @@ Assign each event a numeric score, then map it to a level. Score the user's like
 - Watch: 0–1 or insufficient confirmation.
 
 Never raise an item above `watch` when evidence is 0. Explain any override in `rationale`.
+
+The validator enforces the breakdown total and the normal level mapping. If a verified stoppage warrants the documented high-risk exception, add a structured `level_override` containing the selected `level` and a specific nonblank `reason`; keep the fuller business explanation in `rationale`. Do not add an override when the normal score already produces the selected level. Evidence 0 cannot be overridden above `watch`.
+
+When independently reviewed historical labels are available, audit the thresholds with the workflow in [scoring-calibration.md](scoring-calibration.md). Treat its candidate thresholds as a review artifact, never an automatic rule update. Do not calibrate against levels originally generated from these same thresholds.
 
 For marketplace rules, business exposure can be 2 only when the platform and seller market are established and the supplied account, operating model, product/category, fulfillment mode, payment product, or feature/plan is clearly affected. A platform name alone is exposure 1 at most.
 

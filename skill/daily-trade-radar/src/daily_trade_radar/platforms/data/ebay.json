@@ -1,0 +1,17 @@
+{
+  "id": "ebay",
+  "display_name": "eBay",
+  "aliases": ["ebay", "ebay marketplace", "易贝"],
+  "seller_markets": ["US", "CA", "UK", "DE", "FR", "IT", "ES", "AU"],
+  "programs": ["marketplace seller", "eBay International Shipping", "Promoted Listings", "Managed Payments", "eBay Refurbished"],
+  "official_routes": [
+    {"route_id": "seller-updates", "source_type": "official_updates", "url": "https://www.ebay.com/sellercenter/resources/seller-updates", "market_specific": true, "markets": ["US"], "access": "public", "evidence_role": "discovery", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true},
+    {"route_id": "rules-and-policies", "source_type": "current_policy", "url": "https://www.ebay.com/help/policies/default/ebays-rules-policies?id=4205", "market_specific": true, "markets": ["US"], "access": "public", "evidence_role": "current_rule", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true},
+    {"route_id": "seller-hub", "source_type": "dashboard", "url": "https://www.ebay.com/sh/ovw", "market_specific": true, "markets": ["US"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {}},
+  "dashboard_checks": ["Seller Updates", "Messages", "Seller Standards", "Listings", "Shipping", "Returns", "Payments", "Advertising"],
+  "applicability_dimensions": ["seller_market", "program", "listing_category", "shipping_program", "account_notice"],
+  "policy_areas": ["listing_product_compliance", "fees_commissions", "fulfillment_logistics", "returns_refunds_aftersales", "payments_settlement_tax", "content_ads_affiliate", "account_health_enforcement"],
+  "notes": ["Open the seller-market version of Seller Updates and the underlying policy page before confirming a change."]
+}

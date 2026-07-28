@@ -2,7 +2,41 @@
 
 All notable changes to Daily Trade Radar are documented in this file.
 
-## Unreleased
+## Unreleased (target: 0.2.0)
+
+### 2026-07-28
+
+#### Added
+
+- Added a required five-dimension `score_breakdown` for every event and deterministic validation of the total score and normal risk-level mapping.
+- Added structured `level_override` records for documented risk-band exceptions while preventing evidence-zero events from being raised above `watch`.
+- Added marketplace applicability validation before assigning the highest business-exposure score.
+- Added regression tests for missing or inconsistent score breakdowns, level overrides, evidence-zero handling, and marketplace applicability.
+- Replaced best-single-string deduplication with stable-ID-first, scope-aware, one-to-one weighted matching.
+- Added canonical URL comparison, regulatory-identifier signals, field-level match components, confidence labels, and retained `review_required` matches.
+- Added regression tests for cross-market ID collisions, reused announcement URLs, tracking parameters, low-confidence review, and one-to-one assignment.
+- Moved validation, deduplication, snapshots, and renderers into an installable `src/daily_trade_radar` package while preserving every existing `scripts/*.py` command as a thin compatibility wrapper.
+- Added shared scoring, model, and bundled-path modules plus a lazy unified CLI for `validate`, `deduplicate`, `snapshot`, `markdown`, and `docx`.
+- Added direct unit tests for package APIs, score boundaries, URL and scope normalization, regulatory-identifier conflicts, snapshot normalization, template resolution, and CLI dispatch.
+- Added a data-driven marketplace registry with one bundled JSON playbook per platform and automatic alias/scope resolution in coverage validation.
+- Added Shopee, Lazada, eBay, and Walmart Marketplace alongside the original six registered platforms.
+- Added explicit safety metadata for unregistered custom platforms and a `platforms` CLI command for inspecting installed routes and scope dimensions.
+- Added registry, Chinese/English alias, new-platform coverage, ledger-alias, and custom-platform validation tests.
+- Added a `SnapshotStore` protocol and backend factory while preserving the original functional snapshot API and CLI.
+- Added filesystem page locks, atomic writes, corrupt-index scan recovery, and idempotent concurrent capture handling.
+- Added portable `snapshot_ref`/`diff_ref`, backend metadata, recovery disclosure, validation rules, and deep storage tests.
+- Added registry-driven acquisition manifests, stable evidence receipts, a content-addressed public cache, and coverage-ledger conversion with explicit missing-receipt and missing-snapshot gaps.
+- Added bounded, rate-limited HTTP acquisition with retries and cached receipts, plus offline RSS, Atom, and sitemap parsing.
+- Added manual and browser adapters that hash but never persist authenticated visible text, acquisition-receipt validation, a unified `acquisition` CLI, and focused acquisition tests.
+- Hardened acquisition task IDs, manifest digests, receipt-to-task binding, portable cache paths, and untrusted JSON field validation.
+- Added immutable receipt history, successful-result TTLs, failure-safe cache reuse, forced refresh, and a bounded public `acquisition fetch` command.
+- Added a transactional SQLite snapshot backend with WAL, normalized-content history, stored diffs, chronological chain protection, logical portable refs, and idempotent concurrent capture.
+- Expanded CI to install the package and run the full suite on Python 3.10, 3.11, and 3.12; aligned the README development version with package version `0.2.0`.
+- Added historical scoring calibration with independent-review labels, sample sufficiency gates, reviewer agreement, conflict exclusion, confusion matrices, macro-F1, dimension summaries, and non-binding monotonic threshold candidates.
+- Added route-level platform source metadata, strict registry depth validation, explicit missing-source declarations, market-mismatch reverification, and source-depth reporting in the platform CLI.
+- Expanded verified public routes for Shopee SG, Shopify admin alerts, and TikTok Shop US current policy while preserving conditional status for unverified country-specific entry points.
+- Added a dedicated Git snapshot backend with one commit per capture, exact commit/tree provenance, dirty-tree and unmarked-repository guards, disabled hooks, chronological protection, and no automatic remote operations.
+- Added `snapshot-audit` to verify Git objects, clean state, tracked snapshots, normalized-content hashes, predecessor chains, change-status semantics, and page indexes.
 
 ### 2026-07-27
 

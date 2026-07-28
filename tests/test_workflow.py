@@ -25,6 +25,18 @@ class WorkflowTest(unittest.TestCase):
             encoding="utf-8",
         )
 
+    def validate_result(self, data: dict) -> subprocess.CompletedProcess[str]:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "events.json"
+            source.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            return subprocess.run(
+                [sys.executable, str(SCRIPTS / "validate_events.py"), str(source)],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+
     def platform_event(self, event: dict) -> dict:
         event = dict(event)
         event["platform_policy"] = {
@@ -98,7 +110,7 @@ class WorkflowTest(unittest.TestCase):
             "gaps": ["Seller Center account notices were not accessible"],
         }
 
-    def deduplicate_pair(self, previous: dict, current: dict) -> dict:
+    def deduplicate_pair(self, previous: dict, current: dict, *extra_args: object) -> dict:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp = Path(temp_dir)
             previous_path = temp / "previous.json"
@@ -113,6 +125,7 @@ class WorkflowTest(unittest.TestCase):
                 previous_path,
                 "--output",
                 output_path,
+                *extra_args,
             )
             return json.loads(output_path.read_text(encoding="utf-8"))
 
@@ -210,6 +223,100 @@ class WorkflowTest(unittest.TestCase):
         match = result["deduplication"]["matches"][0]
         self.assertEqual(match["disposition"], "operational_refresh")
         self.assertIn("effective_date_reached", match["change_reasons"])
+
+    def test_deduplicate_blocks_cross_market_same_id(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        previous["events"][0] = self.platform_event(previous["events"][0])
+        current["events"][0] = self.platform_event(current["events"][0])
+        current["events"][0]["platform_policy"]["seller_market"] = "UK"
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(len(result["events"]), 1)
+        self.assertEqual(result["deduplication"]["matches"], [])
+
+    def test_deduplicate_does_not_merge_reused_announcement_url(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        event = current["events"][0]
+        event["id"] = "different-rule-on-reused-page-2026"
+        event["title"] = "Unrelated warehouse suspension notice"
+        event["authority"] = "Different Authority"
+        event["products_or_channels"] = ["warehouse operations"]
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(len(result["events"]), 1)
+        self.assertEqual(result["deduplication"]["matches"], [])
+
+    def test_deduplicate_regulatory_identifier_change_requires_review(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        previous_event = previous["events"][0]
+        current_event = current["events"][0]
+        previous_event["id"] = "eu-regulation-2026-100"
+        previous_event["title"] = "Commission Regulation 2026/100 product requirements"
+        previous_event["source_title"] = "Commission Regulation 2026/100"
+        current_event["id"] = "eu-regulation-2026-101"
+        current_event["title"] = "Commission Regulation 2026/101 product requirements"
+        current_event["source_title"] = "Commission Regulation 2026/101"
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(len(result["events"]), 1)
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["disposition"], "review_required")
+        self.assertEqual(match["match_components"]["regulatory_identifiers"], 0.0)
+
+    def test_deduplicate_canonicalizes_tracking_parameters(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current["events"][0]["id"] = "renamed-stable-id-2026"
+        current["events"][0]["source_url"] += "?utm_source=newsletter"
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(result["events"], [])
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["match_method"], "weighted_fields")
+        self.assertEqual(match["match_components"]["source_url"], 1.0)
+
+    def test_deduplicate_retains_low_confidence_match_for_review(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current["events"][0]["id"] = "possibly-renamed-rule-2026"
+        current["events"][0]["source_url"] = "https://example.com/new-announcement"
+
+        result = self.deduplicate_pair(
+            previous,
+            current,
+            "--threshold",
+            0.9,
+            "--review-threshold",
+            0.6,
+        )
+
+        self.assertEqual(len(result["events"]), 1)
+        match = result["deduplication"]["matches"][0]
+        self.assertEqual(match["disposition"], "review_required")
+        self.assertEqual(match["match_confidence"], "low")
+        self.assertTrue(match["review_required"])
+        self.assertEqual(result["events"][0]["deduplication_review"], "review_required")
+
+    def test_deduplicate_uses_one_to_one_assignment(self) -> None:
+        previous = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        current = json.loads((EXAMPLES / "previous.json").read_text(encoding="utf-8"))
+        first = dict(current["events"][0])
+        second = dict(current["events"][0])
+        first["id"] = "renamed-rule-a-2026"
+        second["id"] = "renamed-rule-b-2026"
+        current["events"] = [first, second]
+
+        result = self.deduplicate_pair(previous, current)
+
+        self.assertEqual(len(result["deduplication"]["matches"]), 1)
+        self.assertEqual([event["id"] for event in result["events"]], ["renamed-rule-b-2026"])
 
     def test_render_english_report(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
@@ -444,6 +551,45 @@ class WorkflowTest(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"missing entry for platform named in scope: {expected}", result.stderr)
 
+    def test_new_registered_platforms_require_coverage_ledger(self) -> None:
+        cases = (
+            ("Shopee SG", "shopee"),
+            ("Lazada Malaysia", "lazada"),
+            ("eBay UK", "ebay"),
+            ("Walmart Marketplace US", "walmart-marketplace"),
+        )
+        for scope, expected in cases:
+            with self.subTest(scope=scope):
+                data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+                data["scope"] = [scope]
+                result = self.validate_result(data)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"missing entry for platform named in scope: {expected}", result.stderr)
+
+    def test_coverage_ledger_alias_satisfies_registered_platform_scope(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["scope"] = ["Shopee SG"]
+        entry = self.coverage_entry("虾皮")
+        data["coverage_ledger"] = [entry]
+        result = self.validate_result(data)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_custom_platform_requires_explicit_entry_verification(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        event = self.platform_event(data["events"][1])
+        event["platform_policy"]["platform"] = "Example New Channel"
+        data["events"][1] = event
+
+        result = self.validate_result(data)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unregistered platforms must use custom", result.stderr)
+        self.assertIn("must require official-entry verification", result.stderr)
+
+        event["platform_policy"]["registry_status"] = "custom"
+        event["platform_policy"]["official_entry_verification_required"] = True
+        result = self.validate_result(data)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_blocked_access_is_not_login_required(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
         data["scope"] = ["Jumia"]
@@ -495,6 +641,62 @@ class WorkflowTest(unittest.TestCase):
             )
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("platform_policy and action_items must be supplied together", result.stderr)
+
+    def test_reject_missing_or_inconsistent_score_breakdown(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        del data["events"][0]["score_breakdown"]
+        result = self.validate_result(data)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing score_breakdown", result.stderr)
+
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["events"][0]["score"] = 7
+        result = self.validate_result(data)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must equal score_breakdown total 6, got 7", result.stderr)
+
+    def test_reject_level_mismatch_without_structured_override(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["events"][0]["level"] = "high"
+        result = self.validate_result(data)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("score 6 requires medium", result.stderr)
+
+    def test_accept_documented_level_override(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        data["events"][0]["level"] = "high"
+        data["events"][0]["level_override"] = {
+            "level": "high",
+            "reason": "Verified enforcement will block the affected listings before the next operating cycle.",
+        }
+        result = self.validate_result(data)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_evidence_zero_cannot_be_overridden_above_watch(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        event = data["events"][0]
+        event["score_breakdown"]["evidence"] = 0
+        event["score"] = 5
+        event["level"] = "high"
+        event["level_override"] = {
+            "level": "high",
+            "reason": "Attempted override for a source that is not confirmed.",
+        }
+        result = self.validate_result(data)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("evidence 0 requires watch and cannot be overridden", result.stderr)
+
+    def test_platform_exposure_two_requires_applicability_evidence(self) -> None:
+        data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        event = self.platform_event(data["events"][1])
+        event["platform_policy"]["seller_market"] = "unknown"
+        event["platform_policy"]["program"] = "unknown"
+        event["platform_policy"]["seller_scope"] = "unknown"
+        event["products_or_channels"] = []
+        data["events"][1] = event
+        result = self.validate_result(data)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("business_exposure: 2 requires a known seller market", result.stderr)
 
     def test_build_chinese_and_english_docx(self) -> None:
         data = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))

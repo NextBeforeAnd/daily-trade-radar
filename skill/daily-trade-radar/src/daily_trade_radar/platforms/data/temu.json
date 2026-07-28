@@ -1,0 +1,15 @@
+{
+  "id": "temu",
+  "display_name": "Temu",
+  "aliases": ["temu", "temu seller", "拼多多跨境"],
+  "seller_markets": ["US", "CA", "EU", "UK", "AU", "JP", "CN", "HK"],
+  "programs": ["fully managed", "semi-managed", "local seller"],
+  "official_routes": [
+    {"route_id": "seller-center", "source_type": "dashboard", "url": "https://seller.temu.com/", "market_specific": true, "markets": ["*"], "access": "mixed", "evidence_role": "account_specific", "verification_status": "verified", "last_verified_on": "2026-07-28"}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"official_updates": "The public Seller Center promotes Seller Academy but no stable public policy-update feed is configured.", "current_policy": "Open current rule or Academy content through the seller-market session and record the resulting URL."}},
+  "dashboard_checks": ["Announcements", "Product Compliance", "Pricing", "Logistics", "After-sales", "Penalties", "Settlements"],
+  "applicability_dimensions": ["seller_market", "operating_model", "product_category", "warehouse_or_fulfillment", "account_notice"],
+  "policy_areas": ["listing_product_compliance", "pricing_promotions", "fulfillment_logistics", "returns_refunds_aftersales", "fees_commissions", "payments_settlement_tax", "account_health_enforcement"],
+  "notes": ["Never transfer a fully managed rule to semi-managed or local-seller operations."]
+}

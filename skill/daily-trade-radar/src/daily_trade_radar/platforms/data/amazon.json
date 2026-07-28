@@ -1,0 +1,16 @@
+{
+  "id": "amazon",
+  "display_name": "Amazon",
+  "aliases": ["amazon", "amazon marketplace", "亚马逊"],
+  "seller_markets": ["US", "CA", "MX", "BR", "UK", "DE", "FR", "IT", "ES", "NL", "SE", "PL", "BE", "JP", "AU", "SG", "IN", "AE", "SA"],
+  "programs": ["FBA", "FBM", "Brand Registry", "Amazon Business", "Advertising", "Payments"],
+  "official_routes": [
+    {"route_id": "us-seller-news", "source_type": "official_updates", "url": "https://sellercentral.amazon.com/seller-forums/discussions", "market_specific": true, "markets": ["US"], "access": "public", "evidence_role": "discovery", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "seller-central", "source_type": "dashboard", "url": "https://sellercentral.amazon.com/", "market_specific": true, "markets": ["US"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"current_policy": "Current Help policy URLs vary by store and program; follow the policy link from Seller News or the authenticated notice."}},
+  "dashboard_checks": ["Seller News", "Performance Notifications", "Account Health", "Manage Your Compliance", "FBA", "Payments"],
+  "applicability_dimensions": ["seller_market", "program", "fulfillment_mode", "product_category", "account_notice"],
+  "policy_areas": ["listing_product_compliance", "fees_commissions", "fulfillment_logistics", "returns_refunds_aftersales", "payments_settlement_tax", "account_health_enforcement", "content_ads_affiliate"],
+  "notes": ["Treat every Amazon store and program as a separate monitoring scope."]
+}

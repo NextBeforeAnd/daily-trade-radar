@@ -1,0 +1,16 @@
+{
+  "id": "aliexpress",
+  "display_name": "AliExpress",
+  "aliases": ["aliexpress", "ali express", "速卖通", "全球速卖通"],
+  "seller_markets": ["CN", "EU", "US", "BR", "KR", "Local seller markets"],
+  "programs": ["cross-border seller", "local seller", "Choice", "managed", "warehouse fulfillment"],
+  "official_routes": [
+    {"route_id": "seller-center", "source_type": "dashboard", "url": "https://seller.aliexpress.com/", "market_specific": true, "markets": ["*"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true},
+    {"route_id": "alternate-seller-entry", "source_type": "dashboard", "url": "https://sell.aliexpress.com/", "market_specific": true, "markets": ["*"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"official_updates": "No stable public seller-update feed is configured; verify the current seller-owned announcement route in-session.", "current_policy": "Seller rules are commonly exposed behind Seller Center; open the underlying rule page from the authenticated notice."}},
+  "dashboard_checks": ["Announcements", "Rules", "Violations", "Category Access", "Logistics", "Disputes", "Settlement"],
+  "applicability_dimensions": ["seller_market", "seller_type", "program", "product_category", "fulfillment_model"],
+  "policy_areas": ["listing_product_compliance", "pricing_promotions", "fees_commissions", "fulfillment_logistics", "returns_refunds_aftersales", "account_health_enforcement", "payments_settlement_tax"],
+  "notes": ["Do not use the retired rulechannel.aliexpress.com route as evidence."]
+}

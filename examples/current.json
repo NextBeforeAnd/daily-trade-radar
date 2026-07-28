@@ -53,6 +53,13 @@
       "status": "ongoing",
       "level": "medium",
       "score": 6,
+      "score_breakdown": {
+        "regulatory_force": 2,
+        "business_exposure": 1,
+        "urgency": 1,
+        "consequence": 1,
+        "evidence": 1
+      },
       "jurisdiction": "Global",
       "authority": "Example Marketplace",
       "published_date": "2026-07-01",
@@ -73,6 +80,13 @@
       "status": "new",
       "level": "high",
       "score": 8,
+      "score_breakdown": {
+        "regulatory_force": 2,
+        "business_exposure": 2,
+        "urgency": 2,
+        "consequence": 1,
+        "evidence": 1
+      },
       "jurisdiction": "EU",
       "authority": "Example EU Authority",
       "published_date": "2026-07-21",

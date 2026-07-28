@@ -1,0 +1,17 @@
+{
+  "id": "tiktok-shop",
+  "display_name": "TikTok Shop",
+  "aliases": ["tiktok shop", "tiktokshop", "tiktok小店", "抖音电商海外版"],
+  "seller_markets": ["US", "UK", "SG", "MY", "TH", "VN", "PH", "ID"],
+  "programs": ["local seller", "cross-border seller", "creator", "affiliate", "LIVE"],
+  "official_routes": [
+    {"route_id": "us-policy-updates", "source_type": "official_updates", "url": "https://seller-us.tiktok.com/university/", "market_specific": true, "markets": ["US"], "access": "public", "evidence_role": "discovery", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "us-prohibited-products-policy", "source_type": "current_policy", "url": "https://seller-us.tiktok.com/university/essay?knowledge_id=1399532709988097", "market_specific": true, "markets": ["US"], "access": "public", "evidence_role": "current_rule", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "us-seller-center", "source_type": "dashboard", "url": "https://seller-us.tiktok.com/", "market_specific": true, "markets": ["US"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "verified", "last_verified_on": "2026-07-28"}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {}},
+  "dashboard_checks": ["Notifications", "Policy Center", "Account Health", "Shop Performance Score", "Logistics", "Settlements", "Category Qualification"],
+  "applicability_dimensions": ["seller_market", "seller_program", "product_category", "fulfillment_mode", "creator_or_affiliate"],
+  "policy_areas": ["listing_product_compliance", "fulfillment_logistics", "returns_refunds_aftersales", "fees_commissions", "content_ads_affiliate", "account_health_enforcement"],
+  "notes": ["Recheck the underlying policy page behind every Policy Pulse or summary notice."]
+}

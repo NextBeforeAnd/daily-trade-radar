@@ -1,0 +1,16 @@
+{
+  "id": "walmart-marketplace",
+  "display_name": "Walmart Marketplace",
+  "aliases": ["walmart marketplace", "walmart seller", "沃尔玛 marketplace", "沃尔玛电商"],
+  "seller_markets": ["US", "CA", "MX"],
+  "programs": ["Marketplace seller", "Walmart Fulfillment Services", "Walmart Connect", "Pro Seller"],
+  "official_routes": [
+    {"route_id": "seller-help", "source_type": "current_policy", "url": "https://sellerhelp.walmart.com/", "market_specific": true, "markets": ["US"], "access": "mixed", "evidence_role": "current_rule", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true},
+    {"route_id": "seller-center", "source_type": "dashboard", "url": "https://seller.walmart.com/", "market_specific": true, "markets": ["US"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"official_updates": "No stable marketplace-owned seller-update feed is configured; verify announcements in Seller Center and open linked Seller Help content."}},
+  "dashboard_checks": ["Announcements", "Performance", "Trust and Safety", "Item Setup", "WFS", "Returns", "Payments", "Growth Opportunities"],
+  "applicability_dimensions": ["seller_market", "program", "product_category", "fulfillment_model", "account_notice"],
+  "policy_areas": ["listing_product_compliance", "fees_commissions", "fulfillment_logistics", "returns_refunds_aftersales", "payments_settlement_tax", "account_health_enforcement", "content_ads_affiliate"],
+  "notes": ["Confirm the marketplace country and open the underlying Seller Help article or authenticated notice."]
+}

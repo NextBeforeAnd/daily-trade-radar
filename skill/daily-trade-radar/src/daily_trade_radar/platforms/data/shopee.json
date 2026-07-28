@@ -1,0 +1,16 @@
+{
+  "id": "shopee",
+  "display_name": "Shopee",
+  "aliases": ["shopee", "shopee seller", "虾皮", "虾皮跨境"],
+  "seller_markets": ["SG", "MY", "TH", "VN", "PH", "ID", "TW", "BR", "MX"],
+  "programs": ["local seller", "cross-border seller", "Shopee Mall", "SLS", "fulfillment programs"],
+  "official_routes": [
+    {"route_id": "sg-seller-education", "source_type": "current_policy", "url": "https://seller.shopee.sg/edu/", "market_specific": true, "markets": ["SG"], "access": "public", "evidence_role": "current_rule", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "seller-center", "source_type": "dashboard", "url": "https://seller.shopee.com/", "market_specific": true, "markets": ["*"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"official_updates": "Seller announcements are market-specific; verify the country Seller Centre announcement route in-session."}},
+  "dashboard_checks": ["Announcements", "Seller Education", "Account Health", "Product Rules", "Logistics", "Returns", "Fees", "Payments"],
+  "applicability_dimensions": ["seller_market", "seller_type", "program", "product_category", "logistics_program"],
+  "policy_areas": ["listing_product_compliance", "pricing_promotions", "fees_commissions", "fulfillment_logistics", "returns_refunds_aftersales", "account_health_enforcement", "payments_settlement_tax"],
+  "notes": ["Seller Education and Seller Centre routes are market-specific; verify the country host before citing."]
+}

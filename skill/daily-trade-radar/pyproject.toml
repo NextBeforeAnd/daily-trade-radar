@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daily-trade-radar"
+version = "0.2.0"
+description = "Auditable acquisition, scoring calibration, platform-source coverage, versioned snapshot storage, validation, deduplication, and rendering for the Daily Trade Radar Codex skill."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+docx = ["python-docx>=1.1,<2"]
+
+[project.scripts]
+daily-trade-radar = "daily_trade_radar.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+daily_trade_radar = ["platforms/data/*.json"]

@@ -1,0 +1,18 @@
+{
+  "id": "shopify",
+  "display_name": "Shopify",
+  "aliases": ["shopify", "shopify markets", "shopify payments", "managed markets"],
+  "seller_markets": ["Global"],
+  "programs": ["Shopify", "Shop", "Shopify Payments", "Markets", "Managed Markets", "POS", "Apps"],
+  "official_routes": [
+    {"route_id": "changelog", "source_type": "official_updates", "url": "https://changelog.shopify.com/", "market_specific": false, "markets": ["*"], "access": "public", "evidence_role": "discovery", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "help-center", "source_type": "current_policy", "url": "https://help.shopify.com/", "market_specific": true, "markets": ["*"], "access": "public", "evidence_role": "current_rule", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "legal", "source_type": "current_policy", "url": "https://www.shopify.com/legal", "market_specific": true, "markets": ["*"], "access": "public", "evidence_role": "current_rule", "verification_status": "verified", "last_verified_on": "2026-07-28"},
+    {"route_id": "admin-alerts", "source_type": "dashboard", "url": "https://admin.shopify.com/", "market_specific": true, "markets": ["*"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "verified", "last_verified_on": "2026-07-28"}
+  ],
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {}},
+  "dashboard_checks": ["Admin notifications", "Payments", "Markets", "Shipping", "Tax and duties", "Apps"],
+  "applicability_dimensions": ["merchant_market", "product_or_plan", "payment_product", "feature", "app_or_api"],
+  "policy_areas": ["payments_settlement_tax", "fulfillment_logistics", "data_privacy_security", "api_feature_deprecation", "listing_product_compliance"],
+  "notes": ["Separate Shopify product changes from laws merely described in Help Center guidance."]
+}
