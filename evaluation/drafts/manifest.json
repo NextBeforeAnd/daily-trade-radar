@@ -1,0 +1,39 @@
+{
+  "manifest_version": 1,
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:53:02+08:00",
+  "period": {
+    "start": "2026-07-21",
+    "end": "2026-07-30",
+    "run_count": 12
+  },
+  "totals": {
+    "candidate_count": 56,
+    "positive_count": 39,
+    "negative_count": 17,
+    "deduplication_case_count": 27
+  },
+  "review_note": "All 12 label files were independently reviewed by the workspace owner; the totals reflect the approved labels rather than the original scaffold decisions.",
+  "files": [
+    "2026-07-21.labels.json",
+    "2026-07-22.labels.json",
+    "2026-07-23.labels.json",
+    "2026-07-24.labels.json",
+    "2026-07-25.labels.json",
+    "2026-07-26.labels.json",
+    "2026-07-27.labels.json",
+    "2026-07-27-2.labels.json",
+    "2026-07-27-3.labels.json",
+    "2026-07-28.labels.json",
+    "2026-07-29.labels.json",
+    "2026-07-30.labels.json"
+  ],
+  "review_sequence": [
+    "Verify should_include against the primary source and reporting window.",
+    "Verify publication, effective, and deadline dates independently.",
+    "Verify status and risk level without seeing model rationales where possible.",
+    "Verify every deduplication previous_id and expected_disposition.",
+    "Set review_status to independently_reviewed and add reviewed_by and reviewed_at only after completion."
+  ]
+}

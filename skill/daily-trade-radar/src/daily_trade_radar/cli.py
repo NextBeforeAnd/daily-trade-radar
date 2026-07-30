@@ -16,6 +16,13 @@ COMMAND_MODULES = {
     "platforms": "daily_trade_radar.platforms.cli",
     "acquisition": "daily_trade_radar.acquisition.cli",
     "calibrate": "daily_trade_radar.calibration",
+    "calibration-scaffold": "daily_trade_radar.calibration_scaffold",
+    "calibration-update": "daily_trade_radar.calibration_update",
+    "calibration-promote": "daily_trade_radar.calibration_promote",
+    "calibration-rollback": "daily_trade_radar.calibration_rollback",
+    "evaluate": "daily_trade_radar.evaluation",
+    "evaluate-history": "daily_trade_radar.evaluation_history",
+    "evaluation-scaffold": "daily_trade_radar.evaluation_scaffold",
 }
 
 

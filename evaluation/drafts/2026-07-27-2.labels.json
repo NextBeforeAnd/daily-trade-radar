@@ -1,0 +1,119 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-27-2",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:05:55+08:00",
+  "review_notes": "All four candidate decisions and both deduplication cases were independently reviewed against official primary sources. Shopify and TikTok were corrected to ongoing items, the repeated USTR item was rejected, and the EU Iran renewal was corrected to the legal act published on 2026-07-27.",
+  "source_report_date": "2026-07-27",
+  "records": [
+    {
+      "event_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/",
+        "https://eur-lex.europa.eu/eli/dec/2026/1837/oj"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-28",
+      "deadline": "2027-07-27",
+      "status": "new",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟涉伊朗军援制裁框架今天到期，续期状态仍待确认",
+        "jurisdiction": "European Union / Iran",
+        "authority": "Council of the European Union",
+        "source_title": "EU sanctions against Iran",
+        "source_url": "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/"
+      }
+    },
+    {
+      "event_id": "shopify-app-analytics-annotations-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://changelog.shopify.com/posts/new-app-added-annotations-on-your-analytics-charts"
+      ],
+      "published_date": "2026-07-24",
+      "effective_date": "2026-07-24",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "low",
+      "review_context": {
+        "title": "Shopify允许应用向分析图表添加业务注释",
+        "jurisdiction": "Global",
+        "authority": "Shopify",
+        "source_title": "New app-added annotations on your analytics charts",
+        "source_url": "https://changelog.shopify.com/posts/new-app-added-annotations-on-your-analytics-charts"
+      }
+    },
+    {
+      "event_id": "tiktok-shop-us-product-compliance-refresh-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://seller-us.tiktok.com/university/essay?identity=1&role=seller&knowledge_id=6866148172531470"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-23",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "medium",
+      "review_context": {
+        "title": "TikTok Shop美国站集中更新召回与禁售品规则页",
+        "jurisdiction": "United States",
+        "authority": "TikTok Shop",
+        "source_title": "Product Recall Notices and Compliance Requirements",
+        "source_url": "https://seller-us.tiktok.com/university/essay?identity=1&role=seller&knowledge_id=6866148172531470"
+      }
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "should_include": false,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-24",
+      "deadline": "2026-07-28",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国Section 301在途豁免明日中午关闭",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Notice of Actions in Section 301 Investigations Related to Forced Labor Import Prohibitions",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "us-section-301-forced-labor-60-economies-2026",
+      "previous_id": "us-section-301-forced-labor-60-economies-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "products_or_channels",
+          "summary_facts_or_obligation"
+        ]
+      }
+    },
+    {
+      "current_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "previous_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "expected_disposition": "material_update",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "source_url",
+          "products_or_channels",
+          "summary_facts_or_obligation"
+        ]
+      }
+    }
+  ]
+}

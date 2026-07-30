@@ -4,13 +4,13 @@ Daily Trade Radar is a Chinese-first Codex Skill for researching, verifying, ded
 
 It monitors official trade-policy, customs, export-control, sanctions, tariff, tax, product-compliance, logistics, and marketplace-rule sources. The default deliverable is Markdown backed by validated JSON; a Word template is included for optional formal reports. Coverage will continue expanding to more countries, industries, and marketplace platforms.
 
-> Development version: `v0.2.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
+> Development version: `v0.3.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
 
 See [CHANGELOG.md](CHANGELOG.md) for development updates.
 
 ## 中文简介
 
-每日外贸雷达是一套以中文用户为主的 Codex Skill，面向外贸企业和跨境电商团队，用于检索、核验、去重并输出可执行的外贸情报日报。覆盖 Amazon、TikTok Shop、Temu、AliExpress（速卖通）、Shopify、Jumia 等平台，并将持续扩展至 Shopee、Lazada、eBay、Walmart Marketplace 及更多全球渠道。
+每日外贸雷达是一套以中文用户为主的 Codex Skill，面向外贸企业和跨境电商团队，用于检索、核验、去重并输出可执行的外贸情报日报。当前注册表覆盖 Amazon、TikTok Shop、Temu、AliExpress（速卖通）、Shopify、Jumia、Shopee、Lazada、eBay 和 Walmart Marketplace；各平台的可验证来源深度会继续扩展。
 
 它会监测贸易政策、海关合规、出口管制、制裁、关税税务、产品合规、国际物流和平台规则，区分今日新增、今日生效、临近截止、持续关注和待核实事项，并为每条事件提供风险等级、业务影响、行动建议与官方来源。
 
@@ -143,7 +143,7 @@ python -m pip install -e "skill/daily-trade-radar[docx]"
 daily-trade-radar validate examples/current.json
 ```
 
-The package also supports `python -m daily_trade_radar`. Commands are `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, and `calibrate`. Direct `scripts/*.py` usage remains supported and does not require package installation.
+The package also supports `python -m daily_trade_radar`. Commands are `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
 
 List the installed marketplace registry:
 
@@ -159,10 +159,85 @@ Each route also declares its stable ID, supported markets, access mode, evidence
 Calibrate the deterministic scoring bands only with independently reviewed labels:
 
 ```bash
+daily-trade-radar calibration-scaffold evaluation/drafts/manifest.json --output evaluation/calibration-review-scaffold.json
+daily-trade-radar calibration-scaffold evaluation/drafts/manifest.json --existing evaluation/calibration-review-scaffold.json --output evaluation/calibration-review-scaffold.next.json --diff-output evaluation/calibration-review-scaffold.diff.json --require-calibration-ready
 daily-trade-radar calibrate reviewed-history.json --minimum-samples 20 --minimum-per-level 3 --output calibration-report.json
 ```
 
-Calibration reports human agreement, label conflicts, score distributions, current-rule accuracy/macro-F1, and a non-binding candidate threshold set. They never edit scoring rules automatically.
+The scaffold deduplicates stable event IDs across runs and also performs conservative cross-ID semantic clustering. Exact official-page/date matches, shared regulatory identifiers, and corroborated authority/date/title anchors can be merged automatically; ambiguous reused URLs are withheld in `semantic_duplicate_review_queue` for human adjudication. Cross-run and cross-alias level conflicts remain excluded. The scaffold carries over independently reviewed levels and deliberately blanks every score dimension. Generated scores are excluded. Calibration reports human agreement, label conflicts, score distributions, current-rule accuracy/macro-F1, and a non-binding candidate threshold set. They never edit scoring rules automatically.
+
+For later runs, pass the reviewed worksheet with `--existing` and write to a new output path. The
+incremental merge preserves complete or partial human scores only when the reviewed level and evidence
+fingerprint are unchanged. New events stay blank; changed evidence or labels are reset and listed in
+`incremental_merge.review_queue`; existing-only manual observations are retained. The audit counts make
+every preservation, reset, addition, and retention explicit.
+
+The merged worksheet embeds `incremental_diff`; `--diff-output` writes the same machine-readable report
+separately. It lists every preserved, new, reset, conflicting, and retained event. Its
+`calibration_gate` allows calibration only when all score breakdowns are complete and no semantic review
+item remains. `--require-calibration-ready` returns exit code `3` after writing both artifacts when human
+review is still required, and the `calibrate` command also rejects a blocked incremental worksheet.
+
+Run the complete incremental workflow into a new, immutable output directory:
+
+```bash
+daily-trade-radar calibration-update evaluation/drafts/manifest.json \
+  --existing evaluation/calibration-review-scaffold.json \
+  --previous-calibration evaluation/calibration-report.json \
+  --decision-record evaluation/calibration-readiness.json \
+  --output-dir evaluation/updates/2026-07-31
+```
+
+The command stages the bundle and then publishes the directory as one unit. A ready run contains the
+updated scaffold, diff, calibration report, and update summary. A blocked run returns exit code `3` and
+omits the calibration report; a ready run below the calibration sample gate returns `4`. Existing output
+directories are never overwritten. Calibration comparisons ignore metadata-only dataset-hash changes,
+and a prior human threshold decision is retained only when decision-relevant metrics are unchanged.
+
+After human review, explicitly promote a completed update into the formal baseline:
+
+```bash
+daily-trade-radar calibration-promote evaluation/updates/2026-07-31 \
+  --baseline-dir evaluation \
+  --backup-dir evaluation/backups/promotion-2026-07-31 \
+  --decision retain_current_thresholds \
+  --reviewed-by "workspace owner" \
+  --reason "Boundary evidence is still insufficient." \
+  --promoted-at "2026-07-31T18:00:00+08:00"
+```
+
+Promotion independently recomputes calibration, verifies cross-artifact identity and hashes, requires
+the incremental and sample gates, locks the formal baseline, publishes a verified backup, and checks the
+new files after writing. Any write failure triggers restoration from that backup. `defer` returns `3`
+without changing the baseline. `accept_candidate_thresholds` is refused unless those thresholds already
+exist in the tested runtime rules; promotion never edits scoring code or silently adopts a threshold.
+
+Roll back one completed promotion only when its live baseline has not drifted:
+
+```bash
+daily-trade-radar calibration-rollback evaluation/backups/promotion-2026-07-31 \
+  --baseline-dir evaluation \
+  --pre-rollback-dir evaluation/backups/pre-rollback-2026-07-31 \
+  --rolled-back-by "workspace owner" \
+  --reason "Regression detected after promotion." \
+  --rolled-back-at "2026-07-31T19:00:00+08:00"
+```
+
+Rollback verifies the promotion manifest, original backup hashes, and live post-promotion hashes before
+making any change. It snapshots the live baseline and original promotion manifest first, then restores
+the originals byte-for-byte under the same lock. A failed rollback restores the promoted state; a
+successful rollback marks the promotion `rolled_back`, preventing replay. Drifted baselines, changed
+backups, reused snapshot directories, and already-consumed promotions fail closed.
+
+Evaluate a complete radar against an independently reviewed closed candidate set:
+
+```bash
+daily-trade-radar evaluation-scaffold current.json deduplicated.json --dataset-name radar-2026-07-30 --output labels.json
+daily-trade-radar evaluate report.json labels.json --output evaluation.json
+daily-trade-radar evaluate-history evaluation/drafts/manifest.json ../radar-runs --output evaluation/history-evaluation.json
+```
+
+The default release gate requires at least 20 positive events, independently reviewed labels, precision and recall of 0.90, primary-source rate of 0.95, date accuracy of 0.98, deduplication accuracy of 0.90, and zero unsupported sources. See [`references/evaluation.md`](skill/daily-trade-radar/references/evaluation.md) for the label schema and draft-fixture workflow.
 
 Run the workflow:
 
@@ -171,6 +246,9 @@ python skill/daily-trade-radar/scripts/validate_events.py examples/current.json
 python skill/daily-trade-radar/scripts/deduplicate.py examples/current.json --previous examples/previous.json --output deduplicated.json
 python skill/daily-trade-radar/scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
 python skill/daily-trade-radar/scripts/build_docx.py deduplicated.json --template skill/daily-trade-radar/assets/radar-template.docx --output daily-trade-radar.docx
+python skill/daily-trade-radar/scripts/evaluate_report.py deduplicated.json evaluation-labels.json --output evaluation.json
+python skill/daily-trade-radar/scripts/evaluate_history.py evaluation/drafts/manifest.json ../radar-runs --output evaluation/history-evaluation.json
+python skill/daily-trade-radar/scripts/scaffold_calibration_reviews.py evaluation/drafts/manifest.json --output evaluation/calibration-review-scaffold.json
 ```
 
 Deduplication defaults to an automatic-match threshold of `0.82` and a review threshold of `0.65`. Override them with `--threshold` and `--review-threshold` when calibrating against a labeled fixture set. Matches below the automatic threshold are retained with `review_required`; jurisdiction, platform, or seller-market conflicts are never matched.

@@ -1,0 +1,85 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-27",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:09:20+08:00",
+  "review_notes": "All three records and the USTR deduplication case were independently reviewed against official primary sources and approved by the workspace owner. The EU Iran renewal remained unconfirmed at the 2026-07-27T11:38:00+08:00 cutoff because the legal act's exact publication time could not be established.",
+  "source_report_date": "2026-07-27",
+  "records": [
+    {
+      "event_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.consilium.europa.eu/en/press/press-releases/2025/08/07/iran-statement-by-the-high-representative-on-behalf-of-the-european-union-on-the-alignment-of-certain-countries-concerning-restrictive-measures-in-view-of-iran-s-military-support-to-russia-s-war-of-aggression-against-ukraine-and-to-armed-gr/"
+      ],
+      "published_date": "2025-07-25",
+      "effective_date": "2025-07-25",
+      "deadline": "2026-07-27",
+      "status": "unconfirmed",
+      "level": "watch",
+      "review_context": {
+        "title": "欧盟涉伊朗军援制裁框架今天到期，尚未检索到续期法律文件",
+        "jurisdiction": "European Union / Iran",
+        "authority": "Council of the European Union",
+        "source_title": "Iran: Statement by the High Representative on behalf of the European Union on the alignment of certain countries concerning restrictive measures in view of Iran’s military support to Russia’s war of aggression against Ukraine and to armed groups and entities in the Middle East and the Red Sea region",
+        "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2025/08/07/iran-statement-by-the-high-representative-on-behalf-of-the-european-union-on-the-alignment-of-certain-countries-concerning-restrictive-measures-in-view-of-iran-s-military-support-to-russia-s-war-of-aggression-against-ukraine-and-to-armed-gr/"
+      }
+    },
+    {
+      "event_id": "eu-russia-21st-sanctions-package-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AL_202601848"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-24",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟第21轮对俄制裁已生效，新增中国及香港实体与军工物项限制",
+        "jurisdiction": "European Union / Russia / third countries",
+        "authority": "Council of the European Union",
+        "source_title": "Council Regulation (EU) 2026/1848 of 23 July 2026 amending Regulation (EU) No 833/2014 concerning restrictive measures in view of Russia’s actions destabilising the situation in Ukraine",
+        "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AL_202601848"
+      }
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-24",
+      "deadline": "2026-07-28",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国Section 301在途豁免明日12:01（新加坡时间）关闭",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Notice of Actions in Section 301 Investigations of Acts, Policies, and Practices of Various Economies Related to the Failure of Each Economy to Impose and Effectively Enforce a Prohibition on the Importation of Goods Produced with Forced Labor",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "us-section-301-forced-labor-60-economies-2026",
+      "previous_id": "us-section-301-forced-labor-60-economies-2026",
+      "expected_disposition": "material_update",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "effective_at",
+          "deadline_at",
+          "source_timezone"
+        ]
+      }
+    }
+  ]
+}

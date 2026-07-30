@@ -1,0 +1,693 @@
+{
+  "history_evaluation_version": 1,
+  "dataset_name": "daily-trade-radar-history",
+  "dataset_hash": "92f68eb066c12bf36aac74ca19d0476b0923b8a27e71c2edb4a9caec645c9e33",
+  "run_count": 12,
+  "sample": {
+    "labeled_candidate_count": 56,
+    "positive_event_count": 39,
+    "negative_event_count": 17,
+    "predicted_event_count": 44,
+    "deduplication_case_count": 27
+  },
+  "detection": {
+    "true_positive_count": 39,
+    "false_positive_count": 5,
+    "false_negative_count": 0,
+    "precision": 0.8864,
+    "recall": 1.0,
+    "f1": 0.9398,
+    "false_positive_ids": [
+      "2026-07-21:amazon-title-75-characters-2026",
+      "2026-07-21:eu-low-value-parcel-duty-2026",
+      "2026-07-23:us-section-122-surcharge-expiry-2026-07-24",
+      "2026-07-27-2:us-section-301-forced-labor-60-economies-2026",
+      "2026-07-27-3:us-section-301-forced-labor-60-economies-2026"
+    ],
+    "false_negative_ids": []
+  },
+  "factual": {
+    "primary_source_rate": 1.0,
+    "date_accuracy": 0.8889,
+    "status_accuracy": 0.8718,
+    "level_accuracy": 0.9231,
+    "unsupported_source_count": 5,
+    "unsupported_source_ids": [
+      "2026-07-21:amazon-title-75-characters-2026",
+      "2026-07-21:eu-low-value-parcel-duty-2026",
+      "2026-07-23:us-section-122-surcharge-expiry-2026-07-24",
+      "2026-07-27-2:us-section-301-forced-labor-60-economies-2026",
+      "2026-07-27-3:us-section-301-forced-labor-60-economies-2026"
+    ],
+    "field_error_ids": {
+      "source": [],
+      "published_date": [
+        "2026-07-27-2:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-27-2:tiktok-shop-us-product-compliance-refresh-2026",
+        "2026-07-27-3:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-28:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-29:eu-iran-military-support-sanctions-renewal-2026-07-27"
+      ],
+      "effective_date": [
+        "2026-07-21:eu-integrated-prohibitions-restrictions-list-2026-07",
+        "2026-07-27-2:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-27-2:tiktok-shop-us-product-compliance-refresh-2026",
+        "2026-07-27-3:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-28:eu-iran-military-support-sanctions-renewal-2026-07-27"
+      ],
+      "deadline": [
+        "2026-07-27-2:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-27-3:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-28:eu-iran-military-support-sanctions-renewal-2026-07-27"
+      ],
+      "status": [
+        "2026-07-27-2:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-27-2:shopify-app-analytics-annotations-2026",
+        "2026-07-27-2:tiktok-shop-us-product-compliance-refresh-2026",
+        "2026-07-27-3:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-28:eu-iran-military-support-sanctions-renewal-2026-07-27"
+      ],
+      "level": [
+        "2026-07-27-2:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-27-3:eu-iran-military-support-sanctions-renewal-2026-07-27",
+        "2026-07-28:eu-iran-military-support-sanctions-renewal-2026-07-27"
+      ]
+    }
+  },
+  "deduplication": {
+    "accuracy": 0.8148,
+    "correct_count": 22,
+    "error_ids": [
+      "2026-07-21:amazon-title-75-characters-2026",
+      "2026-07-21:eu-low-value-parcel-duty-2026",
+      "2026-07-23:us-section-122-surcharge-expiry-2026-07-24",
+      "2026-07-27-2:us-section-301-forced-labor-60-economies-2026",
+      "2026-07-27-3:us-section-301-forced-labor-60-economies-2026"
+    ]
+  },
+  "quality_gate": {
+    "passed": false,
+    "checks": {
+      "independently_reviewed": true,
+      "minimum_positive_events": true,
+      "precision": false,
+      "recall": true,
+      "primary_source_rate": true,
+      "date_accuracy": false,
+      "deduplication_accuracy": false,
+      "unsupported_sources": false
+    },
+    "thresholds": {
+      "minimum_positive_events": 20,
+      "min_precision": 0.9,
+      "min_recall": 0.9,
+      "min_primary_source_rate": 0.95,
+      "min_date_accuracy": 0.98,
+      "min_deduplication_accuracy": 0.9,
+      "max_unsupported_sources": 0
+    }
+  },
+  "runs": [
+    {
+      "run": "2026-07-21",
+      "labels_hash": "e2570d111adf1cee31d2edb12c962ff1510aa313ec0314fe013ab2ee049cef46",
+      "report_hash": "779a97a5ac3c4e7e5b64cc1fdb3cf6f2b7035805c990536e8c0dd812ce71e3bf",
+      "sample": {
+        "labeled_candidate_count": 5,
+        "positive_event_count": 2,
+        "negative_event_count": 3,
+        "predicted_event_count": 4,
+        "deduplication_case_count": 3
+      },
+      "detection": {
+        "true_positive_count": 2,
+        "false_positive_count": 2,
+        "false_negative_count": 0,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "false_positive_ids": [
+          "amazon-title-75-characters-2026",
+          "eu-low-value-parcel-duty-2026"
+        ],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 0.8333,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 2,
+        "unsupported_source_ids": [
+          "amazon-title-75-characters-2026",
+          "eu-low-value-parcel-duty-2026"
+        ],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [
+            "eu-integrated-prohibitions-restrictions-list-2026-07"
+          ],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 0.3333,
+        "correct_count": 1,
+        "error_ids": [
+          "amazon-title-75-characters-2026",
+          "eu-low-value-parcel-duty-2026"
+        ]
+      }
+    },
+    {
+      "run": "2026-07-22",
+      "labels_hash": "1a5b0a45b0e7dc66a340d997cc8a4319c4f2d201168b4489f9e74e50d261176f",
+      "report_hash": "3818aaffcd5363d7c57e47acba24588ed3f27915cbc8fea209b2886466437edf",
+      "sample": {
+        "labeled_candidate_count": 4,
+        "positive_event_count": 4,
+        "negative_event_count": 0,
+        "predicted_event_count": 4,
+        "deduplication_case_count": 0
+      },
+      "detection": {
+        "true_positive_count": 4,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": null,
+        "correct_count": 0,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-23",
+      "labels_hash": "82b59e9089e22f0ee49fec97ade76370313bff0a984d7df514e9fa92d0172d95",
+      "report_hash": "4d0bb773fd59b28aac6c02700edcbe8e8b4900fa03f1d94846104d3a822a1127",
+      "sample": {
+        "labeled_candidate_count": 7,
+        "positive_event_count": 3,
+        "negative_event_count": 4,
+        "predicted_event_count": 4,
+        "deduplication_case_count": 4
+      },
+      "detection": {
+        "true_positive_count": 3,
+        "false_positive_count": 1,
+        "false_negative_count": 0,
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571,
+        "false_positive_ids": [
+          "us-section-122-surcharge-expiry-2026-07-24"
+        ],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 1,
+        "unsupported_source_ids": [
+          "us-section-122-surcharge-expiry-2026-07-24"
+        ],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 0.75,
+        "correct_count": 3,
+        "error_ids": [
+          "us-section-122-surcharge-expiry-2026-07-24"
+        ]
+      }
+    },
+    {
+      "run": "2026-07-24",
+      "labels_hash": "5f52dcddd6213d997c01e964a3f14637b6c5b081226cdcb712a24d8f1675df4b",
+      "report_hash": "bfc43803efaf1a2ffce54a5e03eda90a4f9473bb4015e5eb4cd3cf6075b5c70d",
+      "sample": {
+        "labeled_candidate_count": 6,
+        "positive_event_count": 3,
+        "negative_event_count": 3,
+        "predicted_event_count": 3,
+        "deduplication_case_count": 4
+      },
+      "detection": {
+        "true_positive_count": 3,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 1.0,
+        "correct_count": 4,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-25",
+      "labels_hash": "e3b4f0a383a3cc84ff37a14fa3357b588dd7b1683832a15073ea1cd642baf737",
+      "report_hash": "ed4ba0a8812b875fbfa764abf1db1ed358ccfce7a073a5bcfbde965f27622e54",
+      "sample": {
+        "labeled_candidate_count": 5,
+        "positive_event_count": 4,
+        "negative_event_count": 1,
+        "predicted_event_count": 4,
+        "deduplication_case_count": 2
+      },
+      "detection": {
+        "true_positive_count": 4,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 1.0,
+        "correct_count": 2,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-26",
+      "labels_hash": "d1898a3fb91173391d3a0342412b2f557bb0648968447685fb86fe3575a523a5",
+      "report_hash": "01247a72d173c74179c0937acfe0bfc200eed1c7e0eba6f0e02eba7634ab74f5",
+      "sample": {
+        "labeled_candidate_count": 4,
+        "positive_event_count": 2,
+        "negative_event_count": 2,
+        "predicted_event_count": 2,
+        "deduplication_case_count": 4
+      },
+      "detection": {
+        "true_positive_count": 2,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 1.0,
+        "correct_count": 4,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-27",
+      "labels_hash": "5a2a6f3108fcadff19e688e54b13db4e7653a7e8c4471f9b254b05d590df03be",
+      "report_hash": "58f794eb8faeabf9179d05ddfedfb78597d2b0d51b78311bfad5e59f434c3026",
+      "sample": {
+        "labeled_candidate_count": 3,
+        "positive_event_count": 3,
+        "negative_event_count": 0,
+        "predicted_event_count": 3,
+        "deduplication_case_count": 1
+      },
+      "detection": {
+        "true_positive_count": 3,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 1.0,
+        "correct_count": 1,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-27-2",
+      "labels_hash": "b8c5dc3c570000b6ed8b39b00335973ee3c6c6e83ee0149291caac10a0e3ac32",
+      "report_hash": "f039f8a0824e2e871dfcd026c090dcf4f472ca3f0601632ef76053919d6da861",
+      "sample": {
+        "labeled_candidate_count": 4,
+        "positive_event_count": 3,
+        "negative_event_count": 1,
+        "predicted_event_count": 4,
+        "deduplication_case_count": 2
+      },
+      "detection": {
+        "true_positive_count": 3,
+        "false_positive_count": 1,
+        "false_negative_count": 0,
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571,
+        "false_positive_ids": [
+          "us-section-301-forced-labor-60-economies-2026"
+        ],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 0.4444,
+        "status_accuracy": 0.0,
+        "level_accuracy": 0.6667,
+        "unsupported_source_count": 1,
+        "unsupported_source_ids": [
+          "us-section-301-forced-labor-60-economies-2026"
+        ],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27",
+            "tiktok-shop-us-product-compliance-refresh-2026"
+          ],
+          "effective_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27",
+            "tiktok-shop-us-product-compliance-refresh-2026"
+          ],
+          "deadline": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "status": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27",
+            "shopify-app-analytics-annotations-2026",
+            "tiktok-shop-us-product-compliance-refresh-2026"
+          ],
+          "level": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ]
+        }
+      },
+      "deduplication": {
+        "accuracy": 0.5,
+        "correct_count": 1,
+        "error_ids": [
+          "us-section-301-forced-labor-60-economies-2026"
+        ]
+      }
+    },
+    {
+      "run": "2026-07-27-3",
+      "labels_hash": "8278a8d95c130dbe620c3575e0db152a83e6e52c658259e2d3f10eb57e7171a1",
+      "report_hash": "c7cb2d253aad183ab760dcb6041c2154e2120a71e588026de9afe4521a8a6cad",
+      "sample": {
+        "labeled_candidate_count": 5,
+        "positive_event_count": 4,
+        "negative_event_count": 1,
+        "predicted_event_count": 5,
+        "deduplication_case_count": 2
+      },
+      "detection": {
+        "true_positive_count": 4,
+        "false_positive_count": 1,
+        "false_negative_count": 0,
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1": 0.8889,
+        "false_positive_ids": [
+          "us-section-301-forced-labor-60-economies-2026"
+        ],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 0.75,
+        "status_accuracy": 0.75,
+        "level_accuracy": 0.75,
+        "unsupported_source_count": 1,
+        "unsupported_source_ids": [
+          "us-section-301-forced-labor-60-economies-2026"
+        ],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "effective_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "deadline": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "status": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "level": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ]
+        }
+      },
+      "deduplication": {
+        "accuracy": 0.5,
+        "correct_count": 1,
+        "error_ids": [
+          "us-section-301-forced-labor-60-economies-2026"
+        ]
+      }
+    },
+    {
+      "run": "2026-07-28",
+      "labels_hash": "07051e1b5232aa4155837dd853ba182362e42f62f74de386304bd0d5731ffa6f",
+      "report_hash": "4fd262fc187c5e8152ba49aab7ab81b1c1cae84eada98814b3bc1b81855b807a",
+      "sample": {
+        "labeled_candidate_count": 7,
+        "positive_event_count": 5,
+        "negative_event_count": 2,
+        "predicted_event_count": 5,
+        "deduplication_case_count": 4
+      },
+      "detection": {
+        "true_positive_count": 5,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 0.8,
+        "status_accuracy": 0.8,
+        "level_accuracy": 0.8,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "effective_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "deadline": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "status": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "level": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ]
+        }
+      },
+      "deduplication": {
+        "accuracy": 1.0,
+        "correct_count": 4,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-29",
+      "labels_hash": "3dbd23de9f45868dd0ee63b6a4a0c8a0ccfea107b75dcc9e1885b5282f58ecff",
+      "report_hash": "482002b549dbfb493b733812530374126fa8b336a4d9ed74f54cff921eaec27d",
+      "sample": {
+        "labeled_candidate_count": 2,
+        "positive_event_count": 2,
+        "negative_event_count": 0,
+        "predicted_event_count": 2,
+        "deduplication_case_count": 1
+      },
+      "detection": {
+        "true_positive_count": 2,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 0.8333,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [
+            "eu-iran-military-support-sanctions-renewal-2026-07-27"
+          ],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": 1.0,
+        "correct_count": 1,
+        "error_ids": []
+      }
+    },
+    {
+      "run": "2026-07-30",
+      "labels_hash": "2bc77bf37733fedfd542226086a62644cf06766747c39411bf677913e24ad300",
+      "report_hash": "dfedf1fd8594351c93d61d8d98192d5bf13781519bcb23b55aa722b5b14ef825",
+      "sample": {
+        "labeled_candidate_count": 4,
+        "positive_event_count": 4,
+        "negative_event_count": 0,
+        "predicted_event_count": 4,
+        "deduplication_case_count": 0
+      },
+      "detection": {
+        "true_positive_count": 4,
+        "false_positive_count": 0,
+        "false_negative_count": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_ids": [],
+        "false_negative_ids": []
+      },
+      "factual": {
+        "primary_source_rate": 1.0,
+        "date_accuracy": 1.0,
+        "status_accuracy": 1.0,
+        "level_accuracy": 1.0,
+        "unsupported_source_count": 0,
+        "unsupported_source_ids": [],
+        "field_error_ids": {
+          "source": [],
+          "published_date": [],
+          "effective_date": [],
+          "deadline": [],
+          "status": [],
+          "level": []
+        }
+      },
+      "deduplication": {
+        "accuracy": null,
+        "correct_count": 0,
+        "error_ids": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "calibration_readiness_version": 1,
+  "assessed_at": "2026-07-30T15:53:02+08:00",
+  "dataset_name": "daily-trade-radar-history",
+  "eligible": true,
+  "thresholds_changed": false,
+  "review_scaffold": "calibration-review-scaffold.json",
+  "sample": {
+    "independently_reviewed_runs": 13,
+    "positive_run_observations": 39,
+    "unique_positive_events": 29,
+    "eligible_events_after_level_conflict_exclusion": 28,
+    "eligible_events_after_all_exclusions": 29,
+    "independently_reviewed_watch_observations": 3,
+    "reviewed_level_distribution": {
+      "high": 13,
+      "medium": 10,
+      "low": 3,
+      "watch": 3
+    },
+    "excluded_cross_run_level_conflicts": 1,
+    "excluded_semantic_duplicates": 2,
+    "generated_events_with_score_breakdown": 6,
+    "independently_reviewed_events_with_full_score_breakdown": 29
+  },
+  "default_gate": {
+    "minimum_consensus_events": 20,
+    "minimum_events_per_reviewed_level": 3,
+    "requires_independent_full_five_dimension_score_breakdown": true
+  },
+  "checks": {
+    "minimum_consensus_events": true,
+    "minimum_events_per_reviewed_level": true,
+    "independent_full_score_breakdowns_available": true
+  },
+  "blockers": [],
+  "calibration_run": {
+    "report": "calibration-report.json",
+    "dataset_hash": "6ad79e5bfa6c5e1aad8c56a8a24ec3cbc39da9233e8a715b39b61b6c8d947ebb",
+    "recommendation_status": "candidate_change_requires_review",
+    "current_thresholds": {
+      "watch_max": 1,
+      "low_max": 4,
+      "medium_max": 7
+    },
+    "candidate_thresholds": {
+      "watch_max": 1,
+      "low_max": 3,
+      "medium_max": 7
+    },
+    "current_accuracy": 0.7931,
+    "candidate_accuracy": 0.8276,
+    "current_macro_f1": 0.7896,
+    "candidate_macro_f1": 0.8431,
+    "automatic_rule_change_allowed": false
+  },
+  "calibration_decision": {
+    "decision": "retain_current_thresholds",
+    "decided_by": "workspace owner",
+    "decided_on": "2026-07-30",
+    "candidate_adopted": false,
+    "reason": "The proposed low/medium boundary change is driven by a single independently reviewed score-4 event; retain the current bands until more score-4 boundary samples establish representativeness."
+  },
+  "conflict_recommendation": "Keep the EU Iran military-support sanctions renewal out of event-level threshold fitting because its watch, high, and medium labels describe different evidence and lifecycle states across runs rather than interchangeable judgments of one fixed observation.",
+  "next_action": "Continue collecting independently reviewed score-4 low/medium boundary samples and rerun calibration when the boundary evidence is more representative."
+}

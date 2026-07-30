@@ -25,3 +25,7 @@ jobs:
         run: daily-trade-radar --help
       - name: Run offline workflow tests
         run: python -m unittest discover -s tests -v
+      - name: Exercise deterministic evaluation gate
+        run: >-
+          daily-trade-radar evaluate examples/current.json examples/evaluation-labels.json
+          --allow-draft --minimum-positive-events 2 --min-deduplication-accuracy 0

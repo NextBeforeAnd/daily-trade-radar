@@ -76,6 +76,27 @@ class CalibrationTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "different score_breakdown"):
             calibrate(data)
 
+    def test_incremental_gate_blocks_calibration_until_review_is_complete(self) -> None:
+        data = balanced_dataset()
+        data["incremental_merge"] = {"mode": "preserve_human_scores_fail_closed"}
+        data["incremental_diff"] = {
+            "calibration_gate": {
+                "ready": False,
+                "blockers": [{"type": "new_events_require_scoring"}],
+            }
+        }
+        with self.assertRaisesRegex(
+            ValueError,
+            "incremental calibration gate blocked: new_events_require_scoring",
+        ):
+            calibrate(data)
+
+        data["incremental_diff"]["calibration_gate"] = {
+            "ready": True,
+            "blockers": [],
+        }
+        self.assertTrue(calibrate(data)["sample_gate"]["sufficient"])
+
     def test_cli_writes_auditable_report(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

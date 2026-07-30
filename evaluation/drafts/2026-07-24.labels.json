@@ -1,0 +1,149 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-24",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:33:32+08:00",
+  "review_notes": "All six records and four deduplication cases were independently checked against official primary sources and approved by the workspace owner without label changes. Three events are correctly retained; the helium, EU low-value duty, and Brazil tariff repeats are correctly excluded. The Section 122 expiry is an operational refresh on its deadline date.",
+  "source_report_date": "2026-07-24",
+  "records": [
+    {
+      "event_id": "cn-helium-temporary-export-ban-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "中国对氦气实施临时禁止出口管理",
+        "jurisdiction": "China",
+        "authority": "Ministry of Commerce / General Administration of Customs",
+        "source_title": "商务部 海关总署公告2026年第29号 公布对氦气实施临时禁止出口管理",
+        "source_url": "https://wms.mofcom.gov.cn/zcfb/wmgl/art/2026/art_2a795a0d55df4cada91c9fbd2a2cc13a.html"
+      }
+    },
+    {
+      "event_id": "eu-low-value-ecommerce-duty-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "欧盟低值电商进口已按每件3欧元征收临时关税",
+        "jurisdiction": "European Union",
+        "authority": "European Commission, Directorate-General for Taxation and Customs Union",
+        "source_title": "Guidance and legal text on temporary flat fee on low-value imports which will apply until 1 July 2028",
+        "source_url": "https://taxation-customs.ec.europa.eu/news/guidance-and-legal-text-temporary-flat-fee-low-value-imports-which-will-apply-until-1-july-2028-2026-06-08_en"
+      }
+    },
+    {
+      "event_id": "us-ofac-sdn-update-2026-07-23",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ofac.treasury.gov/recent-actions/20260723"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-23",
+      "deadline": null,
+      "status": "new",
+      "level": "high",
+      "review_context": {
+        "title": "OFAC集中新增反恐、禁毒与古巴制裁对象，并发布三份古巴一般许可证",
+        "jurisdiction": "United States / global sanctions exposure",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Counter Terrorism Designations; Counter Narcotics Designations; Cuba Designations; Belarus-related Designation Removal; Issuance of Cuba-related General Licenses",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260723"
+      }
+    },
+    {
+      "event_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.whitehouse.gov/presidential-actions/2026/02/imposing-a-temporary-import-surcharge-to-address-fundamental-international-payments-problems/"
+      ],
+      "published_date": "2026-02-20",
+      "effective_date": "2026-02-24",
+      "deadline": "2026-07-24",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国10%临时进口附加税将在新加坡时间今日12:01届满，尚未发现官方延长文件",
+        "jurisdiction": "United States",
+        "authority": "The White House / U.S. Customs and Border Protection",
+        "source_title": "Imposing a Temporary Import Surcharge to Address Fundamental International Payments Problems",
+        "source_url": "https://www.whitehouse.gov/presidential-actions/2026/02/imposing-a-temporary-import-surcharge-to-address-fundamental-international-payments-problems/"
+      }
+    },
+    {
+      "event_id": "us-section-301-brazil-tariff-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "美国对多数巴西原产商品的25% Section 301附加税已生效",
+        "jurisdiction": "United States / Brazil",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "USTR Section 301 Action on Brazil’s Unreasonable Acts, Policies, and Practices",
+        "source_url": "https://ustr.gov/about/policy-offices/press-office/press-releases/2026/july/ustr-section-301-action-brazils-unreasonable-acts-policies-and-practices"
+      }
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.whitehouse.gov/presidential-actions/2026/07/actions-by-the-united-states-in-the-investigations-under-section-301-of-the-trade-act-of-1974-of-the-acts-policies-and-practices-of-60-economies-related-to-the-failure-of-each-economy-to-impose-and/"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": null,
+      "deadline": null,
+      "status": "new",
+      "level": "high",
+      "review_context": {
+        "title": "美国对60个经济体启动强迫劳动Section 301关税最终行动，中国商品拟适用12.5%档",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "The White House / Office of the U.S. Trade Representative",
+        "source_title": "Actions by the United States in the Investigations under Section 301 of the Trade Act of 1974 of the Acts, Policies, and Practices of 60 Economies Related to the Failure of Each Economy to Impose and Effectively Enforce a Prohibition on the Importation of Goods Produced with Forced Labor",
+        "source_url": "https://www.whitehouse.gov/presidential-actions/2026/07/actions-by-the-united-states-in-the-investigations-under-section-301-of-the-trade-act-of-1974-of-the-acts-policies-and-practices-of-60-economies-related-to-the-failure-of-each-economy-to-impose-and/"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "previous_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "expected_disposition": "operational_refresh",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "deadline_reached"
+        ]
+      }
+    },
+    {
+      "current_id": "cn-helium-temporary-export-ban-2026",
+      "previous_id": "cn-helium-temporary-export-ban-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "eu-low-value-ecommerce-duty-2026",
+      "previous_id": "eu-low-value-ecommerce-duty-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "us-section-301-brazil-tariff-2026",
+      "previous_id": "us-section-301-brazil-tariff-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    }
+  ]
+}

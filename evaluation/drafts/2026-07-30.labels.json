@@ -1,0 +1,88 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-30",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T14:44:15+08:00",
+  "review_notes": "All four records were independently checked against their official primary sources and approved by the workspace owner on 2026-07-30.",
+  "source_report_date": "2026-07-30",
+  "records": [
+    {
+      "event_id": "amazon-product-title-75-character-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      ],
+      "published_date": "2026-06-10",
+      "effective_date": "2026-07-27",
+      "deadline": "2026-07-27",
+      "status": "ongoing",
+      "level": "high",
+      "review_context": {
+        "title": "Amazon 商品标题 75 字符上限已生效，超长标题将被逐步自动改写（补录）",
+        "jurisdiction": "Amazon seller marketplace (seller market not established)",
+        "authority": "Amazon",
+        "source_title": "Updates to improve your product titles begin on July 27",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      }
+    },
+    {
+      "event_id": "eu-russia-sanctions-package-21-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.consilium.europa.eu/en/press/press-releases/2026/07/23/21st-package-of-sanctions-eu-hits-russian-energy-financial-services-and-crypto-hard/"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": null,
+      "deadline": null,
+      "status": "ongoing",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟第 21 轮对俄制裁扩大银行、加密、影子船队及贸易限制（补录）",
+        "jurisdiction": "European Union / Russia / Belarus / third countries",
+        "authority": "Council of the European Union",
+        "source_title": "21st package of sanctions: EU hits Russian energy, financial services and crypto hard",
+        "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/07/23/21st-package-of-sanctions-eu-hits-russian-energy-financial-services-and-crypto-hard/"
+      }
+    },
+    {
+      "event_id": "shopify-ups-return-labels-us-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://changelog.shopify.com/posts/ups-return-labels-now-available"
+      ],
+      "published_date": "2026-07-29",
+      "effective_date": "2026-07-29",
+      "deadline": null,
+      "status": "new",
+      "level": "low",
+      "review_context": {
+        "title": "Shopify 后台新增美国境内订单 UPS 退货标签",
+        "jurisdiction": "United States",
+        "authority": "Shopify",
+        "source_title": "UPS return labels are now available",
+        "source_url": "https://changelog.shopify.com/posts/ups-return-labels-now-available"
+      }
+    },
+    {
+      "event_id": "us-ofac-iran-hormuz-network-2026-07-29",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ofac.treasury.gov/recent-actions/20260729"
+      ],
+      "published_date": "2026-07-29",
+      "effective_date": "2026-07-29",
+      "deadline": null,
+      "status": "new",
+      "level": "high",
+      "review_context": {
+        "title": "美国 OFAC 制裁伊朗霍尔木兹海峡网络，涉及香港/深圳企业及 8 艘油轮",
+        "jurisdiction": "United States / Iran / Hong Kong / Mainland China / International shipping",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Iran-related Designations",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260729"
+      }
+    }
+  ],
+  "deduplication_cases": []
+}

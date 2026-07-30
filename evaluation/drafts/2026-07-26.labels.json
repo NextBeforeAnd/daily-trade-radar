@@ -1,0 +1,121 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-26",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:14:45+08:00",
+  "review_notes": "All four records and four deduplication cases were independently checked against official primary sources and approved by the workspace owner without label changes. The two retained events are operational refreshes, while the MOFCOM and OFAC repeats are correctly excluded as duplicates.",
+  "source_report_date": "2026-07-26",
+  "records": [
+    {
+      "event_id": "cn-export-control-eu-entities-2026-07-24",
+      "should_include": false,
+      "review_context": {
+        "title": "商务部对14家欧盟实体的两用物项出口禁令持续生效",
+        "jurisdiction": "China / European Union",
+        "authority": "中华人民共和国商务部",
+        "source_title": "商务部公告2026年第30号 公布将14家欧盟实体列入出口管制管控名单",
+        "source_url": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_452eed7fd22c431fbd3d7a8b9fad6d93.html"
+      }
+    },
+    {
+      "event_id": "eu-russia-industrial-goods-winddown-2026-07-25",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32026R0506"
+      ],
+      "published_date": "2026-04-23",
+      "effective_date": "2026-04-24",
+      "deadline": "2026-07-25",
+      "status": "effective",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟对俄工业品出口禁令的旧合同过渡期已结束",
+        "jurisdiction": "European Union / Russia",
+        "authority": "Council of the European Union",
+        "source_title": "Council Regulation (EU) 2026/506 of 23 April 2026 amending Regulation (EU) No 833/2014 concerning restrictive measures in view of Russia’s actions destabilising the situation in Ukraine",
+        "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32026R0506"
+      }
+    },
+    {
+      "event_id": "us-ofac-sdn-update-2026-07-24",
+      "should_include": false,
+      "review_context": {
+        "title": "OFAC 7月24日名单更新持续生效",
+        "jurisdiction": "United States / global sanctions exposure",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Iran-related Designations; Issuance of Amended Russia-related General License and Frequently Asked Questions; Issuance of Amended Venezuela-related Frequently Asked Question; Publication of Regulatory Amendments",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260724"
+      }
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-24",
+      "deadline": "2026-07-28",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国Section 301在途豁免仅剩约一天半，7月28日00:01截止",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Notice of Actions in Section 301 Investigations of Acts, Policies, and Practices of Various Economies Related to the Failure of Each Economy to Impose and Effectively Enforce a Prohibition on the Importation of Goods Produced with Forced Labor",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "eu-russia-industrial-goods-winddown-2026-07-25",
+      "previous_id": "eu-russia-industrial-goods-winddown-2026-07-25",
+      "expected_disposition": "operational_refresh",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "status:deadline->effective"
+        ]
+      }
+    },
+    {
+      "current_id": "us-section-301-forced-labor-60-economies-2026",
+      "previous_id": "us-section-301-forced-labor-60-economies-2026",
+      "expected_disposition": "operational_refresh",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "status:effective->deadline"
+        ]
+      }
+    },
+    {
+      "current_id": "cn-export-control-eu-entities-2026-07-24",
+      "previous_id": "cn-export-control-eu-entities-2026-07-24",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "us-ofac-sdn-update-2026-07-24",
+      "previous_id": "us-ofac-sdn-update-2026-07-24",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    }
+  ]
+}

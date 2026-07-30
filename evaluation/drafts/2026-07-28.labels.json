@@ -1,0 +1,179 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-28",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T14:57:42+08:00",
+  "review_notes": "All seven candidate decisions and four deduplication cases were independently reviewed against official primary sources and approved by the workspace owner. The EU Iran military-support sanctions renewal was corrected from an unconfirmed watch item to a high-risk measure effective on the report date.",
+  "source_report_date": "2026-07-28",
+  "records": [
+    {
+      "event_id": "amazon-us-product-title-75-character-rule-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "Amazon美国站75字符标题规则进入持续执行期",
+        "jurisdiction": "United States",
+        "authority": "Amazon",
+        "source_title": "Updates to improve your product titles begin on July 27",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      }
+    },
+    {
+      "event_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/",
+        "https://eur-lex.europa.eu/eli/dec/2026/1837/oj"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-28",
+      "deadline": "2027-07-27",
+      "status": "effective",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟涉伊朗军援制裁续期法律文件仍未确认",
+        "jurisdiction": "European Union / Iran",
+        "authority": "Council of the European Union",
+        "source_title": "EU sanctions against Iran",
+        "source_url": "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/"
+      }
+    },
+    {
+      "event_id": "hapag-lloyd-panama-canal-surcharge-far-east-north-america-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.hapag-lloyd.com/en/services-information/news/2026/07/shipping-from-far-east-to-north-america--a-panama-canal-surcharg.html"
+      ],
+      "published_date": null,
+      "effective_date": "2026-08-15",
+      "deadline": "2026-08-15",
+      "status": "deadline",
+      "level": "medium",
+      "review_context": {
+        "title": "赫伯罗特远东至北美巴拿马运河附加费8月15日起执行",
+        "jurisdiction": "International logistics",
+        "authority": "Hapag-Lloyd",
+        "source_title": "Shipping from Far East to North America? A Panama Canal Surcharge (PCC) is coming up",
+        "source_url": "https://www.hapag-lloyd.com/en/services-information/news/2026/07/shipping-from-far-east-to-north-america--a-panama-canal-surcharg.html"
+      }
+    },
+    {
+      "event_id": "shopify-multicurrency-payout-account-limit-removed-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://changelog.shopify.com/posts/add-a-bank-account-for-every-payout-currency"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-27",
+      "deadline": null,
+      "status": "new",
+      "level": "medium",
+      "review_context": {
+        "title": "Shopify Payments移除多币种收款账户8币种上限",
+        "jurisdiction": "Global / eligible regions",
+        "authority": "Shopify",
+        "source_title": "Add a bank account for every payout currency in Shopify Payments",
+        "source_url": "https://changelog.shopify.com/posts/add-a-bank-account-for-every-payout-currency"
+      }
+    },
+    {
+      "event_id": "tiktok-shop-us-auction-requirements-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "TikTok Shop美国站拍卖规则仍在执行",
+        "jurisdiction": "United States",
+        "authority": "TikTok Shop",
+        "source_title": "Auction Requirements",
+        "source_url": "https://seller-us.tiktok.com/university/essay?knowledge_id=6110392477746958"
+      }
+    },
+    {
+      "event_id": "us-bis-sound-suppressor-ear-transition-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.bis.gov/press-release/department-commerce-streamlines-export-controls-sound-suppressors"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-11-20",
+      "deadline": null,
+      "status": "new",
+      "level": "low",
+      "review_context": {
+        "title": "美国BIS说明消音器等物项将于11月20日转入EAR",
+        "jurisdiction": "United States",
+        "authority": "Bureau of Industry and Security",
+        "source_title": "Department of Commerce Streamlines Export Controls for Sound Suppressors",
+        "source_url": "https://www.bis.gov/press-release/department-commerce-streamlines-export-controls-sound-suppressors"
+      }
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-24",
+      "deadline": "2026-07-28",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国Section 301在途豁免今天12:01（新加坡时间）关闭",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Notice of Actions in Section 301 Investigations Related to Forced Labor Import Prohibitions",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "us-section-301-forced-labor-60-economies-2026",
+      "previous_id": "us-section-301-forced-labor-60-economies-2026",
+      "expected_disposition": "operational_refresh",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "deadline_reached"
+        ]
+      }
+    },
+    {
+      "current_id": "amazon-us-product-title-75-character-rule-2026",
+      "previous_id": "amazon-us-product-title-75-character-rule-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "tiktok-shop-us-auction-requirements-2026",
+      "previous_id": "tiktok-shop-us-auction-requirements-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "previous_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "expected_disposition": "material_update",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "summary_facts_or_obligation"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "offline-example-draft",
+  "review_status": "draft",
+  "records": [
+    {
+      "event_id": "example-marketplace-title-rule-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://example.com/official-announcement"
+      ],
+      "published_date": "2026-07-01",
+      "effective_date": "2026-08-01",
+      "deadline": "2026-08-01",
+      "status": "ongoing",
+      "level": "medium"
+    },
+    {
+      "event_id": "example-eu-product-rule-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://example.eu/official-rule"
+      ],
+      "published_date": "2026-07-21",
+      "effective_date": "2026-07-28",
+      "deadline": null,
+      "status": "new",
+      "level": "high"
+    },
+    {
+      "event_id": "example-rejected-search-lead-2026",
+      "should_include": false
+    }
+  ],
+  "deduplication_cases": []
+}

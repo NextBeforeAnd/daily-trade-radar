@@ -1,0 +1,69 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-29",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T14:54:40+08:00",
+  "review_notes": "Both records and the deduplication case were independently checked against official primary sources and approved by the workspace owner. The EU renewal publication date was corrected to the Official Journal publication date, and the legal act was added as accepted evidence.",
+  "source_report_date": "2026-07-29",
+  "records": [
+    {
+      "event_id": "amazon-ai-generated-people-metadata-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://sellercentral.amazon.com/seller-forums/discussions/t/aa0aee06-aff4-497a-a4b6-9b2ebe06f715"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-27",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "high",
+      "review_context": {
+        "title": "Amazon要求AI生成人物商品素材写入指定元数据（上一期漏抓）",
+        "jurisdiction": "Global Amazon stores",
+        "authority": "Amazon",
+        "source_title": "You must now tag AI-generated people in listings and A+ content",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/aa0aee06-aff4-497a-a4b6-9b2ebe06f715"
+      }
+    },
+    {
+      "event_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/",
+        "https://eur-lex.europa.eu/eli/dec/2026/1837/oj"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-28",
+      "deadline": "2027-07-27",
+      "status": "ongoing",
+      "level": "medium",
+      "review_context": {
+        "title": "欧盟官网确认涉伊朗军事支持制裁已延长至2027年7月27日",
+        "jurisdiction": "European Union / Iran",
+        "authority": "Council of the European Union",
+        "source_title": "EU sanctions against Iran",
+        "source_url": "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "previous_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "expected_disposition": "material_update",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": "exact_id",
+        "review_required": false,
+        "change_reasons": [
+          "published_date",
+          "effective_date",
+          "deadline",
+          "products_or_channels",
+          "summary_facts_or_obligation"
+        ]
+      }
+    }
+  ]
+}

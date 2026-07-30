@@ -1,0 +1,117 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-21",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:53:02+08:00",
+  "review_notes": "All five records and three deduplication cases were independently checked against official primary sources. The workspace owner approved three corrections: the unchanged Amazon title and EU low-value duty repeats are excluded and relabeled duplicate_removed, and the non-binding EU integrated P&R list's as-of date is no longer treated as an effective date.",
+  "source_report_date": "2026-07-21",
+  "records": [
+    {
+      "event_id": "amazon-title-75-characters-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "Amazon 非媒体类目标题调整进入最后6天",
+        "jurisdiction": "Global",
+        "authority": "Amazon",
+        "source_title": "Updates to improve your product titles begin on July 27",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      }
+    },
+    {
+      "event_id": "cn-helium-export-ban-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "中国对氦气实施临时禁止出口管理",
+        "jurisdiction": "China",
+        "authority": "商务部、海关总署",
+        "source_title": "商务部、海关总署公告2026年第29号",
+        "source_url": "https://policy.mofcom.gov.cn/claw/clawContent.shtml?id=106307"
+      }
+    },
+    {
+      "event_id": "eu-antidumping-china-solid-glass-microspheres-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52026XC03713"
+      ],
+      "published_date": "2026-07-16",
+      "effective_date": "2026-07-16",
+      "deadline": "2026-07-26",
+      "status": "deadline",
+      "level": "medium",
+      "review_context": {
+        "title": "欧盟对华实心玻璃微珠反倾销调查进入范围意见窗口",
+        "jurisdiction": "EU",
+        "authority": "European Commission",
+        "source_title": "Notice of initiation of an anti-dumping proceeding concerning solid glass microspheres from China",
+        "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52026XC03713"
+      }
+    },
+    {
+      "event_id": "eu-integrated-prohibitions-restrictions-list-2026-07",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://taxation-customs.ec.europa.eu/customs/prohibitions-restrictions_en"
+      ],
+      "published_date": "2026-07-20",
+      "effective_date": null,
+      "deadline": null,
+      "status": "new",
+      "level": "medium",
+      "review_context": {
+        "title": "欧盟发布截至7月1日的综合禁限清单",
+        "jurisdiction": "EU",
+        "authority": "European Commission",
+        "source_title": "Prohibitions and Restrictions - Integrated EU P&R List",
+        "source_url": "https://taxation-customs.ec.europa.eu/customs/prohibitions-restrictions_en"
+      }
+    },
+    {
+      "event_id": "eu-low-value-parcel-duty-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "欧盟更新低值电商包裹3欧元关税指引",
+        "jurisdiction": "EU",
+        "authority": "European Commission",
+        "source_title": "Guidance and legal text on temporary flat fee on low-value imports",
+        "source_url": "https://taxation-customs.ec.europa.eu/news/guidance-and-legal-text-temporary-flat-fee-low-value-imports-which-will-apply-until-1-july-2028-2026-06-08_en"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "cn-helium-export-ban-2026",
+      "previous_id": "cn-helium-export-ban-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "amazon-title-75-characters-2026",
+      "previous_id": "amazon-title-75-characters-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "eu-low-value-parcel-duty-2026",
+      "previous_id": "eu-low-value-parcel-duty-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    }
+  ]
+}

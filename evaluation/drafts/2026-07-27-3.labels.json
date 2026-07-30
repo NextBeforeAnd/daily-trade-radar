@@ -1,0 +1,135 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-27-3",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:02:58+08:00",
+  "review_notes": "All five candidate decisions and both deduplication cases were independently reviewed against official primary sources and contemporaneous platform snapshots. The repeated USTR Section 301 item was rejected, and the EU Iran renewal was corrected to the new legal act published on 2026-07-27.",
+  "source_report_date": "2026-07-27",
+  "records": [
+    {
+      "event_id": "amazon-us-product-title-75-character-rule-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      ],
+      "published_date": "2026-06-10",
+      "effective_date": "2026-07-27",
+      "deadline": null,
+      "status": "effective",
+      "level": "high",
+      "review_context": {
+        "title": "Amazon美国站商品标题75字符规则今天开始执行",
+        "jurisdiction": "United States",
+        "authority": "Amazon",
+        "source_title": "Updates to improve your product titles begin on July 27",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      }
+    },
+    {
+      "event_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/",
+        "https://eur-lex.europa.eu/eli/dec/2026/1837/oj"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-28",
+      "deadline": "2027-07-27",
+      "status": "new",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟涉伊朗军援制裁框架续期状态仍待法律文件确认",
+        "jurisdiction": "European Union / Iran",
+        "authority": "Council of the European Union",
+        "source_title": "EU sanctions against Iran",
+        "source_url": "https://www.consilium.europa.eu/en/policies/sanctions-against-iran/"
+      }
+    },
+    {
+      "event_id": "tiktok-shop-us-auction-requirements-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://seller-us.tiktok.com/university/essay?knowledge_id=6110392477746958"
+      ],
+      "published_date": "2026-07-27",
+      "effective_date": "2026-07-27",
+      "deadline": null,
+      "status": "new",
+      "level": "medium",
+      "review_context": {
+        "title": "TikTok Shop美国站发布拍卖与Surprise Set完整规则",
+        "jurisdiction": "United States",
+        "authority": "TikTok Shop",
+        "source_title": "Auction Requirements",
+        "source_url": "https://seller-us.tiktok.com/university/essay?knowledge_id=6110392477746958"
+      }
+    },
+    {
+      "event_id": "us-china-board-of-trade-rebuttal-deadline-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/sites/default/files/files/Press/Releases/2026/June%202%20FRN%20FINAL%20for%20upload.pdf"
+      ],
+      "published_date": "2026-06-02",
+      "effective_date": null,
+      "deadline": "2026-07-27",
+      "status": "deadline",
+      "level": "medium",
+      "review_context": {
+        "title": "USTR中美贸易管理机制反驳意见今天截止",
+        "jurisdiction": "United States / China",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Request for Comments on the Scope and Operation of a Mechanism to Promote Reciprocal Managed Trade with China",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/June%202%20FRN%20FINAL%20for%20upload.pdf"
+      }
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "should_include": false,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      ],
+      "published_date": "2026-07-23",
+      "effective_date": "2026-07-24",
+      "deadline": "2026-07-28",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国Section 301在途豁免明日12:01（新加坡时间）关闭",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Notice of Actions in Section 301 Investigations Related to Forced Labor Import Prohibitions",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "us-section-301-forced-labor-60-economies-2026",
+      "previous_id": "us-section-301-forced-labor-60-economies-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "summary_facts_or_obligation"
+        ]
+      }
+    },
+    {
+      "current_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "previous_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "expected_disposition": "material_update",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": [
+          "summary_facts_or_obligation"
+        ]
+      }
+    }
+  ]
+}

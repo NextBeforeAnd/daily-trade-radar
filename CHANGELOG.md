@@ -2,7 +2,32 @@
 
 All notable changes to Daily Trade Radar are documented in this file.
 
-## Unreleased (target: 0.2.0)
+## Unreleased (target: 0.3.0)
+
+### 2026-07-30
+
+#### Added
+
+- Added deterministic report evaluation against independently reviewed closed candidate sets.
+- Added precision, recall, F1, primary-source, date, status, risk-level, unsupported-source, and deduplication metrics.
+- Added configurable release gates with distinct invalid-input and quality-failure exit codes.
+- Added a draft offline label fixture, evaluation documentation, regression tests, and a CI evaluator smoke test.
+- Added a deterministic draft-label scaffolder that preserves rejected candidates and deduplication review context without claiming independent ground truth.
+- Added a 12-run review queue containing 56 candidates and 27 deduplication cases from July 21–30 historical radar outputs.
+
+- Added micro-aggregated historical evaluation with run-namespaced error identifiers and release-gate reporting.
+- Added a leakage-resistant calibration worksheet generator that deduplicates stable event IDs, excludes cross-run level conflicts, and blanks generated score dimensions.
+- Added conservative cross-ID semantic clustering to calibration scaffolds, with auditable automatic aliases, cross-alias level-conflict exclusion, and a fail-closed human review queue for ambiguous matches.
+- Added fail-closed incremental calibration updates with evidence fingerprints, score preservation via `--existing`, changed-record review queues, existing-only observation retention, machine-readable difference reports, and a calibration-readiness gate enforced by both scaffold automation and calibration.
+- Added the atomic `calibration-update` pipeline, which publishes a non-overwriting artifact bundle, stops before calibration when review is pending, compares decision-relevant metrics with the prior report, and preserves human threshold decisions only when those metrics are unchanged.
+- Added guarded `calibration-promote` baseline promotion with independent bundle recomputation, explicit human decisions, runtime threshold-adoption checks, locking, verified backups, before/after hashes, and automatic restoration on write failure.
+- Added replay-safe `calibration-rollback` with live-baseline and backup hash validation, byte-exact cross-platform restoration, pre-rollback snapshots, lock reuse, rollback manifests, and automatic recovery to the promoted state on failure.
+
+#### Changed
+
+- Bumped the package and development version to `0.3.0`.
+
+## 0.2.0
 
 ### 2026-07-28
 

@@ -1,0 +1,89 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-22",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:49:13+08:00",
+  "review_notes": "All four records were independently checked against official primary sources and approved by the workspace owner without decision changes. The direct General Administration of Customs announcement was added to support the drone declaration publication and effective dates. This run had no deduplication cases.",
+  "source_report_date": "2026-07-22",
+  "records": [
+    {
+      "event_id": "cn-drone-export-declaration-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://12335.mofcom.gov.cn/articledwmy/zcxx/dwmy/202607/1944334_1.html",
+        "https://www.customs.gov.cn/customs/2026-06/09/article_2026060916145031632.html"
+      ],
+      "published_date": "2026-06-09",
+      "effective_date": "2026-06-30",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "medium",
+      "review_context": {
+        "title": "无人机及相关物项出口须按新要求完整申报",
+        "jurisdiction": "China",
+        "authority": "General Administration of Customs",
+        "source_title": "海关总署关于规范无人机及相关物项出口申报的公告解读",
+        "source_url": "https://12335.mofcom.gov.cn/articledwmy/zcxx/dwmy/202607/1944334_1.html"
+      }
+    },
+    {
+      "event_id": "us-ofac-russia-sdn-data-updates-2026-07-20",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ofac.treasury.gov/recent-actions/20260720"
+      ],
+      "published_date": "2026-07-20",
+      "effective_date": "2026-07-20",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "medium",
+      "review_context": {
+        "title": "OFAC更新两家涉俄SDN实体的名称与识别信息",
+        "jurisdiction": "United States",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Russia-related Designations Updates",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260720"
+      }
+    },
+    {
+      "event_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.federalregister.gov/documents/full_text/html/2026/02/25/2026-03824.html"
+      ],
+      "published_date": "2026-02-20",
+      "effective_date": "2026-02-24",
+      "deadline": "2026-07-24",
+      "status": "deadline",
+      "level": "high",
+      "review_context": {
+        "title": "美国10%临时进口附加税将在7月24日到期",
+        "jurisdiction": "United States",
+        "authority": "The White House / U.S. Customs and Border Protection",
+        "source_title": "Imposing a Temporary Import Surcharge to Address Fundamental International Payments Problems",
+        "source_url": "https://www.federalregister.gov/documents/full_text/html/2026/02/25/2026-03824.html"
+      }
+    },
+    {
+      "event_id": "us-section-338-canada-tariffs-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://www.whitehouse.gov/fact-sheets/2026/07/fact-sheet-president-donald-j-trump-imposes-additional-tariffs-on-canada/"
+      ],
+      "published_date": "2026-07-20",
+      "effective_date": "2026-08-19",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "medium",
+      "review_context": {
+        "title": "美国宣布对部分加拿大商品加征50%关税",
+        "jurisdiction": "United States / Canada",
+        "authority": "The White House / Office of the U.S. Trade Representative",
+        "source_title": "Fact Sheet: President Donald J. Trump Imposes Additional Tariffs on Canada",
+        "source_url": "https://www.whitehouse.gov/fact-sheets/2026/07/fact-sheet-president-donald-j-trump-imposes-additional-tariffs-on-canada/"
+      }
+    }
+  ],
+  "deduplication_cases": []
+}

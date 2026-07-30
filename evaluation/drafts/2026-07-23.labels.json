@@ -1,0 +1,158 @@
+{
+  "dataset_version": 1,
+  "dataset_name": "daily-trade-radar-2026-07-23",
+  "review_status": "independently_reviewed",
+  "reviewed_by": "workspace owner",
+  "reviewed_at": "2026-07-30T15:46:56+08:00",
+  "review_notes": "All seven records and four deduplication cases were independently checked against official primary sources. The workspace owner approved one correction: the unchanged Section 122 surcharge deadline event is excluded and its legacy retained_after_review disposition is replaced with duplicate_removed. All other labels are approved unchanged.",
+  "source_report_date": "2026-07-23",
+  "records": [
+    {
+      "event_id": "cn-drone-export-declaration-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "无人机及相关物项出口须按新要求完整申报",
+        "jurisdiction": "China",
+        "authority": "General Administration of Customs",
+        "source_title": "海关总署关于规范无人机及相关物项出口申报的公告解读",
+        "source_url": "https://12335.mofcom.gov.cn/articledwmy/zcxx/dwmy/202607/1944334_1.html"
+      }
+    },
+    {
+      "event_id": "cn-helium-temporary-export-ban-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://wms.mofcom.gov.cn/zcfb/wmgl/art/2026/art_2a795a0d55df4cada91c9fbd2a2cc13a.html"
+      ],
+      "published_date": "2026-07-10",
+      "effective_date": "2026-07-10",
+      "deadline": null,
+      "status": "ongoing",
+      "level": "high",
+      "review_context": {
+        "title": "中国对氦气实施临时禁止出口管理",
+        "jurisdiction": "China",
+        "authority": "Ministry of Commerce / General Administration of Customs",
+        "source_title": "商务部 海关总署公告2026年第29号 公布对氦气实施临时禁止出口管理",
+        "source_url": "https://wms.mofcom.gov.cn/zcfb/wmgl/art/2026/art_2a795a0d55df4cada91c9fbd2a2cc13a.html"
+      }
+    },
+    {
+      "event_id": "eu-low-value-ecommerce-duty-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://taxation-customs.ec.europa.eu/news/guidance-and-legal-text-temporary-flat-fee-low-value-imports-which-will-apply-until-1-july-2028-2026-06-08_en"
+      ],
+      "published_date": "2026-06-08",
+      "effective_date": "2026-07-01",
+      "deadline": "2026-11-01",
+      "status": "ongoing",
+      "level": "high",
+      "review_context": {
+        "title": "欧盟低值电商进口已按每件3欧元征收临时关税",
+        "jurisdiction": "European Union",
+        "authority": "European Commission, Directorate-General for Taxation and Customs Union",
+        "source_title": "Guidance and legal text on temporary flat fee on low-value imports which will apply until 1 July 2028",
+        "source_url": "https://taxation-customs.ec.europa.eu/news/guidance-and-legal-text-temporary-flat-fee-low-value-imports-which-will-apply-until-1-july-2028-2026-06-08_en"
+      }
+    },
+    {
+      "event_id": "us-ofac-russia-sdn-data-updates-2026-07-20",
+      "should_include": false,
+      "review_context": {
+        "title": "OFAC更新两家涉俄SDN实体的名称与识别信息",
+        "jurisdiction": "United States",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Russia-related Designations Updates",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260720"
+      }
+    },
+    {
+      "event_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "should_include": false,
+      "review_context": {
+        "title": "美国10%临时进口附加税明日到期，尚未发现官方延长文件",
+        "jurisdiction": "United States",
+        "authority": "The White House / U.S. Customs and Border Protection",
+        "source_title": "Imposing a Temporary Import Surcharge to Address Fundamental International Payments Problems",
+        "source_url": "https://www.whitehouse.gov/presidential-actions/2026/02/imposing-a-temporary-import-surcharge-to-address-fundamental-international-payments-problems/"
+      }
+    },
+    {
+      "event_id": "us-section-301-brazil-tariff-2026",
+      "should_include": true,
+      "accepted_primary_source_urls": [
+        "https://ustr.gov/about/policy-offices/press-office/press-releases/2026/july/ustr-section-301-action-brazils-unreasonable-acts-policies-and-practices"
+      ],
+      "published_date": "2026-07-15",
+      "effective_date": "2026-07-22",
+      "deadline": null,
+      "status": "effective",
+      "level": "high",
+      "review_context": {
+        "title": "美国对多数巴西原产商品的25% Section 301附加税已生效",
+        "jurisdiction": "United States / Brazil",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "USTR Section 301 Action on Brazil’s Unreasonable Acts, Policies, and Practices",
+        "source_url": "https://ustr.gov/about/policy-offices/press-office/press-releases/2026/july/ustr-section-301-action-brazils-unreasonable-acts-policies-and-practices"
+      }
+    },
+    {
+      "event_id": "us-section-338-canada-tariffs-2026",
+      "should_include": false,
+      "review_context": {
+        "title": "美国宣布对部分加拿大商品加征50%关税",
+        "jurisdiction": "United States / Canada",
+        "authority": "The White House / Office of the U.S. Trade Representative",
+        "source_title": "Fact Sheet: President Donald J. Trump Imposes Additional Tariffs on Canada",
+        "source_url": "https://www.whitehouse.gov/fact-sheets/2026/07/fact-sheet-president-donald-j-trump-imposes-additional-tariffs-on-canada/"
+      }
+    }
+  ],
+  "deduplication_cases": [
+    {
+      "current_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "previous_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "us-section-338-canada-tariffs-2026",
+      "previous_id": "us-section-338-canada-tariffs-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "cn-drone-export-declaration-2026",
+      "previous_id": "cn-drone-export-declaration-2026",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    },
+    {
+      "current_id": "us-ofac-russia-sdn-data-updates-2026-07-20",
+      "previous_id": "us-ofac-russia-sdn-data-updates-2026-07-20",
+      "expected_disposition": "duplicate_removed",
+      "review_context": {
+        "similarity": 1.0,
+        "match_method": null,
+        "review_required": null,
+        "change_reasons": []
+      }
+    }
+  ]
+}

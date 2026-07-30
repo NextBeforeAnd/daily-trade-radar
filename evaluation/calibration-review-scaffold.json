@@ -1,0 +1,743 @@
+{
+  "calibration_scaffold_version": 1,
+  "review_status": "calibration_review_complete",
+  "generated_scores_excluded": true,
+  "instructions": "Resolve every excluded level conflict, then review the cited evidence independently and replace every null score dimension with an integer from 0 to 2. Do not consult the generated report score. Remove review_context and source_runs if a minimal calibrate input is desired.",
+  "sample": {
+    "source_observation_count": 42,
+    "unique_event_count": 32,
+    "record_count": 29,
+    "completed_score_breakdown_count": 29,
+    "pending_score_breakdown_count": 0,
+    "independent_watch_observation_count": 3,
+    "excluded_level_conflict_count": 1,
+    "excluded_semantic_duplicate_count": 2,
+    "reviewed_level_distribution": {
+      "watch": 3,
+      "low": 3,
+      "medium": 10,
+      "high": 13
+    }
+  },
+  "excluded_level_conflicts": [
+    {
+      "event_id": "eu-iran-military-support-sanctions-renewal-2026-07-27",
+      "reason": "reviewed_level_changed_across_runs",
+      "observations": [
+        {
+          "source_run": "2026-07-27",
+          "reviewed_level": "watch"
+        },
+        {
+          "source_run": "2026-07-27-2",
+          "reviewed_level": "high"
+        },
+        {
+          "source_run": "2026-07-27-3",
+          "reviewed_level": "high"
+        },
+        {
+          "source_run": "2026-07-28",
+          "reviewed_level": "high"
+        },
+        {
+          "source_run": "2026-07-29",
+          "reviewed_level": "medium"
+        }
+      ]
+    }
+  ],
+  "excluded_semantic_duplicates": [
+    {
+      "event_id": "amazon-product-title-75-character-2026",
+      "canonical_event_id": "amazon-us-product-title-75-character-rule-2026",
+      "reason": "same Amazon announcement, effective date, requirement, and operational consequence"
+    },
+    {
+      "event_id": "eu-russia-sanctions-package-21-2026",
+      "canonical_event_id": "eu-russia-21st-sanctions-package-2026",
+      "reason": "same EU 21st sanctions package and Council Regulation (EU) 2026/1848"
+    }
+  ],
+  "records": [
+    {
+      "event_id": "eu-antidumping-china-solid-glass-microspheres-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 1,
+        "urgency": 2
+      },
+      "score": 7,
+      "review_context": {
+        "title": "欧盟对华实心玻璃微珠反倾销调查进入范围意见窗口",
+        "jurisdiction": "EU",
+        "authority": "European Commission",
+        "source_title": "Notice of initiation of an anti-dumping proceeding concerning solid glass microspheres from China",
+        "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52026XC03713"
+      },
+      "source_runs": [
+        "2026-07-21"
+      ]
+    },
+    {
+      "event_id": "eu-integrated-prohibitions-restrictions-list-2026-07",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 1,
+        "urgency": 0
+      },
+      "score": 5,
+      "review_context": {
+        "title": "欧盟发布截至7月1日的综合禁限清单",
+        "jurisdiction": "EU",
+        "authority": "European Commission",
+        "source_title": "Prohibitions and Restrictions - Integrated EU P&R List",
+        "source_url": "https://taxation-customs.ec.europa.eu/customs/prohibitions-restrictions_en"
+      },
+      "source_runs": [
+        "2026-07-21"
+      ]
+    },
+    {
+      "event_id": "cn-drone-export-declaration-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 8,
+      "review_context": {
+        "title": "无人机及相关物项出口须按新要求完整申报",
+        "jurisdiction": "China",
+        "authority": "General Administration of Customs",
+        "source_title": "海关总署关于规范无人机及相关物项出口申报的公告解读",
+        "source_url": "https://12335.mofcom.gov.cn/articledwmy/zcxx/dwmy/202607/1944334_1.html"
+      },
+      "source_runs": [
+        "2026-07-22"
+      ]
+    },
+    {
+      "event_id": "us-ofac-russia-sdn-data-updates-2026-07-20",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "OFAC更新两家涉俄SDN实体的名称与识别信息",
+        "jurisdiction": "United States",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Russia-related Designations Updates",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260720"
+      },
+      "source_runs": [
+        "2026-07-22"
+      ]
+    },
+    {
+      "event_id": "us-section-122-surcharge-expiry-2026-07-24",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "美国10%临时进口附加税将在新加坡时间今日12:01届满，尚未发现官方延长文件",
+        "jurisdiction": "United States",
+        "authority": "The White House / U.S. Customs and Border Protection",
+        "source_title": "Imposing a Temporary Import Surcharge to Address Fundamental International Payments Problems",
+        "source_url": "https://www.whitehouse.gov/presidential-actions/2026/02/imposing-a-temporary-import-surcharge-to-address-fundamental-international-payments-problems/"
+      },
+      "source_runs": [
+        "2026-07-22",
+        "2026-07-24"
+      ]
+    },
+    {
+      "event_id": "us-section-338-canada-tariffs-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 1,
+        "regulatory_force": 2,
+        "urgency": 1
+      },
+      "score": 7,
+      "review_context": {
+        "title": "美国宣布对部分加拿大商品加征50%关税",
+        "jurisdiction": "United States / Canada",
+        "authority": "The White House / Office of the U.S. Trade Representative",
+        "source_title": "Fact Sheet: President Donald J. Trump Imposes Additional Tariffs on Canada",
+        "source_url": "https://www.whitehouse.gov/fact-sheets/2026/07/fact-sheet-president-donald-j-trump-imposes-additional-tariffs-on-canada/"
+      },
+      "source_runs": [
+        "2026-07-22"
+      ]
+    },
+    {
+      "event_id": "cn-helium-temporary-export-ban-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "中国对氦气实施临时禁止出口管理",
+        "jurisdiction": "China",
+        "authority": "Ministry of Commerce / General Administration of Customs",
+        "source_title": "商务部 海关总署公告2026年第29号 公布对氦气实施临时禁止出口管理",
+        "source_url": "https://wms.mofcom.gov.cn/zcfb/wmgl/art/2026/art_2a795a0d55df4cada91c9fbd2a2cc13a.html"
+      },
+      "source_runs": [
+        "2026-07-23"
+      ]
+    },
+    {
+      "event_id": "eu-low-value-ecommerce-duty-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 2,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "欧盟低值电商进口已按每件3欧元征收临时关税",
+        "jurisdiction": "European Union",
+        "authority": "European Commission, Directorate-General for Taxation and Customs Union",
+        "source_title": "Guidance and legal text on temporary flat fee on low-value imports which will apply until 1 July 2028",
+        "source_url": "https://taxation-customs.ec.europa.eu/news/guidance-and-legal-text-temporary-flat-fee-low-value-imports-which-will-apply-until-1-july-2028-2026-06-08_en"
+      },
+      "source_runs": [
+        "2026-07-23"
+      ]
+    },
+    {
+      "event_id": "us-section-301-brazil-tariff-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 1,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 8,
+      "review_context": {
+        "title": "美国对多数巴西原产商品的25% Section 301附加税已生效",
+        "jurisdiction": "United States / Brazil",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "USTR Section 301 Action on Brazil’s Unreasonable Acts, Policies, and Practices",
+        "source_url": "https://ustr.gov/about/policy-offices/press-office/press-releases/2026/july/ustr-section-301-action-brazils-unreasonable-acts-policies-and-practices"
+      },
+      "source_runs": [
+        "2026-07-23"
+      ]
+    },
+    {
+      "event_id": "us-ofac-sdn-update-2026-07-23",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "OFAC集中新增反恐、禁毒与古巴制裁对象，并发布三份古巴一般许可证",
+        "jurisdiction": "United States / global sanctions exposure",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Counter Terrorism Designations; Counter Narcotics Designations; Cuba Designations; Belarus-related Designation Removal; Issuance of Cuba-related General Licenses",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260723"
+      },
+      "source_runs": [
+        "2026-07-24"
+      ]
+    },
+    {
+      "event_id": "us-section-301-forced-labor-60-economies-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 2,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 10,
+      "review_context": {
+        "title": "美国Section 301在途豁免今天12:01（新加坡时间）关闭",
+        "jurisdiction": "United States / 60 investigated economies",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Notice of Actions in Section 301 Investigations Related to Forced Labor Import Prohibitions",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/FLIP%20301%20Investigation%20Final%20Action%20FRN%207-23-26%20FINAL.pdf"
+      },
+      "source_runs": [
+        "2026-07-24",
+        "2026-07-25",
+        "2026-07-26",
+        "2026-07-27",
+        "2026-07-28"
+      ]
+    },
+    {
+      "event_id": "cn-export-control-eu-entities-2026-07-24",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "商务部将14家欧盟实体列入出口管制管控名单并即时禁止两用物项出口",
+        "jurisdiction": "China / European Union",
+        "authority": "中华人民共和国商务部",
+        "source_title": "商务部公告2026年第30号 公布将14家欧盟实体列入出口管制管控名单",
+        "source_url": "https://www.mofcom.gov.cn/zcfb/blgg/gg/2026/art/2026/art_452eed7fd22c431fbd3d7a8b9fad6d93.html"
+      },
+      "source_runs": [
+        "2026-07-25"
+      ]
+    },
+    {
+      "event_id": "eu-russia-industrial-goods-winddown-2026-07-25",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "欧盟对俄工业品出口禁令的旧合同过渡期已结束",
+        "jurisdiction": "European Union / Russia",
+        "authority": "Council of the European Union",
+        "source_title": "Council Regulation (EU) 2026/506 of 23 April 2026 amending Regulation (EU) No 833/2014 concerning restrictive measures in view of Russia’s actions destabilising the situation in Ukraine",
+        "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32026R0506"
+      },
+      "source_runs": [
+        "2026-07-25",
+        "2026-07-26"
+      ]
+    },
+    {
+      "event_id": "us-ofac-sdn-update-2026-07-24",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "OFAC新增伊朗相关个人和企业，并更新俄委与委内瑞拉许可指引",
+        "jurisdiction": "United States / global sanctions exposure",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Iran-related Designations; Issuance of Amended Russia-related General License and Frequently Asked Questions; Issuance of Amended Venezuela-related Frequently Asked Question; Publication of Regulatory Amendments",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260724"
+      },
+      "source_runs": [
+        "2026-07-25"
+      ]
+    },
+    {
+      "event_id": "eu-russia-21st-sanctions-package-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "欧盟第21轮对俄制裁已生效，新增中国及香港实体与军工物项限制",
+        "jurisdiction": "European Union / Russia / third countries",
+        "authority": "Council of the European Union",
+        "source_title": "Council Regulation (EU) 2026/1848 of 23 July 2026 amending Regulation (EU) No 833/2014 concerning restrictive measures in view of Russia’s actions destabilising the situation in Ukraine",
+        "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AL_202601848"
+      },
+      "source_runs": [
+        "2026-07-27"
+      ]
+    },
+    {
+      "event_id": "shopify-app-analytics-annotations-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "low",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 0,
+        "evidence": 2,
+        "regulatory_force": 0,
+        "urgency": 0
+      },
+      "score": 3,
+      "review_context": {
+        "title": "Shopify允许应用向分析图表添加业务注释",
+        "jurisdiction": "Global",
+        "authority": "Shopify",
+        "source_title": "New app-added annotations on your analytics charts",
+        "source_url": "https://changelog.shopify.com/posts/new-app-added-annotations-on-your-analytics-charts"
+      },
+      "source_runs": [
+        "2026-07-27-2"
+      ]
+    },
+    {
+      "event_id": "tiktok-shop-us-product-compliance-refresh-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "TikTok Shop美国站集中更新召回与禁售品规则页",
+        "jurisdiction": "United States",
+        "authority": "TikTok Shop",
+        "source_title": "Product Recall Notices and Compliance Requirements",
+        "source_url": "https://seller-us.tiktok.com/university/essay?identity=1&role=seller&knowledge_id=6866148172531470"
+      },
+      "source_runs": [
+        "2026-07-27-2"
+      ]
+    },
+    {
+      "event_id": "amazon-us-product-title-75-character-rule-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 8,
+      "review_context": {
+        "title": "Amazon美国站商品标题75字符规则今天开始执行",
+        "jurisdiction": "United States",
+        "authority": "Amazon",
+        "source_title": "Updates to improve your product titles begin on July 27",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/145b6d0f-999c-4555-896c-c694bda2e470"
+      },
+      "source_runs": [
+        "2026-07-27-3"
+      ]
+    },
+    {
+      "event_id": "tiktok-shop-us-auction-requirements-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "TikTok Shop美国站发布拍卖与Surprise Set完整规则",
+        "jurisdiction": "United States",
+        "authority": "TikTok Shop",
+        "source_title": "Auction Requirements",
+        "source_url": "https://seller-us.tiktok.com/university/essay?knowledge_id=6110392477746958"
+      },
+      "source_runs": [
+        "2026-07-27-3"
+      ]
+    },
+    {
+      "event_id": "us-china-board-of-trade-rebuttal-deadline-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 0,
+        "evidence": 2,
+        "regulatory_force": 1,
+        "urgency": 2
+      },
+      "score": 6,
+      "review_context": {
+        "title": "USTR中美贸易管理机制反驳意见今天截止",
+        "jurisdiction": "United States / China",
+        "authority": "Office of the U.S. Trade Representative",
+        "source_title": "Request for Comments on the Scope and Operation of a Mechanism to Promote Reciprocal Managed Trade with China",
+        "source_url": "https://ustr.gov/sites/default/files/files/Press/Releases/2026/June%202%20FRN%20FINAL%20for%20upload.pdf"
+      },
+      "source_runs": [
+        "2026-07-27-3"
+      ]
+    },
+    {
+      "event_id": "hapag-lloyd-panama-canal-surcharge-far-east-north-america-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 1
+      },
+      "score": 7,
+      "review_context": {
+        "title": "赫伯罗特远东至北美巴拿马运河附加费8月15日起执行",
+        "jurisdiction": "International logistics",
+        "authority": "Hapag-Lloyd",
+        "source_title": "Shipping from Far East to North America? A Panama Canal Surcharge (PCC) is coming up",
+        "source_url": "https://www.hapag-lloyd.com/en/services-information/news/2026/07/shipping-from-far-east-to-north-america--a-panama-canal-surcharg.html"
+      },
+      "source_runs": [
+        "2026-07-28"
+      ]
+    },
+    {
+      "event_id": "shopify-multicurrency-payout-account-limit-removed-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "medium",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 0,
+        "urgency": 0
+      },
+      "score": 4,
+      "review_context": {
+        "title": "Shopify Payments移除多币种收款账户8币种上限",
+        "jurisdiction": "Global / eligible regions",
+        "authority": "Shopify",
+        "source_title": "Add a bank account for every payout currency in Shopify Payments",
+        "source_url": "https://changelog.shopify.com/posts/add-a-bank-account-for-every-payout-currency"
+      },
+      "source_runs": [
+        "2026-07-28"
+      ]
+    },
+    {
+      "event_id": "us-bis-sound-suppressor-ear-transition-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "low",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 1,
+        "regulatory_force": 2,
+        "urgency": 0
+      },
+      "score": 6,
+      "review_context": {
+        "title": "美国BIS说明消音器等物项将于11月20日转入EAR",
+        "jurisdiction": "United States",
+        "authority": "Bureau of Industry and Security",
+        "source_title": "Department of Commerce Streamlines Export Controls for Sound Suppressors",
+        "source_url": "https://www.bis.gov/press-release/department-commerce-streamlines-export-controls-sound-suppressors"
+      },
+      "source_runs": [
+        "2026-07-28"
+      ]
+    },
+    {
+      "event_id": "amazon-ai-generated-people-metadata-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 1,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 8,
+      "review_context": {
+        "title": "Amazon要求AI生成人物商品素材写入指定元数据（上一期漏抓）",
+        "jurisdiction": "Global Amazon stores",
+        "authority": "Amazon",
+        "source_title": "You must now tag AI-generated people in listings and A+ content",
+        "source_url": "https://sellercentral.amazon.com/seller-forums/discussions/t/aa0aee06-aff4-497a-a4b6-9b2ebe06f715"
+      },
+      "source_runs": [
+        "2026-07-29"
+      ]
+    },
+    {
+      "event_id": "shopify-ups-return-labels-us-2026",
+      "reviewer": "workspace owner",
+      "reviewed_level": "low",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 0,
+        "evidence": 2,
+        "regulatory_force": 0,
+        "urgency": 0
+      },
+      "score": 3,
+      "review_context": {
+        "title": "Shopify 后台新增美国境内订单 UPS 退货标签",
+        "jurisdiction": "United States",
+        "authority": "Shopify",
+        "source_title": "UPS return labels are now available",
+        "source_url": "https://changelog.shopify.com/posts/ups-return-labels-now-available"
+      },
+      "source_runs": [
+        "2026-07-30"
+      ]
+    },
+    {
+      "event_id": "us-ofac-iran-hormuz-network-2026-07-29",
+      "reviewer": "workspace owner",
+      "reviewed_level": "high",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 2,
+        "evidence": 2,
+        "regulatory_force": 2,
+        "urgency": 2
+      },
+      "score": 9,
+      "review_context": {
+        "title": "美国 OFAC 制裁伊朗霍尔木兹海峡网络，涉及香港/深圳企业及 8 艘油轮",
+        "jurisdiction": "United States / Iran / Hong Kong / Mainland China / International shipping",
+        "authority": "U.S. Department of the Treasury, Office of Foreign Assets Control",
+        "source_title": "Iran-related Designations",
+        "source_url": "https://ofac.treasury.gov/recent-actions/20260729"
+      },
+      "source_runs": [
+        "2026-07-30"
+      ]
+    },
+    {
+      "event_id": "cn-potential-ai-technology-export-controls-2026-07-21",
+      "reviewer": "workspace owner",
+      "reviewed_level": "watch",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 0,
+        "evidence": 0,
+        "regulatory_force": 0,
+        "urgency": 0
+      },
+      "score": 1,
+      "review_context": {
+        "title": "中国或研究扩大AI技术出口限制，尚无主管部门正式文件",
+        "jurisdiction": "China / global technology trade",
+        "authority": "Unconfirmed; attributed to China's Ministry of Commerce",
+        "source_title": "China is considering export controls on AI technologies, including banning local companies from using TSMC, report claims",
+        "source_url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/china-is-considering-export-controls-on-ai-technologies-including-banning-local-companies-from-using-tsmc-report-claims-restrictions-would-also-advanced-ai-models-training-data-and-overseas-acquisitions",
+        "source_type": "secondary_report_without_opened_primary_text",
+        "missing_confirmation": "No Ministry of Commerce draft, announcement, or consultation text was located."
+      },
+      "source_runs": [
+        "2026-07-30-watch-supplement"
+      ]
+    },
+    {
+      "event_id": "amazon-fba-future-release-date-reset-report-2026-07-26",
+      "reviewer": "workspace owner",
+      "reviewed_level": "watch",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 0,
+        "evidence": 0,
+        "regulatory_force": 0,
+        "urgency": 0
+      },
+      "score": 1,
+      "review_context": {
+        "title": "Amazon FBA商品未来发布日期疑似被系统覆盖",
+        "jurisdiction": "Amazon seller marketplace; seller market unconfirmed",
+        "authority": "Unconfirmed seller report",
+        "source_title": "Future Release Date Changed to Creation Date – Has My Honeymoon Already Started?",
+        "source_url": "https://www.reddit.com/r/Amazonsellercentral/comments/1v7gvo3/future_release_date_changed_to_creation_date_has/",
+        "source_type": "single_seller_report",
+        "missing_confirmation": "No Amazon-owned incident notice, policy update, or reproducible account evidence was located."
+      },
+      "source_runs": [
+        "2026-07-30-watch-supplement"
+      ]
+    },
+    {
+      "event_id": "tiktok-shop-store-rating-aht-report-2026-07",
+      "reviewer": "workspace owner",
+      "reviewed_level": "watch",
+      "score_breakdown": {
+        "business_exposure": 1,
+        "consequence": 0,
+        "evidence": 0,
+        "regulatory_force": 0,
+        "urgency": 0
+      },
+      "score": 1,
+      "review_context": {
+        "title": "TikTok Shop店铺评分算法据称改用售后处理时长",
+        "jurisdiction": "TikTok Shop; seller market unconfirmed",
+        "authority": "Unconfirmed third-party operator report",
+        "source_title": "TikTok Shop is changing how Store Rating works in July 2026",
+        "source_url": "https://www.reddit.com/r/TikTokShopForBrands/comments/1t0zmj5/tiktok_shop_is_changing_how_store_rating_works_in/",
+        "source_type": "third_party_operator_report",
+        "missing_confirmation": "No matching TikTok Shop public policy page or authenticated original notice was opened."
+      },
+      "source_runs": [
+        "2026-07-30-watch-supplement"
+      ]
+    }
+  ]
+}

@@ -19,6 +19,26 @@ LEVEL_ORDER = ("watch", "low", "medium", "high")
 CURRENT_THRESHOLDS = (1, 4, 7)
 
 
+def _require_incremental_calibration_gate(data: dict) -> None:
+    """Prevent an incremental worksheet with unresolved changes from being calibrated."""
+    if "incremental_merge" not in data:
+        return
+    report = data.get("incremental_diff")
+    if not isinstance(report, dict):
+        raise ValueError("incremental calibration input is missing incremental_diff")
+    gate = report.get("calibration_gate")
+    if not isinstance(gate, dict) or not isinstance(gate.get("ready"), bool):
+        raise ValueError("incremental calibration input has an invalid calibration_gate")
+    if not gate["ready"]:
+        blockers = gate.get("blockers")
+        blocker_types = [
+            item.get("type")
+            for item in blockers if isinstance(item, dict) and isinstance(item.get("type"), str)
+        ] if isinstance(blockers, list) else []
+        detail = ", ".join(blocker_types) or "unresolved incremental changes"
+        raise ValueError(f"incremental calibration gate blocked: {detail}")
+
+
 def _level_with_thresholds(score: int, thresholds: tuple[int, int, int]) -> str:
     watch_max, low_max, medium_max = thresholds
     if score <= watch_max:
@@ -144,6 +164,7 @@ def _metrics(events: list[dict], thresholds: tuple[int, int, int]) -> dict:
 def calibrate(data: dict, minimum_samples: int = 20, minimum_per_level: int = 3) -> dict:
     if minimum_samples < 1 or minimum_per_level < 1:
         raise ValueError("minimum sample limits must be positive")
+    _require_incremental_calibration_gate(data)
     records = _validated_records(data)
     events, conflicts, agreement = _consensus(records)
     label_counts = Counter(event["reviewed_level"] for event in events)

@@ -72,6 +72,22 @@ def atomic_write_text(path: Path, text: str) -> None:
         raise
 
 
+def atomic_write_bytes(path: Path, content: bytes) -> None:
+    """Atomically replace a file without newline or encoding transformations."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    temp_path = Path(temp_name)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        temp_path.replace(path)
+    except BaseException:
+        temp_path.unlink(missing_ok=True)
+        raise
+
+
 class FileLock:
     def __init__(self, path: Path, timeout: float = LOCK_TIMEOUT_SECONDS, stale_after: float = STALE_LOCK_SECONDS):
         self.path = path
