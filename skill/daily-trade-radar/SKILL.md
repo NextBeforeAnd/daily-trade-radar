@@ -30,6 +30,15 @@ Set the reporting window before research:
 - independently scan rules taking effect, expiring, or reaching a consultation deadline in the next 30 days;
 - normalize the cutoff and exact event timestamps to ISO 8601 with UTC offsets.
 
+Before browsing a multi-jurisdiction, product, HS-code, or marketplace scope, build and validate the structured research plan described in [references/research-planning.md](references/research-planning.md). Use its official, effective/deadline, product, marketplace, and lead tracks as the research contract. When marketplaces are in scope, materialize the plan's registry-driven acquisition manifests:
+
+```text
+daily-trade-radar plan --scope scope.json --output research-plan.json --manifest-dir manifests
+daily-trade-radar plan --validate research-plan.json
+```
+
+A plan is not evidence. Do not mark a track complete until its direct sources have been opened and its acquisition receipts or explicit gaps exist.
+
 ## Research current developments
 
 Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.
@@ -37,6 +46,16 @@ Browse because the task is time-sensitive. Search the source categories and quer
 For every registered platform named in scope, load its bundled configuration from `src/daily_trade_radar/platforms/data/` and run the mandatory discovery pass in [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). The registry currently includes TikTok Shop, Temu, Shopify, Jumia, Amazon, AliExpress, Shopee, Lazada, eBay, and Walmart Marketplace. Use a seven-day platform lookback in addition to the main reporting window because seller pages are often indexed late or omit publication timestamps. Open and record every page actually checked. A coverage checkbox without a supporting URL is not evidence.
 
 Use the auditable acquisition workflow in [references/acquisition.md](references/acquisition.md): create a registry-driven manifest before checking platform routes, produce one receipt for every successful or failed access attempt, and derive the draft coverage ledger from those receipts. A receipt proves an access attempt, not a policy claim; primary-source reading, snapshot comparison, and event verification are still required.
+
+Use the source-health workflow in [references/source-health.md](references/source-health.md) to distinguish successful coverage from missing, partial, blocked, authenticated, timed-out, rate-limited, or structurally changed sources:
+
+```text
+daily-trade-radar doctor
+daily-trade-radar doctor --probe --platform Shopify
+daily-trade-radar doctor --postmortem RUN_DIRECTORY --json --output source-health.json
+```
+
+Public probes are bounded access checks only. They do not probe authenticated dashboards and do not prove that a policy page was substantively reviewed.
 
 Treat cached public receipts as bounded research acceleration only. Reuse only successful receipts within their configured TTL; retry login gates, blocked requests, missing routes, and connection failures on the next run. Use an explicit refresh when current access state matters or the source may have changed inside the TTL.
 
@@ -56,6 +75,14 @@ daily-trade-radar snapshot-audit --store s3://private-radar/history --backend s3
 When the in-app browser is available, use it for platform pages that require interactive navigation or may already have a signed-in seller session. Check the authenticated inbox, policy center, account health, logistics, settlement, and category notices when accessible. Never submit, acknowledge, appeal, change settings, or otherwise mutate a seller account unless the user requests that action.
 
 Preserve credible platform leads that cannot yet be confirmed as `unconfirmed` watchlist events instead of silently dropping them. Label the source type and the missing confirmation. Do not promote a lead to the main action table until the underlying platform-owned page or authenticated notice has been opened.
+
+When secondary leads are numerous or conflicting, normalize them and run the early-signal workflow in [references/discovery-signals.md](references/discovery-signals.md):
+
+```text
+daily-trade-radar discover leads.json --output discovery.json
+```
+
+Use its priority score only to order verification work. It is not the event risk score. Cross-source clustering must respect jurisdiction and platform conflicts, and every output remains `unconfirmed`, `watch`, and ineligible for promotion until primary confirmation.
 
 For every candidate event, capture the publication date, effective date, jurisdiction, affected products or sellers, concrete requirement, source title, direct URL, and retrieval date. Capture `published_at`, `effective_at`, `deadline_at`, and `source_timezone` when an official source supplies exact timing. Never treat a search-result snippet as evidence. Open and read the supporting page.
 
@@ -103,6 +130,16 @@ The deduplicator matches stable IDs first, rejects jurisdiction/platform/seller-
 
 If the previous radar exists only as prose, compare by jurisdiction, authority, regulation or program name, product/HS code, platform, and effective date. Explain the deduplication basis briefly.
 
+For persistent continuity across validated runs, use the local history and drill workflow in [references/history-and-drill.md](references/history-and-drill.md):
+
+```text
+daily-trade-radar library ingest REPORT_OR_RUN_DIRECTORY --db radar-library.sqlite3
+daily-trade-radar library search "QUERY" --db radar-library.sqlite3
+daily-trade-radar drill EVENT_ID --library radar-library.sqlite3 --output drill-plan.json
+```
+
+The library joins only stable event IDs and never silently performs semantic aliasing. A drill plan schedules focused source revalidation; it does not itself confirm, promote, or modify an event. Run its queries and primary targets through the normal receipt, snapshot, scoring, validation, and deduplication gates.
+
 ## Validate and render
 
 Validate the final event file before writing:
@@ -148,6 +185,10 @@ Before delivery, confirm:
 - every platform registry entry exposes source depth, and every missing update/current-policy/dashboard route has a declared gap;
 - every platform named in scope has a coverage-ledger entry and every positive check is backed by an opened URL;
 - every planned platform route has an acquisition receipt or an explicit coverage gap, and authenticated browser text was not persisted;
+- the research plan passes identity validation, covers every scoped platform exactly once, and keeps discovery leads at `lead_only` evidence status;
+- the source-health postmortem contains no unexplained `not_checked`, `partial`, `blocked`, `timeout`, `rate_limited`, or `schema_drift` state hidden behind a “no update” conclusion;
+- discovery priority is kept separate from event risk, cross-source corroboration counts distinct domains, and no discovery cluster is marked promotion-eligible;
+- every drill conclusion is backed by newly opened primary or platform-owned evidence, not merely by the generated drill plan or historical library;
 - every reused acquisition receipt is successful, unexpired, and identity-bound to the exact manifest task;
 - every opened public update/current-policy page has snapshot metadata, and every claimed page change cites either a historical diff or an explicit platform changelog;
 - the selected snapshot backend remains consistent within a radar series and its persistent store is retained outside the Skill package;

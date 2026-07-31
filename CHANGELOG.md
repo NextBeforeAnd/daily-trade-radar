@@ -8,6 +8,16 @@ All notable changes to Daily Trade Radar are documented in this file.
 
 #### Added
 
+- Added identity-bound research plans with validated official-update, upcoming-deadline, product/HS-code, marketplace-policy, and lead-only discovery tracks.
+- Added `daily-trade-radar plan` plus a compatibility script, deterministic default windows, strict platform scope resolution, plan-tamper detection, and optional materialization of registry-driven marketplace manifests.
+- Added `daily-trade-radar doctor` plus a compatibility script for registry inventory, bounded public probes, explicit fix guidance, and receipt-backed postmortems over completed run directories.
+- Added typed source-health states for successful checks, no relevant updates, partial work, blocking, authentication gates, timeouts, rate limits, schema drift, declared configuration gaps, and unchecked routes.
+- Added research-planning and source-health operator documentation and offline regression coverage for both phases.
+- Added `discover` early-signal prioritization with typed lead inputs, deterministic 0-100 verification priority, distinct-domain corroboration, scope-conflict-safe clustering, a noise floor, and a hard unconfirmed/watch/no-promotion boundary.
+- Added a local SQLite radar library that ingests validated reports, replaces repeated runs idempotently, preserves stable-ID sightings, uses FTS5 when available, and falls back to portable field search.
+- Added `drill` plans for exact event IDs with report or library baselines, historical sightings, primary and registered platform targets, focused revalidation queries, refresh policy, and fail-closed promotion requirements.
+- Added compatibility scripts, operator references, unified CLI routes, and offline regression tests for discovery, history search, and focused drills.
+
 - Added an optional S3-compatible snapshot backend with SDK-chain credentials, AES-256 server-side encryption requests, immutable create-only snapshot objects, optimistic ETag page-index protection, portable references, and offline fake-client regression tests.
 - Extended `snapshot-audit` to S3 stores with chain, hash, chronology, diff, reference, encryption-metadata, and orphan-object verification.
 - Added deterministic report evaluation against independently reviewed closed candidate sets.

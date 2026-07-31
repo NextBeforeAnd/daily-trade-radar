@@ -36,6 +36,12 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Extracts marketplace changes into a structured platform/market/program analysis and owner-level action checklist.
 - Runs a mandatory seven-day marketplace discovery pass, records every opened source URL, and rejects unsupported "checked" claims.
 - Builds registry-driven acquisition manifests and evidence receipts, with bounded HTTP retries, RSS/Atom/sitemap parsing, public-content caching, and automatic draft coverage ledgers.
+- Builds identity-bound research plans with separate official-publication, upcoming-deadline, product/HS-code, marketplace, and secondary-lead tracks.
+- Materializes scoped marketplace plan entries into the existing registry-driven acquisition manifests while preserving the mandatory seven-day platform window.
+- Audits source health through registry inventory, bounded public probes, and receipt-backed run postmortems without confusing access failure with “no update.”
+- Prioritizes and clusters early signals by recency, distinct-domain corroboration, business relevance, source quality, and evidenced momentum while keeping every lead unconfirmed and watch-level.
+- Indexes validated radar history in a local SQLite library with stable-ID sightings, FTS5 when available, portable fallback search, and idempotent run replacement.
+- Builds focused event drill plans from one report or the history library, including current-source targets, amendments, dates, applicability, enforcement, and material-change questions.
 - Integrity-checks manifest/task identities, binds receipts to their exact routes, preserves immutable receipt history, and prevents failed or expired access results from becoming reusable cache hits.
 - Uses an available signed-in browser session for read-only Seller Center checks and retains credible unresolved platform leads in the watchlist.
 
@@ -105,6 +111,37 @@ HS 9405, Amazon EU, product safety, customs duties, and marketplace rules.
 
 Useful inputs include target countries, products, HS codes, platforms, priority themes, timezone, language, and the previous report.
 
+Create and validate the research contract before a multi-scope run:
+
+```bash
+daily-trade-radar plan --scope scope.json --output research-plan.json --manifest-dir manifests
+daily-trade-radar plan --validate research-plan.json
+```
+
+Inspect configured routes, run bounded public checks, or diagnose a completed run:
+
+```bash
+daily-trade-radar doctor
+daily-trade-radar doctor --probe --platform Shopify
+daily-trade-radar doctor --postmortem radar-runs/2026-07-31 --json --output source-health.json
+```
+
+Public probes never access authenticated dashboards. A successful probe is still only an access signal; policy claims require substantive primary-source review and the normal snapshot and receipt workflow.
+
+Prioritize unresolved leads without mixing popularity into regulatory risk:
+
+```bash
+daily-trade-radar discover leads.json --output discovery.json
+```
+
+Build a local validated-report history and drill one event:
+
+```bash
+daily-trade-radar library ingest ../radar-runs --db radar-library.sqlite3
+daily-trade-radar library search "EU battery regulation" --db radar-library.sqlite3
+daily-trade-radar drill EVENT_ID --library radar-library.sqlite3 --refresh --output drill-plan.json
+```
+
 For marketplace monitoring, provide the seller market and operating model when possible—for example, TikTok Shop US local seller, Temu semi-managed, Shopify Managed Markets, or Jumia Nigeria Vendor Center. The workflow does not generalize a rule across markets or seller programs without evidence.
 
 ## Output model
@@ -143,7 +180,7 @@ python -m pip install -e "skill/daily-trade-radar[docx]"
 daily-trade-radar validate examples/current.json
 ```
 
-The package also supports `python -m daily_trade_radar`. Commands are `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
+The package also supports `python -m daily_trade_radar`. Commands are `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `plan`, `doctor`, `discover`, `library`, `drill`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
 
 List the installed marketplace registry:
 
