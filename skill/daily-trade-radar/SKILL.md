@@ -42,13 +42,15 @@ Treat cached public receipts as bounded research acceleration only. Reuse only s
 
 Capture the normalized visible text of every opened public update or current-policy page and run `scripts/snapshot_platform_page.py` against the persistent snapshot store for that radar series. Put the returned `snapshot` object into the matching `sources_checked` entry. Use the historical diff to distinguish a real page change from a refreshed timestamp or a first-seen page. A first snapshot establishes a baseline; it does not prove what changed.
 
-Choose and operate the persistent backend according to [references/snapshot-storage.md](references/snapshot-storage.md). The default filesystem backend is human-inspectable, SQLite provides transactional concurrent history, and Git provides commit-addressed audit history for public page text. Preserve `storage_backend`, `snapshot_ref`, `diff_ref`, and `index_recovered`; also preserve `git_commit` and `git_tree` for Git captures. Use portable refs instead of absolute compatibility paths when moving history.
+Choose and operate the persistent backend according to [references/snapshot-storage.md](references/snapshot-storage.md). The default filesystem backend is human-inspectable, SQLite provides transactional concurrent history, Git provides commit-addressed audit history, and S3 provides conditional shared private object storage for public page text. Preserve `storage_backend`, `snapshot_ref`, `diff_ref`, and `index_recovered`; also preserve `git_commit` and `git_tree` for Git captures. Use portable refs instead of absolute compatibility paths when moving history.
 
 ```text
 python scripts/snapshot_platform_page.py --platform "Amazon" --url "https://..." --content-file page.txt --store radar-snapshots --backend filesystem --captured-at "2026-07-27T17:00:00+08:00" --output snapshot.json
 python scripts/snapshot_platform_page.py --platform "Amazon" --url "https://..." --content-file page.txt --store radar-history.sqlite3 --backend sqlite --captured-at "2026-07-27T17:00:00+08:00" --output snapshot.json
 python scripts/snapshot_platform_page.py --platform "Amazon" --url "https://..." --content-file page.txt --store radar-history.git --backend git --captured-at "2026-07-27T17:00:00+08:00" --output snapshot.json
+python scripts/snapshot_platform_page.py --platform "Amazon" --url "https://..." --content-file page.txt --store s3://private-radar/history --backend s3 --captured-at "2026-07-27T17:00:00+08:00" --output snapshot.json
 daily-trade-radar snapshot-audit --store radar-history.git --output snapshot-audit.json
+daily-trade-radar snapshot-audit --store s3://private-radar/history --backend s3 --output snapshot-audit.json
 ```
 
 When the in-app browser is available, use it for platform pages that require interactive navigation or may already have a signed-in seller session. Check the authenticated inbox, policy center, account health, logistics, settlement, and category notices when accessible. Never submit, acknowledge, appeal, change settings, or otherwise mutate a seller account unless the user requests that action.
@@ -149,7 +151,7 @@ Before delivery, confirm:
 - every reused acquisition receipt is successful, unexpired, and identity-bound to the exact manifest task;
 - every opened public update/current-policy page has snapshot metadata, and every claimed page change cites either a historical diff or an explicit platform changelog;
 - the selected snapshot backend remains consistent within a radar series and its persistent store is retained outside the Skill package;
-- every Git snapshot store passes `snapshot-audit`, contains public page text only, and is pushed to a remote only through an explicit operator-controlled workflow;
+- every Git or S3 snapshot store passes `snapshot-audit` and contains public page text only; Git is pushed only through an explicit operator-controlled workflow;
 - the platform discovery pass uses at least a seven-day lookback and retains credible unresolved leads as `unconfirmed` watchlist events;
 - laws or customs measures that merely affect platform sellers are not mislabeled as platform-owned policy changes;
 - platform actions include a completion artifact such as an exported SKU/order list, settings screenshot, submitted document, ticket, or approved decision record;

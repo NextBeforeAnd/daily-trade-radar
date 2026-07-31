@@ -164,7 +164,7 @@ SNAPSHOT_GIT_FIELDS = {
     "git_commit": str,
     "git_tree": str,
 }
-SNAPSHOT_BACKENDS = {"filesystem", "sqlite", "git"}
+SNAPSHOT_BACKENDS = {"filesystem", "sqlite", "git", "s3"}
 SNAPSHOT_STATUSES = {"first_seen", "unchanged", "changed"}
 SNAPSHOT_REQUIRED_RESULTS = {"no_relevant_update", "candidate_found", "verified_event"}
 

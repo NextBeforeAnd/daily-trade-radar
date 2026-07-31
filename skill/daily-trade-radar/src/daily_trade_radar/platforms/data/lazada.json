@@ -5,9 +5,10 @@
   "seller_markets": ["SG", "MY", "TH", "VN", "PH", "ID"],
   "programs": ["local seller", "cross-border seller", "LazMall", "FBL", "global selling"],
   "official_routes": [
+    {"route_id": "cross-border-policy-center", "source_type": "current_policy", "url": "https://education.lazada.com/cms/policy", "market_specific": false, "markets": ["*"], "access": "public", "evidence_role": "current_rule", "verification_status": "verified", "last_verified_on": "2026-07-31"},
     {"route_id": "seller-center", "source_type": "dashboard", "url": "https://sellercenter.lazada.com/", "market_specific": true, "markets": ["*"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
   ],
-  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"official_updates": "Announcement and Lazada University routes are country-specific and must be verified from the official country portal.", "current_policy": "Open the market-specific policy article linked from Seller Center or Lazada University."}},
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"official_updates": "Announcement routes remain country-specific and must be verified from the official country portal or Seller Center."}},
   "dashboard_checks": ["Announcements", "Lazada University", "Product Policy", "Account Health", "Logistics", "Returns", "Fees", "Finance"],
   "applicability_dimensions": ["seller_market", "seller_type", "program", "product_category", "fulfillment_model"],
   "policy_areas": ["listing_product_compliance", "pricing_promotions", "fees_commissions", "fulfillment_logistics", "returns_refunds_aftersales", "account_health_enforcement", "payments_settlement_tax"],

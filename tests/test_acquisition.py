@@ -60,12 +60,13 @@ class ManifestTest(unittest.TestCase):
 
     def test_registry_source_gaps_are_preserved_in_manifest_and_coverage(self) -> None:
         manifest = build_platform_manifest(["AliExpress"], "CN", "cross-border", START, CUTOFF, CHECKED)
-        self.assertEqual({gap["source_type"] for gap in manifest.planning_gaps}, {
-            "official_updates", "current_policy",
-        })
+        self.assertEqual(
+            {gap["source_type"] for gap in manifest.planning_gaps},
+            {"official_updates"},
+        )
+        self.assertTrue(any(task.source_type == "current_policy" for task in manifest.tasks))
         row = build_coverage_ledger(manifest, [])[0]
         self.assertTrue(any("Declared official_updates source gap" in gap for gap in row["gaps"]))
-        self.assertTrue(any("Declared current_policy source gap" in gap for gap in row["gaps"]))
 
     def test_platform_window_must_cover_seven_days(self) -> None:
         with self.assertRaisesRegex(ValueError, "at least 7 days"):

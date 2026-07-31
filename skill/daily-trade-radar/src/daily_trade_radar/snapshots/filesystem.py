@@ -315,8 +315,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--platform", required=True)
     parser.add_argument("--url", required=True)
     parser.add_argument("--content-file", required=True, help="UTF-8 text file, or - for stdin")
-    parser.add_argument("--store", required=True, type=Path)
+    parser.add_argument("--store", required=True, help="Local path, or s3://bucket/prefix for the S3 backend")
     parser.add_argument("--backend", default="filesystem")
+    parser.add_argument("--s3-endpoint-url", help="Optional S3-compatible HTTPS endpoint; never include credentials")
+    parser.add_argument("--s3-region", help="Optional S3 region name")
     parser.add_argument("--captured-at", default=datetime.now().astimezone().isoformat(timespec="seconds"))
     parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
@@ -324,9 +326,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         from .store import create_snapshot_store
 
-        snapshot_store = create_snapshot_store(args.backend, args.store)
+        options = {}
+        if args.backend.casefold().strip() == "s3":
+            options = {"endpoint_url": args.s3_endpoint_url, "region_name": args.s3_region}
+        elif args.s3_endpoint_url or args.s3_region:
+            raise ValueError("--s3-endpoint-url and --s3-region require --backend s3")
+        snapshot_store = create_snapshot_store(args.backend, args.store, **options)
         result = snapshot_store.capture(args.platform, args.url, content, args.captured_at)
-    except (OSError, ValueError, json.JSONDecodeError, sqlite3.DatabaseError) as exc:
+    except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     rendered = json.dumps(result, ensure_ascii=False, indent=2) + "\n"

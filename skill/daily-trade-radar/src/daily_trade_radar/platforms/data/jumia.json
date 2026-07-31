@@ -5,11 +5,13 @@
   "seller_markets": ["NG", "EG", "KE", "MA", "UG", "CI", "GH", "SN", "DZ"],
   "programs": ["marketplace seller", "Jumia Express", "drop-off", "vendor"],
   "official_routes": [
-    {"route_id": "vendor-hub", "source_type": "official_updates", "url": "https://vendorhub.jumia.com/", "market_specific": true, "markets": ["*"], "access": "mixed", "evidence_role": "discovery", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true}
+    {"route_id": "vendor-hub", "source_type": "official_updates", "url": "https://vendorhub.jumia.com/", "market_specific": true, "markets": ["*"], "access": "mixed", "evidence_role": "discovery", "verification_status": "conditional", "last_verified_on": null, "verify_before_use": true},
+    {"route_id": "group-sell-egypt", "source_type": "current_policy", "url": "https://group.jumia.com/business/marketplace/sell", "market_specific": true, "markets": ["EG"], "access": "public", "evidence_role": "current_rule", "verification_status": "verified", "last_verified_on": "2026-07-31"},
+    {"route_id": "egypt-vendor-center", "source_type": "dashboard", "url": "https://vendorcenter.jumia.com/sign-up?code=jumia-eg", "market_specific": true, "markets": ["EG"], "access": "authenticated", "evidence_role": "account_specific", "verification_status": "verified", "last_verified_on": "2026-07-31"}
   ],
-  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {"current_policy": "Country policy and fee pages must be reached from the current official country portal.", "dashboard": "Vendor Center hosts and authentication differ by country; verify the market-owned login route before use."}},
+  "source_profile": {"expected_source_types": ["official_updates", "current_policy", "dashboard"], "known_gaps": {}},
   "dashboard_checks": ["Seller Announcements", "Jumia University", "Fees", "Fulfillment", "Returns", "Account Quality", "Payments"],
   "applicability_dimensions": ["seller_country", "program", "fulfillment_model", "product_category", "account_notice"],
   "policy_areas": ["fees_commissions", "listing_product_compliance", "fulfillment_logistics", "returns_refunds_aftersales", "account_health_enforcement", "payments_settlement_tax"],
-  "notes": ["Record the exact Jumia country and do not generalize from another country portal."]
+  "notes": ["Record the exact Jumia country and do not generalize from another country portal.", "The verified public and dashboard routes currently establish Egypt onboarding only; VendorHub closed the connection on 2026-07-31 and remains conditional."]
 }

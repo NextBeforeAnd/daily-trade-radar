@@ -8,6 +8,8 @@ All notable changes to Daily Trade Radar are documented in this file.
 
 #### Added
 
+- Added an optional S3-compatible snapshot backend with SDK-chain credentials, AES-256 server-side encryption requests, immutable create-only snapshot objects, optimistic ETag page-index protection, portable references, and offline fake-client regression tests.
+- Extended `snapshot-audit` to S3 stores with chain, hash, chronology, diff, reference, encryption-metadata, and orphan-object verification.
 - Added deterministic report evaluation against independently reviewed closed candidate sets.
 - Added precision, recall, F1, primary-source, date, status, risk-level, unsupported-source, and deduplication metrics.
 - Added configurable release gates with distinct invalid-input and quality-failure exit codes.
@@ -26,6 +28,8 @@ All notable changes to Daily Trade Radar are documented in this file.
 #### Changed
 
 - Bumped the package and development version to `0.3.0`.
+- Upgraded AliExpress, Lazada, Temu, and Jumia from constrained to hybrid source depth by adding verified public current-policy entry routes while retaining conditional or explicit gaps for missing stable official-update feeds.
+- Tightened `full` platform source depth so every required source type must have a verified route; merely configuring conditional routes no longer qualifies a platform as fully covered.
 
 ## 0.2.0
 

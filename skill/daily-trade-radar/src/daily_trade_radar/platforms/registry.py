@@ -164,12 +164,17 @@ def _load_config(path: Path) -> PlatformConfig:
 
 def source_depth(config: PlatformConfig) -> dict[str, Any]:
     actual_types = {route["source_type"] for route in config.official_routes}
+    verified_types = {
+        route["source_type"]
+        for route in config.official_routes
+        if route["verification_status"] == "verified"
+    }
     missing_types = sorted(ROUTE_TYPES - actual_types)
     verified_public = sum(
         route["verification_status"] == "verified" and route["access"] in {"public", "mixed"}
         for route in config.official_routes
     )
-    if not missing_types and verified_public:
+    if not missing_types and verified_types == ROUTE_TYPES and verified_public:
         status = "full"
     elif len(actual_types) >= 2:
         status = "hybrid"
@@ -179,6 +184,7 @@ def source_depth(config: PlatformConfig) -> dict[str, Any]:
         "status": status,
         "route_count": len(config.official_routes),
         "configured_source_types": sorted(actual_types),
+        "verified_source_types": sorted(verified_types),
         "missing_source_types": missing_types,
         "verified_public_route_count": verified_public,
         "conditional_route_count": sum(

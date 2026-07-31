@@ -29,4 +29,8 @@ def create_snapshot_store(backend: str, root, **options) -> SnapshotStore:
         from .git import GitSnapshotStore
 
         return GitSnapshotStore(root, **options)
+    if normalized == "s3":
+        from .s3 import S3SnapshotStore
+
+        return S3SnapshotStore(root, **options)
     raise ValueError(f"unsupported snapshot backend: {backend}")

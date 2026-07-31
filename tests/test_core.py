@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
+import hashlib
+import io
 import json
 import shutil
 import sqlite3
@@ -31,6 +33,7 @@ from daily_trade_radar.scoring import level_for_score
 from daily_trade_radar.snapshots.filesystem import FilesystemSnapshotStore, normalize_content
 from daily_trade_radar.snapshots.git import GitSnapshotStore
 from daily_trade_radar.snapshots.sqlite import SQLiteSnapshotStore
+from daily_trade_radar.snapshots.s3 import S3SnapshotStore, parse_s3_uri, validate_endpoint_url
 from daily_trade_radar.snapshots.store import create_snapshot_store
 from daily_trade_radar.validation import validate
 
@@ -169,8 +172,16 @@ class PlatformRegistryUnitTest(unittest.TestCase):
         self.assertEqual(source_depth(registry["shopify"])["status"], "full")
         self.assertEqual(source_depth(registry["tiktok-shop"])["status"], "full")
         aliexpress = source_depth(registry["aliexpress"])
-        self.assertEqual(aliexpress["status"], "constrained")
-        self.assertEqual(set(aliexpress["declared_gaps"]), {"official_updates", "current_policy"})
+        self.assertEqual(aliexpress["status"], "hybrid")
+        self.assertEqual(set(aliexpress["declared_gaps"]), {"official_updates"})
+        self.assertEqual(source_depth(registry["lazada"])["status"], "hybrid")
+        self.assertEqual(source_depth(registry["temu"])["status"], "hybrid")
+        jumia = source_depth(registry["jumia"])
+        self.assertEqual(jumia["status"], "hybrid")
+        self.assertEqual(
+            set(jumia["verified_source_types"]),
+            {"current_policy", "dashboard"},
+        )
 
     def test_platform_config_rejects_silent_or_weak_route_coverage(self) -> None:
         source = SKILL / "src" / "daily_trade_radar" / "platforms" / "data" / "shopify.json"
@@ -328,6 +339,122 @@ class SQLiteSnapshotStoreUnitTest(unittest.TestCase):
             metadata = json.loads(output.read_text(encoding="utf-8"))
             self.assertEqual(metadata["storage_backend"], "sqlite")
             self.assertTrue((root / "store" / "snapshots.sqlite3").exists())
+
+
+class FakeS3Error(RuntimeError):
+    def __init__(self, code: str):
+        super().__init__(code)
+        self.response = {"Error": {"Code": code}}
+
+
+class FakeS3Client:
+    def __init__(self):
+        self.objects: dict[tuple[str, str], tuple[bytes, str]] = {}
+        self.puts: list[dict] = []
+
+    def get_object(self, *, Bucket: str, Key: str) -> dict:
+        try:
+            body, etag = self.objects[(Bucket, Key)]
+        except KeyError as exc:
+            raise FakeS3Error("NoSuchKey") from exc
+        return {"Body": io.BytesIO(body), "ETag": etag}
+
+    def head_object(self, *, Bucket: str, Key: str) -> dict:
+        if (Bucket, Key) not in self.objects:
+            raise FakeS3Error("NoSuchKey")
+        matching = [item for item in self.puts if item["Bucket"] == Bucket and item["Key"] == Key]
+        return {"ServerSideEncryption": matching[-1].get("ServerSideEncryption")}
+
+    def list_objects_v2(self, *, Bucket: str, Prefix: str, ContinuationToken=None) -> dict:
+        keys = sorted(key for bucket, key in self.objects if bucket == Bucket and key.startswith(Prefix))
+        return {"Contents": [{"Key": key} for key in keys], "IsTruncated": False}
+
+    def put_object(self, **arguments) -> dict:
+        key = (arguments["Bucket"], arguments["Key"])
+        current = self.objects.get(key)
+        if arguments.get("IfNoneMatch") == "*" and current is not None:
+            raise FakeS3Error("PreconditionFailed")
+        if "IfMatch" in arguments and (current is None or current[1] != arguments["IfMatch"]):
+            raise FakeS3Error("PreconditionFailed")
+        body = bytes(arguments["Body"])
+        etag = '"' + hashlib.md5(body, usedforsecurity=False).hexdigest() + '"'
+        self.objects[key] = (body, etag)
+        self.puts.append(dict(arguments))
+        return {"ETag": etag}
+
+
+class S3SnapshotStoreUnitTest(unittest.TestCase):
+    url = "https://seller.example.com/policy?utm_source=test"
+    captured_at = "2026-07-28T10:00:00+08:00"
+
+    def test_factory_history_validation_and_encryption_header(self) -> None:
+        client = FakeS3Client()
+        store = create_snapshot_store("S3", "s3://radar-private/history", client=client)
+        self.assertIsInstance(store, S3SnapshotStore)
+        first = store.capture("Example", self.url, "Policy A", self.captured_at)
+        second = store.capture("Example", self.url, "Policy A", "2026-07-29T10:00:00+08:00")
+        third = store.capture("Example", self.url, "Policy B", "2026-07-30T10:00:00+08:00")
+
+        self.assertEqual(first["change_status"], "first_seen")
+        self.assertEqual(second["change_status"], "unchanged")
+        self.assertEqual(third["change_status"], "changed")
+        self.assertEqual(third["previous_snapshot_id"], second["snapshot_id"])
+        self.assertEqual(third["storage_backend"], "s3")
+        self.assertTrue(third["snapshot_path"].startswith("s3://radar-private/history/"))
+        self.assertFalse(Path(third["snapshot_ref"]).is_absolute())
+        self.assertIsNotNone(third["diff_ref"])
+        self.assertTrue(all(item["ServerSideEncryption"] == "AES256" for item in client.puts))
+        self.assertTrue(any(item.get("IfMatch") for item in client.puts))
+        self.assertEqual(store.load_latest("Example", self.url)["snapshot_id"], third["snapshot_id"])
+        audit = store.audit()
+        self.assertTrue(audit["valid"], audit["errors"])
+        self.assertEqual(audit["snapshot_count"], 3)
+
+        report = json.loads((EXAMPLES / "current.json").read_text(encoding="utf-8"))
+        report["coverage_ledger"][0]["sources_checked"][0]["snapshot"] = third
+        self.assertEqual(validate(report), [])
+
+    def test_idempotency_and_chronological_protection(self) -> None:
+        client = FakeS3Client()
+        store = S3SnapshotStore("s3://radar-private", client=client)
+        first = store.capture("Example", self.url, "Policy A", self.captured_at)
+        repeated = store.capture("Example", self.url, "Policy A", self.captured_at)
+        self.assertEqual(repeated["snapshot_id"], first["snapshot_id"])
+        with self.assertRaisesRegex(ValueError, "must advance"):
+            store.capture("Example", self.url, "Policy B", self.captured_at)
+
+    def test_store_uri_rejects_credentials_and_dot_segments(self) -> None:
+        self.assertEqual(parse_s3_uri("s3://bucket/prefix"), ("bucket", "prefix"))
+        for value in ("https://bucket/key", "s3://user:secret@bucket/key", "s3://bucket/a/../b"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                parse_s3_uri(value)
+        self.assertEqual(validate_endpoint_url("https://objects.example.com/"), "https://objects.example.com")
+        self.assertEqual(validate_endpoint_url("http://127.0.0.1:9000"), "http://127.0.0.1:9000")
+        for endpoint in ("http://objects.example.com", "https://user:secret@objects.example.com"):
+            with self.subTest(endpoint=endpoint), self.assertRaises(ValueError):
+                validate_endpoint_url(endpoint)
+
+    def test_audit_detects_tampering_and_unreferenced_objects(self) -> None:
+        client = FakeS3Client()
+        store = S3SnapshotStore("s3://radar-private/history", client=client)
+        result = store.capture("Example", self.url, "Policy A", self.captured_at)
+        snapshot_key = result["snapshot_ref"]
+        body, etag = client.objects[("radar-private", snapshot_key)]
+        record = json.loads(body.decode("utf-8"))
+        record["content"] = "tampered"
+        client.objects[("radar-private", snapshot_key)] = (
+            (json.dumps(record) + "\n").encode("utf-8"),
+            etag,
+        )
+        orphan = "history/pages/orphan/snapshots/orphan.json"
+        client.put_object(
+            Bucket="radar-private", Key=orphan, Body=b"{}", ContentType="application/json",
+            ServerSideEncryption="AES256", IfNoneMatch="*",
+        )
+        audit = store.audit()
+        self.assertFalse(audit["valid"])
+        self.assertTrue(any("content hash mismatch" in error for error in audit["errors"]))
+        self.assertTrue(any("unreferenced snapshot object" in error for error in audit["errors"]))
 
 
 @unittest.skipUnless(shutil.which("git"), "Git executable is required")
