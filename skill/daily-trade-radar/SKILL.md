@@ -27,8 +27,11 @@ Set the reporting window before research:
 
 - when a previous radar JSON exists, use its `cutoff` as the new `window_start`;
 - otherwise use the trailing 24 hours;
+- independently run a rolling seven-day discovery backfill for government regulators, product regulators, and material logistics developments, even when a previous cutoff exists; use this to recover late-indexed publications and prior-run misses;
 - independently scan rules taking effect, expiring, or reaching a consultation deadline in the next 30 days;
 - normalize the cutoff and exact event timestamps to ISO 8601 with UTC offsets.
+
+Do not relabel a backfilled item as `new` when it was published before the main reporting window. Retain it as `ongoing`, `effective`, or `deadline` as appropriate, and explain in `rationale` that it was first discovered during the backfill.
 
 Before browsing a multi-jurisdiction, product, HS-code, or marketplace scope, build and validate the structured research plan described in [references/research-planning.md](references/research-planning.md). Use its official, effective/deadline, product, marketplace, and lead tracks as the research contract. When marketplaces are in scope, materialize the plan's registry-driven acquisition manifests:
 
@@ -42,6 +45,8 @@ A plan is not evidence. Do not mark a track complete until its direct sources ha
 ## Research current developments
 
 Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.
+
+Run both tracks for every default jurisdiction: (1) direct official-source checks and (2) a broad, product-neutral news discovery pass. The discovery pass must include import bans, equipment-authorization restrictions, covered lists, national-security determinations, product prohibitions, and restrictions on new models. For United States scope, check the FCC routes named in the source map even when the user did not supply product keywords.
 
 For every registered platform named in scope, load its bundled configuration from `src/daily_trade_radar/platforms/data/` and run the mandatory discovery pass in [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). The registry currently includes TikTok Shop, Temu, Shopify, Jumia, Amazon, AliExpress, Shopee, Lazada, eBay, and Walmart Marketplace. Use a seven-day platform lookback in addition to the main reporting window because seller pages are often indexed late or omit publication timestamps. Open and record every page actually checked. A coverage checkbox without a supporting URL is not evidence.
 
@@ -186,6 +191,8 @@ Before delivery, confirm:
 - every platform named in scope has a coverage-ledger entry and every positive check is backed by an opened URL;
 - every planned platform route has an acquisition receipt or an explicit coverage gap, and authenticated browser text was not persisted;
 - the research plan passes identity validation, covers every scoped platform exactly once, and keeps discovery leads at `lead_only` evidence status;
+- the seven-day regulator/logistics discovery backfill was run, and every material pre-window item first found there is labeled as a late discovery rather than as new;
+- United States default coverage includes FCC Covered List and equipment-authorization developments, with an explicit coverage gap if an FCC route could not be checked;
 - the source-health postmortem contains no unexplained `not_checked`, `partial`, `blocked`, `timeout`, `rate_limited`, or `schema_drift` state hidden behind a “no update” conclusion;
 - discovery priority is kept separate from event risk, cross-source corroboration counts distinct domains, and no discovery cluster is marked promotion-eligible;
 - every drill conclusion is backed by newly opened primary or platform-owned evidence, not merely by the generated drill plan or historical library;
@@ -201,4 +208,5 @@ Before delivery, confirm:
 - the report states the reporting-window start and exact event times when available;
 - the platform coverage ledger matches the narrative coverage gaps;
 - `blocked` and `login_required` reflect different observed access outcomes;
+- no jurisdiction-wide no-update claim is made when a mandatory official-source route or the broad discovery track was not checked; state the gap in the same conclusion instead;
 - “no material new item found” is used when the research supports that conclusion.

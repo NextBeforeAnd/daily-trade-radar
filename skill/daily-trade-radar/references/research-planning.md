@@ -32,7 +32,7 @@ daily-trade-radar plan --scope scope.json --output research-plan.json --manifest
 daily-trade-radar plan --validate research-plan.json
 ```
 
-The plan always contains official-publication, upcoming-effective/deadline, and secondary-lead tracks. Product or HS-code scope adds a product-applicability track. Each scoped marketplace adds exactly one platform-policy track and one `manifest_request`. `--manifest-dir` materializes those requests through the existing platform registry, producing normal acquisition manifests with a minimum seven-day platform window.
+The plan always contains official-publication, upcoming-effective/deadline, and secondary-lead tracks. The secondary-lead track is a rolling seven-day backfill for late-indexed and previously missed government, product-regulator, and material logistics developments. United States default authority coverage includes FCC Covered List and equipment-authorization developments even when no product keywords were supplied. Product or HS-code scope adds a product-applicability track. Each scoped marketplace adds exactly one platform-policy track and one `manifest_request`. `--manifest-dir` materializes those requests through the existing platform registry, producing normal acquisition manifests with a minimum seven-day platform window.
 
 Track evidence requirements are fixed:
 

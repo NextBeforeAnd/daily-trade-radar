@@ -48,6 +48,11 @@ class ResearchPlanTest(unittest.TestCase):
         requirements = {track.kind: track.evidence_requirement for track in plan.tracks}
         self.assertEqual(requirements["official_updates"], "primary")
         self.assertEqual(requirements["discovery_leads"], "lead_only")
+        official = next(track for track in plan.tracks if track.kind == "official_updates")
+        self.assertIn("FCC Covered List", official.authorities)
+        discovery = next(track for track in plan.tracks if track.kind == "discovery_leads")
+        self.assertTrue(any("equipment authorization" in query for query in discovery.queries))
+        self.assertIn("rolling seven-day backfill", discovery.notes)
 
     def test_product_and_platform_scope_create_tracks_and_manifest_request(self) -> None:
         plan = build_research_plan({

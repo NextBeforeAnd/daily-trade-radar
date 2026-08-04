@@ -40,9 +40,9 @@ SOURCE_TYPES = {
 AUTHORITY_MAP = {
     "china": ("Ministry of Commerce", "General Administration of Customs", "State Taxation Administration", "SAMR"),
     "cn": ("Ministry of Commerce", "General Administration of Customs", "State Taxation Administration", "SAMR"),
-    "united states": ("Federal Register", "BIS", "OFAC", "USTR", "CBP"),
-    "usa": ("Federal Register", "BIS", "OFAC", "USTR", "CBP"),
-    "us": ("Federal Register", "BIS", "OFAC", "USTR", "CBP"),
+    "united states": ("Federal Register", "BIS", "OFAC", "USTR", "CBP", "FCC Covered List"),
+    "usa": ("Federal Register", "BIS", "OFAC", "USTR", "CBP", "FCC Covered List"),
+    "us": ("Federal Register", "BIS", "OFAC", "USTR", "CBP", "FCC Covered List"),
     "european union": ("European Commission", "EUR-Lex", "Access2Markets"),
     "eu": ("European Commission", "EUR-Lex", "Access2Markets"),
 }
@@ -315,7 +315,10 @@ class ResearchPlan:
 
 def _subject_terms(products: tuple[str, ...], hs_codes: tuple[str, ...], keywords: tuple[str, ...]) -> str:
     values = (*products, *(f"HS {code}" for code in hs_codes), *keywords)
-    return " ".join(values) if values else "trade customs sanctions tariffs product compliance"
+    return " ".join(values) if values else (
+        "trade customs sanctions tariffs product compliance import ban "
+        "equipment authorization covered list national security new models"
+    )
 
 
 def build_research_plan(scope_value: dict[str, Any], *, now: datetime | None = None) -> ResearchPlan:
@@ -440,8 +443,18 @@ def build_research_plan(scope_value: dict[str, Any], *, now: datetime | None = N
         seller_markets=tuple(item.seller_market for item in platform_scopes),
         programs=tuple(item.program for item in platform_scopes),
         source_types=("discovery_lead",), source_urls=(),
-        queries=tuple(f"{region} {subject} trade compliance logistics seller update" for region in regions),
-        notes="Leads may enter only the unconfirmed watchlist until a primary or platform-owned source is opened.",
+        queries=tuple(
+            query
+            for region in regions
+            for query in (
+                f"{region} {subject} trade compliance logistics seller update",
+                f"{region} import ban equipment authorization covered list national security new models",
+            )
+        ),
+        notes=(
+            "Run this as a rolling seven-day backfill for late-indexed and previously missed items. "
+            "Leads may enter only the unconfirmed watchlist until a primary or platform-owned source is opened."
+        ),
     ))
 
     normalized_scope = {
