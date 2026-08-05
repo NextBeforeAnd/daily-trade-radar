@@ -23,11 +23,18 @@ DEFAULT_REGIONS = ("China", "United States", "European Union")
 TRACK_KINDS = {
     "official_updates",
     "effective_deadlines",
+    "logistics_chokepoints",
     "product_scope",
     "marketplace_policy",
     "discovery_leads",
 }
-FRESHNESS_MODES = {"reporting_window", "upcoming_30_days", "platform_lookback", "lead_lookback"}
+FRESHNESS_MODES = {
+    "reporting_window",
+    "upcoming_30_days",
+    "logistics_lookback",
+    "platform_lookback",
+    "lead_lookback",
+}
 EVIDENCE_REQUIREMENTS = {"primary", "platform_owned", "lead_only"}
 SOURCE_TYPES = {
     "official_publication",
@@ -35,8 +42,31 @@ SOURCE_TYPES = {
     "official_updates",
     "current_policy",
     "dashboard",
+    "maritime_security_notice",
+    "carrier_notice",
     "discovery_lead",
 }
+MARITIME_AUTHORITIES = (
+    "UK Maritime Trade Operations",
+    "International Maritime Organization",
+    "Joint Maritime Information Center",
+    "Maritime Security Centre Indian Ocean",
+    "U.S. Maritime Administration",
+)
+MARITIME_SOURCE_URLS = (
+    "https://www.ukmto.org/recent-incidents",
+    "https://www.ukmto.org/ukmto-products",
+    "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-strait-of-hormuz.aspx",
+    "https://www.maritime.dot.gov/msci",
+)
+MARITIME_QUERIES = (
+    "Strait of Hormuz UKMTO vessel attack incident closure reopening safe navigation shipping",
+    "Bab el-Mandeb Red Sea UKMTO vessel attack blockade rerouting shipping",
+    "Suez Canal authority closure grounding congestion transit advisory",
+    "Panama Canal authority restrictions draft congestion transit advisory",
+    "South China Sea Taiwan Strait Black Sea maritime incident port closure shipping advisory",
+    "Maersk CMA CGM Hapag-Lloyd MSC service suspension surcharge rerouting maritime security",
+)
 AUTHORITY_MAP = {
     "china": ("Ministry of Commerce", "General Administration of Customs", "State Taxation Administration", "SAMR"),
     "cn": ("Ministry of Commerce", "General Administration of Customs", "State Taxation Administration", "SAMR"),
@@ -238,13 +268,16 @@ class ResearchPlan:
         if len(ids) != len(set(ids)):
             raise ValueError("research track ids must be unique")
         kinds = {track.kind for track in self.tracks}
-        required = {"official_updates", "effective_deadlines", "discovery_leads"}
+        required = {"official_updates", "effective_deadlines", "logistics_chokepoints", "discovery_leads"}
         if not required <= kinds:
             raise ValueError(f"research plan is missing required tracks: {', '.join(sorted(required - kinds))}")
+        if sum(track.kind == "logistics_chokepoints" for track in self.tracks) != 1:
+            raise ValueError("research plan must contain exactly one logistics_chokepoints track")
         for track in self.tracks:
             expected = {
                 "official_updates": "primary",
                 "effective_deadlines": "primary",
+                "logistics_chokepoints": "primary",
                 "product_scope": "primary",
                 "marketplace_policy": "platform_owned",
                 "discovery_leads": "lead_only",
@@ -388,6 +421,21 @@ def build_research_plan(scope_value: dict[str, Any], *, now: datetime | None = N
         source_types=("current_rule", "official_publication"), source_urls=(),
         queries=tuple(f"{authority} {subject} effective deadline expires consultation {deadline_end[:10]}" for authority in authorities),
         notes="Verify the exact year, timezone, scope, and operative text on the current official rule.",
+    ))
+    maritime_identity = {"window": window_start, "cutoff": cutoff, "routes": MARITIME_SOURCE_URLS}
+    tracks.append(ResearchTrack(
+        track_id=_track_id("logistics_chokepoints", maritime_identity), kind="logistics_chokepoints",
+        label="Maritime chokepoints and material shipping incidents", weight=1.0,
+        freshness_mode="logistics_lookback", evidence_requirement="primary",
+        regions=("International logistics",), authorities=MARITIME_AUTHORITIES,
+        products=products, hs_codes=hs_codes, platforms=(), seller_markets=(), programs=(),
+        source_types=("maritime_security_notice", "carrier_notice", "official_publication"),
+        source_urls=MARITIME_SOURCE_URLS, queries=MARITIME_QUERIES,
+        notes=(
+            "Open the direct maritime-security routes and run both the reporting-window check and a rolling "
+            "seven-day backfill. Record incident time separately from publication time. Carrier silence is not "
+            "evidence that a chokepoint has no material change; reopening talks are not operational reopening."
+        ),
     ))
     if products or hs_codes:
         identity = {"products": products, "hs_codes": hs_codes, "regions": regions}

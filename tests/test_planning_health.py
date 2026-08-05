@@ -39,7 +39,7 @@ class ResearchPlanTest(unittest.TestCase):
         })
         self.assertEqual(plan.scope["regions"], ["China", "United States", "European Union"])
         self.assertTrue(
-            {"official_updates", "effective_deadlines", "discovery_leads"}
+            {"official_updates", "effective_deadlines", "logistics_chokepoints", "discovery_leads"}
             <= {track.kind for track in plan.tracks}
         )
         self.assertEqual(sum(track.kind == "marketplace_policy" for track in plan.tracks), 10)
@@ -47,12 +47,32 @@ class ResearchPlanTest(unittest.TestCase):
         self.assertEqual(plan.deadline_end, "2026-08-30T09:00:00+08:00")
         requirements = {track.kind: track.evidence_requirement for track in plan.tracks}
         self.assertEqual(requirements["official_updates"], "primary")
+        self.assertEqual(requirements["logistics_chokepoints"], "primary")
         self.assertEqual(requirements["discovery_leads"], "lead_only")
         official = next(track for track in plan.tracks if track.kind == "official_updates")
         self.assertIn("FCC Covered List", official.authorities)
         discovery = next(track for track in plan.tracks if track.kind == "discovery_leads")
         self.assertTrue(any("equipment authorization" in query for query in discovery.queries))
         self.assertIn("rolling seven-day backfill", discovery.notes)
+        maritime = next(track for track in plan.tracks if track.kind == "logistics_chokepoints")
+        self.assertEqual(maritime.freshness_mode, "logistics_lookback")
+        self.assertEqual(sum(track.kind == "logistics_chokepoints" for track in plan.tracks), 1)
+        self.assertTrue(any("ukmto.org/recent-incidents" in url for url in maritime.source_urls))
+        self.assertTrue(any("imo.org" in url for url in maritime.source_urls))
+        for chokepoint in ("Strait of Hormuz", "Bab el-Mandeb", "Suez Canal", "Panama Canal"):
+            self.assertTrue(any(chokepoint in query for query in maritime.queries))
+        self.assertIn("Carrier silence is not evidence", maritime.notes)
+
+    def test_plan_without_maritime_chokepoint_track_fails_closed(self) -> None:
+        plan = build_research_plan({
+            "created_at": CREATED, "window_start": START, "cutoff": CUTOFF, "platforms": [],
+        })
+        changed = plan.to_dict()
+        changed["tracks"] = [
+            track for track in changed["tracks"] if track["kind"] != "logistics_chokepoints"
+        ]
+        with self.assertRaisesRegex(ValueError, "logistics_chokepoints"):
+            ResearchPlan.from_dict(changed)
 
     def test_product_and_platform_scope_create_tracks_and_manifest_request(self) -> None:
         plan = build_research_plan({
