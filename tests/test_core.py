@@ -129,6 +129,7 @@ class PlatformRegistryUnitTest(unittest.TestCase):
         self.assertEqual(
             set(registry),
             {
+                "alibaba-com",
                 "aliexpress",
                 "amazon",
                 "ebay",
@@ -155,6 +156,7 @@ class PlatformRegistryUnitTest(unittest.TestCase):
         self.assertEqual(canonical_platform_id("TikTok Shop"), "tiktok-shop")
         self.assertEqual(canonical_platform_id("速卖通"), "aliexpress")
         self.assertEqual(canonical_platform_id("虾皮"), "shopee")
+        self.assertEqual(canonical_platform_id("阿里巴巴国际站"), "alibaba-com")
         self.assertEqual(canonical_platform_id("易贝"), "ebay")
 
     def test_scope_detection_finds_new_platforms(self) -> None:

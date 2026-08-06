@@ -42,8 +42,15 @@ class ResearchPlanTest(unittest.TestCase):
             {"official_updates", "effective_deadlines", "logistics_chokepoints", "discovery_leads"}
             <= {track.kind for track in plan.tracks}
         )
-        self.assertEqual(sum(track.kind == "marketplace_policy" for track in plan.tracks), 10)
-        self.assertEqual(len(plan.manifest_requests), 10)
+        expected_default_platforms = {
+            "Amazon", "TikTok Shop", "Temu", "Shopify", "Shopee", "Alibaba.com", "AliExpress", "Jumia",
+        }
+        self.assertEqual(
+            {item["platform"] for item in plan.scope["platforms"]},
+            expected_default_platforms,
+        )
+        self.assertEqual(sum(track.kind == "marketplace_policy" for track in plan.tracks), 8)
+        self.assertEqual(len(plan.manifest_requests), 8)
         self.assertEqual(plan.deadline_end, "2026-08-30T09:00:00+08:00")
         requirements = {track.kind: track.evidence_requirement for track in plan.tracks}
         self.assertEqual(requirements["official_updates"], "primary")

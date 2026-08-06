@@ -68,6 +68,14 @@ class ManifestTest(unittest.TestCase):
         row = build_coverage_ledger(manifest, [])[0]
         self.assertTrue(any("Declared official_updates source gap" in gap for gap in row["gaps"]))
 
+    def test_alibaba_com_manifest_keeps_platform_separate_from_aliexpress(self) -> None:
+        manifest = build_platform_manifest(["阿里巴巴国际站"], "CN", "Gold Supplier", START, CUTOFF, CHECKED)
+        self.assertEqual({task.platform for task in manifest.tasks}, {"Alibaba.com"})
+        self.assertEqual(
+            {task.source_type for task in manifest.tasks},
+            {"official_updates", "current_policy", "dashboard"},
+        )
+
     def test_platform_window_must_cover_seven_days(self) -> None:
         with self.assertRaisesRegex(ValueError, "at least 7 days"):
             build_platform_manifest(["Shopify"], "SG", "Shopify", "2026-07-27T00:00:00+08:00", CUTOFF)

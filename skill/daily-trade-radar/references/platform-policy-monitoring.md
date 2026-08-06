@@ -53,7 +53,7 @@ Record `login_required` only when an authentication screen or authenticated-sess
 
 URLs and navigation can vary by seller market. Confirm that the page is owned by the platform and states the applicable market before citing it.
 
-The JSON registry is the machine-readable source for entry routes. The platform notes below retain research judgment for the original six platforms. Shopee, Lazada, eBay, and Walmart Marketplace use the same mandatory discovery pass; their configured dashboard checks and applicability dimensions replace the need for hard-coded validation logic.
+The JSON registry is the machine-readable source for entry routes. The platform notes below retain research judgment for the original platforms and Alibaba.com. Shopee, Lazada, eBay, and Walmart Marketplace use the same mandatory discovery pass; their configured dashboard checks and applicability dimensions replace the need for hard-coded validation logic.
 
 ### TikTok Shop
 
@@ -103,6 +103,14 @@ The JSON registry is the machine-readable source for entry routes. The platform 
 - When authenticated access is available, check seller announcements, violation/penalty messages, category access, product compliance, logistics and warehouse notices, after-sales disputes, funds/settlement, and store assessment notices.
 - Search separately for category and prohibited-product rules, listing/content, pricing and promotions, commissions/deposits, Choice/managed programs, logistics SLAs, returns/refunds, intellectual property, penalties, settlement, and data/API changes.
 - If the seller portal is public but its rule feed requires authentication, record the public entry as checked and the rule feed/dashboard as `login_required`; if the site closes the connection or rejects the region, record `blocked` instead.
+
+### Alibaba.com
+
+- Treat Alibaba.com (阿里巴巴国际站) as a separate B2B marketplace from AliExpress. Never merge their rules, seller programs, or evidence.
+- Start with the Alibaba.com Rule Center (`rulechannel.alibaba.com/icbu?type=detail`) for dated rule announcements and the Alibaba.com Seller Central pages for current onboarding and product-control requirements.
+- When authenticated access is available, check My Alibaba notifications, rule and violation messages, business verification, product qualification, intellectual property, Trade Assurance, logistics, payments, RFQ, and supplier-rating notices.
+- Separate Gold Supplier, Verified Supplier, Trade Assurance, RFQ, and country-specific seller programs. Keep the seller market and program `unknown` when the source does not establish them.
+- Cite the direct rule detail or current-policy page, not only the Rule Center index or a Seller Central marketing page. Record My Alibaba as `login_required` only after observing the authentication gate.
 
 ## Evidence requirements
 

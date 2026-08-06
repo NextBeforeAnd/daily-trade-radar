@@ -20,6 +20,16 @@ from .snapshots.filesystem import atomic_write_text
 
 SCHEMA_VERSION = "1.0"
 DEFAULT_REGIONS = ("China", "United States", "European Union")
+DEFAULT_PLATFORM_IDS = (
+    "amazon",
+    "tiktok-shop",
+    "temu",
+    "shopify",
+    "shopee",
+    "alibaba-com",
+    "aliexpress",
+    "jumia",
+)
 TRACK_KINDS = {
     "official_updates",
     "effective_deadlines",
@@ -384,7 +394,11 @@ def build_research_plan(scope_value: dict[str, Any], *, now: datetime | None = N
     priority_themes = _strings(scope_value.get("priority_themes"), "priority_themes")
     raw_platforms = scope_value.get("platforms")
     if raw_platforms is None and "platforms" not in scope_value:
-        raw_platforms = [load_registry()[key].display_name for key in sorted(load_registry())]
+        registry = load_registry()
+        missing_defaults = [key for key in DEFAULT_PLATFORM_IDS if key not in registry]
+        if missing_defaults:
+            raise ValueError(f"default platform is not registered: {', '.join(missing_defaults)}")
+        raw_platforms = [registry[key].display_name for key in DEFAULT_PLATFORM_IDS]
     if not isinstance(raw_platforms, list):
         raise ValueError("platforms must be an array")
     platform_scopes: list[PlatformScope] = []

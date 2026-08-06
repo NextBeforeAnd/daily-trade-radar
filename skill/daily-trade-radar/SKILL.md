@@ -19,7 +19,7 @@ Infer missing preferences when safe. Record:
 - output language;
 - previous radar or event JSON used for deduplication.
 
-If no scope is supplied, cover China export controls and customs, the United States, the European Union, major cross-border marketplaces, and material logistics changes. State this default scope in the report.
+If no scope is supplied, cover China export controls and customs, the United States, the European Union, material logistics changes, and the fixed core platform set: Amazon, TikTok Shop, Temu, Shopify, Shopee, Alibaba.com, AliExpress, and Jumia. Do not replace this core set with an agent-selected subset. Use a smaller or different platform scope only when the user explicitly requests it. State the applied scope in the report.
 
 Treat an unqualified request for “外贸行情” as a request for this regulatory and operational radar. Include exchange rates, demand indicators, freight prices, or macro commentary only when the user asks for them or when they materially change a listed action.
 
@@ -50,7 +50,7 @@ Run both tracks for every default jurisdiction: (1) direct official-source check
 
 Run the dedicated maritime-chokepoint track on every radar. Open the direct UKMTO, IMO, and MARAD routes named in the source map; check the Strait of Hormuz, Bab el-Mandeb/Red Sea, Suez Canal, and Panama Canal in both the reporting window and a rolling seven-day backfill. Record incident time separately from publication time. Do not infer “no material logistics change” from carrier silence, and do not treat reopening talks as operational reopening without a current navigational or authority notice.
 
-For every registered platform named in scope, load its bundled configuration from `src/daily_trade_radar/platforms/data/` and run the mandatory discovery pass in [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). The registry currently includes TikTok Shop, Temu, Shopify, Jumia, Amazon, AliExpress, Shopee, Lazada, eBay, and Walmart Marketplace. Use a seven-day platform lookback in addition to the main reporting window because seller pages are often indexed late or omit publication timestamps. Open and record every page actually checked. A coverage checkbox without a supporting URL is not evidence.
+For every registered platform named in scope, load its bundled configuration from `src/daily_trade_radar/platforms/data/` and run the mandatory discovery pass in [references/platform-policy-monitoring.md](references/platform-policy-monitoring.md). The registry currently includes TikTok Shop, Temu, Shopify, Jumia, Amazon, Alibaba.com, AliExpress, Shopee, Lazada, eBay, and Walmart Marketplace. The unqualified daily-radar default is the fixed eight-platform core set defined above; the remaining registered platforms are available when explicitly scoped. Use a seven-day platform lookback in addition to the main reporting window because seller pages are often indexed late or omit publication timestamps. Open and record every page actually checked. A coverage checkbox without a supporting URL is not evidence.
 
 Use the auditable acquisition workflow in [references/acquisition.md](references/acquisition.md): create a registry-driven manifest before checking platform routes, produce one receipt for every successful or failed access attempt, and derive the draft coverage ledger from those receipts. A receipt proves an access attempt, not a policy claim; primary-source reading, snapshot comparison, and event verification are still required.
 

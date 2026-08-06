@@ -11,7 +11,7 @@ The scope JSON accepts:
 - `regions`, `products`, `hs_codes`, `keywords`, and `priority_themes` arrays;
 - `platforms`, whose entries may be registered display names or objects with `platform`, `seller_market`, and `program`.
 
-When time fields are omitted, the builder uses the current local cutoff, a trailing 24-hour reporting window, and a 30-day upcoming deadline window. When regions are omitted, it uses China, the United States, and the European Union. When the `platforms` field is omitted, every registered cross-border channel is planned with market and program marked `unknown`; pass an explicit empty array to exclude platform monitoring. Platform names must resolve through the bundled registry; unknown markets or programs remain explicitly `unknown` rather than being inferred.
+When time fields are omitted, the builder uses the current local cutoff, a trailing 24-hour reporting window, and a 30-day upcoming deadline window. When regions are omitted, it uses China, the United States, and the European Union. When the `platforms` field is omitted, the fixed core set—Amazon, TikTok Shop, Temu, Shopify, Shopee, Alibaba.com, AliExpress, and Jumia—is planned with market and program marked `unknown`; pass an explicit empty array to exclude platform monitoring. Do not write an agent-selected subset into scope for an unqualified daily radar. Platform names must resolve through the bundled registry; unknown markets or programs remain explicitly `unknown` rather than being inferred.
 
 ```json
 {
