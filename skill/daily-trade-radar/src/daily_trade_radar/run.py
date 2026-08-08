@@ -12,6 +12,7 @@ from typing import Any
 from .alerting import build_alert_batch, deliver_webhook, load_state, save_state
 from .applicability import load_catalog, match_report
 from .deduplication import main as deduplicate_main
+from .language_quality import assess_language
 from .planning import build_research_plan, write_acquisition_manifests
 from .profiles import load_profile
 from .renderers.markdown import main as markdown_main
@@ -88,6 +89,20 @@ def main(argv: list[str] | None = None) -> int:
             _status(output, profile.name, "validation_failed", artifacts, error_count=len(errors))
             print(f"ERROR: candidate report failed validation ({len(errors)} error(s)); see {error_path}")
             return 1
+        if profile.language_mode != "off":
+            language_result = assess_language(
+                report, require_language=str(profile.scope.get("language", report.get("language", ""))),
+            )
+            language_path = output / "language-quality.json"
+            _write(language_path, language_result)
+            artifacts["language_quality"] = str(language_path)
+            if profile.language_mode == "strict" and language_result["issues"]:
+                _status(
+                    output, profile.name, "language_review_required", artifacts,
+                    language_issue_count=language_result["issue_count"],
+                )
+                print(f"ERROR: language consistency review required; see {language_path}")
+                return 1
 
         previous = args.previous.resolve() if args.previous else profile.previous_report
         final_path = output / "events-final.json"

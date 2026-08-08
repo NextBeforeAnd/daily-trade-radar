@@ -715,10 +715,19 @@ def validate(data: dict) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=Path)
+    parser.add_argument("--require-language", help="also require zh-* or en-* content consistency")
     args = parser.parse_args(argv)
     try:
         data = load_json(args.input)
         errors = validate(data)
+        if args.require_language:
+            from .language_quality import assess_language
+
+            language_result = assess_language(data, require_language=args.require_language)
+            errors.extend(
+                f"{item['location']}: {item['message']}"
+                for item in language_result["issues"]
+            )
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2

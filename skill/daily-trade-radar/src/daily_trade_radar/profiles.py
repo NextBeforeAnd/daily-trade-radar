@@ -33,6 +33,7 @@ class RadarProfile:
     formats: tuple[str, ...]
     threshold: float
     review_threshold: float
+    language_mode: str
     alert_min_level: str
     alert_require_match: bool
     alert_state_file: Path | None
@@ -45,7 +46,7 @@ def load_profile(path: Path) -> RadarProfile:
         raise ValueError("profile must be a JSON object")
     allowed = {
         "schema_version", "name", "scope", "candidate_report", "previous_report",
-        "catalog", "output", "deduplication", "alerts",
+        "catalog", "output", "deduplication", "quality", "alerts",
     }
     unknown = set(payload) - allowed
     if unknown:
@@ -61,8 +62,9 @@ def load_profile(path: Path) -> RadarProfile:
     output = payload.get("output", {})
     dedupe = payload.get("deduplication", {})
     alerts = payload.get("alerts", {})
-    if not all(isinstance(item, dict) for item in (output, dedupe, alerts)):
-        raise ValueError("profile.output, deduplication, and alerts must be objects")
+    quality = payload.get("quality", {})
+    if not all(isinstance(item, dict) for item in (output, dedupe, quality, alerts)):
+        raise ValueError("profile.output, deduplication, quality, and alerts must be objects")
     base = path.resolve().parent
     directory = _path(base, output.get("directory", "radar-run"), "output.directory")
     assert directory is not None
@@ -80,6 +82,9 @@ def load_profile(path: Path) -> RadarProfile:
         raise ValueError("profile deduplication thresholds must be numbers")
     if not 0 <= float(review_threshold) <= float(threshold) <= 1:
         raise ValueError("profile requires 0 <= review_threshold <= threshold <= 1")
+    language_mode = quality.get("language_mode", "warn")
+    if language_mode not in {"off", "warn", "strict"}:
+        raise ValueError("profile.quality.language_mode must be off, warn, or strict")
     min_level = alerts.get("min_level", "high")
     if min_level not in {"watch", "low", "medium", "high"}:
         raise ValueError("profile.alerts.min_level is invalid")
@@ -96,6 +101,7 @@ def load_profile(path: Path) -> RadarProfile:
         catalog=_path(base, payload.get("catalog"), "catalog"),
         output_directory=directory, output_basename=basename.strip(), formats=tuple(dict.fromkeys(formats)),
         threshold=float(threshold), review_threshold=float(review_threshold),
+        language_mode=language_mode,
         alert_min_level=min_level, alert_require_match=require_match,
         alert_state_file=_path(base, alerts.get("state_file"), "alerts.state_file"),
         alert_webhook=webhook,

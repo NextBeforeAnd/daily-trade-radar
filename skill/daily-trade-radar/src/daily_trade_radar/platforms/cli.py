@@ -4,14 +4,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 
 from .registry import load_registry, source_depth
 
 
 def main(argv: list[str] | None = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments and arguments[0] == "scaffold":
+        from .scaffold import main as scaffold_main
+
+        return scaffold_main(arguments[1:])
     parser = argparse.ArgumentParser()
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(arguments)
     registry = load_registry()
     if args.json:
         payload = [

@@ -19,6 +19,9 @@
     "threshold": 0.82,
     "review_threshold": 0.65
   },
+  "quality": {
+    "language_mode": "strict"
+  },
   "alerts": {
     "min_level": "high",
     "require_applicability_match": true,

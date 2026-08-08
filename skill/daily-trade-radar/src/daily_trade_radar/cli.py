@@ -7,6 +7,9 @@ import sys
 
 
 COMMAND_MODULES = {
+    "init": "daily_trade_radar.initializer",
+    "language-check": "daily_trade_radar.language_quality",
+    "coverage-dashboard": "daily_trade_radar.coverage_dashboard",
     "run": "daily_trade_radar.run",
     "validate": "daily_trade_radar.validation",
     "deduplicate": "daily_trade_radar.deduplication",

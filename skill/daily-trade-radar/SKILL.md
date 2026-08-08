@@ -21,6 +21,8 @@ Infer missing preferences when safe. Record:
 
 If no scope is supplied, cover China export controls and customs, the United States, the European Union, material logistics changes, and the fixed core platform set: Amazon, TikTok Shop, Temu, Shopify, Shopee, Alibaba.com, AliExpress, and Jumia. Do not replace this core set with an agent-selected subset. Use a smaller or different platform scope only when the user explicitly requests it. State the applied scope in the report.
 
+When the user asks to initialize a reusable narrow pilot rather than generate today's radar immediately, use `daily-trade-radar init`. Its default China-only, no-marketplace profile is intentionally narrower than the unqualified daily-radar research default above.
+
 Treat an unqualified request for “外贸行情” as a request for this regulatory and operational radar. Include exchange rates, demand indicators, freight prices, or macro commentary only when the user asks for them or when they materially change a listed action.
 
 Set the reporting window before research:
@@ -72,6 +74,8 @@ daily-trade-radar doctor --postmortem RUN_DIRECTORY --json --output source-healt
 ```
 
 Public probes are bounded access checks only. They do not probe authenticated dashboards and do not prove that a policy page was substantively reviewed.
+
+For an operator-facing summary, render `coverage-dashboard` from the registry and optionally a completed source-health JSON. Treat its priority as configuration work ordering only, never as evidence of a policy event.
 
 Treat cached public receipts as bounded research acceleration only. Reuse only successful receipts within their configured TTL; retry login gates, blocked requests, missing routes, and connection failures on the next run. Use an explicit refresh when current access state matters or the source may have changed inside the TTL.
 
@@ -164,6 +168,8 @@ Validate the final event file before writing:
 python scripts/validate_events.py deduplicated.json
 python scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
 ```
+
+When a strict output language is requested, also run `daily-trade-radar validate deduplicated.json --require-language zh-CN` (or `en-US`). Correct mismatches during reviewed research. Do not silently machine-translate policy dates, scope, rates, codes, deadlines, or obligations.
 
 For release evaluation against independently reviewed labels, run:
 

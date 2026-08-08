@@ -4,7 +4,7 @@ Daily Trade Radar is a Chinese-first Codex Skill for researching, verifying, ded
 
 It monitors official trade-policy, customs, export-control, sanctions, tariff, tax, product-compliance, logistics, and marketplace-rule sources. The default deliverable is Markdown backed by validated JSON; a Word template is included for optional formal reports. Coverage will continue expanding to more countries, industries, and marketplace platforms.
 
-> Development version: `v0.4.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
+> Development version: `v0.5.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
 
 See [CHANGELOG.md](CHANGELOG.md) for development updates.
 
@@ -48,6 +48,7 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Bundles machine-readable official routes for China's Ministry of Commerce, General Administration of Customs, State Taxation Administration, and SAMR.
 - Matches reviewed events to an organization catalog by HS-code prefix and product terms while preserving the exact match basis.
 - Builds deduplicated high-risk alert batches and delivers them to an HTTPS webhook only when the operator passes an explicit send flag.
+- Initializes a safe single-region starter profile, scaffolds conservative platform registry entries, checks report-language consistency, and renders an actionable source-coverage dashboard.
 
 ## Repository layout
 
@@ -121,6 +122,23 @@ For repeatable daily operation, start from the bundled profile and catalog examp
 daily-trade-radar run --profile examples/profile.example.json
 ```
 
+For a new pilot, generate a narrow China-only profile with no marketplaces, then edit it as needed:
+
+```bash
+daily-trade-radar init --directory my-radar
+daily-trade-radar run --profile my-radar/profile.json
+```
+
+Create a catalog-backed single-product pilot directly:
+
+```bash
+daily-trade-radar init --directory router-pilot --name "Router Pilot" \
+  --region "European Union" --product "wireless router" --hs-code 851762 \
+  --platform Amazon --sku ROUTER-001
+```
+
+Generated profiles use strict language consistency by default. They do not translate event facts automatically; a mismatch stops the run at `language_review_required` for reviewed correction.
+
 The first run writes `research-plan.json`, platform manifests, and `run-status.json`. Without a reviewed candidate report it stops with `state: research_required`; this is intentional because a plan or fetched page is not policy evidence. After completing the primary-source research and producing valid event JSON, run the same profile with:
 
 ```bash
@@ -142,6 +160,23 @@ The two focused commands are also available independently:
 daily-trade-radar match reviewed-events.json --catalog catalog.json --output matched.json
 daily-trade-radar alert matched.json --min-level high --require-applicability-match --output alerts.json
 ```
+
+Check language consistency independently or attach it to normal validation:
+
+```bash
+daily-trade-radar language-check reviewed-events.json --require-language zh-CN --strict --output language-quality.json
+daily-trade-radar validate reviewed-events.json --require-language zh-CN
+```
+
+Generate a static source-coverage dashboard from the registry alone, or enrich it with a `doctor` JSON report:
+
+```bash
+daily-trade-radar coverage-dashboard --format html --output source-coverage.html
+daily-trade-radar doctor --json --output source-health.json
+daily-trade-radar coverage-dashboard --health source-health.json --format markdown --output source-coverage.md
+```
+
+The dashboard ranks missing, conditional, and unhealthy routes for follow-up. It does not treat route availability as proof that a policy was substantively reviewed.
 
 Create and validate the research contract before a multi-scope run:
 
@@ -212,7 +247,7 @@ python -m pip install -e "skill/daily-trade-radar[docx]"
 daily-trade-radar validate examples/current.json
 ```
 
-The package also supports `python -m daily_trade_radar`. Commands include `run`, `match`, `alert`, `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `plan`, `doctor`, `discover`, `library`, `drill`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
+The package also supports `python -m daily_trade_radar`. Commands include `init`, `run`, `match`, `alert`, `language-check`, `coverage-dashboard`, `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `plan`, `doctor`, `discover`, `library`, `drill`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
 
 List the installed marketplace registry:
 
@@ -222,6 +257,16 @@ python -m daily_trade_radar platforms --json
 ```
 
 Platform coverage is data-driven. The bundled registry includes Amazon, TikTok Shop, Temu, Shopify, Jumia, AliExpress, Shopee, Lazada, eBay, and Walmart Marketplace. To add another registered channel, add one UTF-8 JSON file under `src/daily_trade_radar/platforms/data/` with names and aliases, seller markets, programs, official route starting points, dashboard checks, applicability dimensions, policy areas, and cautions. The validator discovers it automatically. Unregistered channels remain usable only when their platform-policy record is marked `custom` and requires official-entry verification.
+
+Generate a conservative template instead of writing that JSON from scratch:
+
+```bash
+daily-trade-radar platforms scaffold --id example-market --display-name "Example Market" \
+  --url https://seller.example.com/updates --source-type official_updates \
+  --market US --output example-market.json
+```
+
+The generated route is always `conditional` with `verify_before_use: true`, and every unconfigured source type receives an explicit gap. Open the official route, verify market ownership and scope, then update the file before installing it in the bundled registry.
 
 Each route also declares its stable ID, supported markets, access mode, evidence role, and verification status. `daily-trade-radar platforms --json` returns a `source_depth` assessment. Missing source types must be declared as known gaps, so a login-only platform cannot appear as fully covered merely because one Seller Center URL exists.
 

@@ -2,7 +2,21 @@
 
 All notable changes to Daily Trade Radar are documented in this file.
 
-## Unreleased (target: 0.4.0)
+## Unreleased (target: 0.5.0)
+
+### 2026-08-08 (operator experience)
+
+#### Added
+
+- Added `daily-trade-radar init` for safe starter profiles that default to a narrow China-only, no-marketplace pilot and optionally generate a one-SKU catalog.
+- Added `daily-trade-radar platforms scaffold` for validation-ready platform templates whose starter routes remain conditional and whose unconfigured source types are explicit gaps.
+- Added deterministic Chinese/English content-consistency checks through `language-check`, `validate --require-language`, and profile-driven strict run gates without automatic factual translation.
+- Added static HTML, Markdown, and JSON source-coverage dashboards with route depth, conditional and missing sources, optional source-health results, priority ordering, and next actions.
+- Added operator-experience regression coverage for initialization, scaffolding, language gates, and dashboards.
+
+#### Changed
+
+- Bumped the package and development version to `0.5.0`.
 
 ### 2026-08-08
 
