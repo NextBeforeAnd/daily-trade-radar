@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-面向中国外贸企业和跨境电商团队的 Codex Skill：核验官方贸易政策、海关、制裁与出口管制、税费、产品合规、物流和平台规则变化，生成带来源、风险等级和负责人动作的中文日报。
+面向中国外贸企业和跨境电商团队的 Codex Skill：核验官方贸易政策、海关、制裁与出口管制、税费、产品合规、物流和平台规则变化，生成带来源、风险等级和负责人动作的中文日报。重点覆盖 Amazon（亚马逊）、TikTok Shop（TK）、Alibaba.com（阿里巴巴国际站）、AliExpress（速卖通）、Temu、Shopee、Lazada、eBay、Walmart Marketplace、Shopify 和 Jumia。
 
 > 当前开发版本：`v0.5.1`（Alpha）。它是运营研究辅助工具，不替代法律、税务、海关或制裁专业意见；报告发布前必须由业务人员核验关键事实。
 
