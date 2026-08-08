@@ -7,6 +7,7 @@ import sys
 
 
 COMMAND_MODULES = {
+    "run": "daily_trade_radar.run",
     "validate": "daily_trade_radar.validation",
     "deduplicate": "daily_trade_radar.deduplication",
     "snapshot": "daily_trade_radar.snapshots.filesystem",
@@ -28,6 +29,8 @@ COMMAND_MODULES = {
     "evaluate": "daily_trade_radar.evaluation",
     "evaluate-history": "daily_trade_radar.evaluation_history",
     "evaluation-scaffold": "daily_trade_radar.evaluation_scaffold",
+    "match": "daily_trade_radar.applicability",
+    "alert": "daily_trade_radar.alerting",
 }
 
 

@@ -14,6 +14,7 @@ from urllib.parse import urlsplit
 
 from .acquisition.models import require_datetime_offset
 from .acquisition.manifest import AcquisitionManifest, build_platform_manifest
+from .official_sources import sources_for_regions
 from .platforms import get_platform, load_registry
 from .snapshots.filesystem import atomic_write_text
 
@@ -412,6 +413,8 @@ def build_research_plan(scope_value: dict[str, Any], *, now: datetime | None = N
     language = _nonblank(scope_value.get("language", "zh-CN"), "language")
     subject = _subject_terms(products, hs_codes, (*keywords, *priority_themes))
     authorities = _authorities(regions)
+    official_sources = sources_for_regions(regions)
+    official_urls = tuple(route.url for source in official_sources for route in source.routes)
     tracks: list[ResearchTrack] = []
 
     official_identity = {"regions": regions, "subject": subject, "window": window_start}
@@ -421,7 +424,7 @@ def build_research_plan(scope_value: dict[str, Any], *, now: datetime | None = N
         freshness_mode="reporting_window", evidence_requirement="primary",
         regions=regions, authorities=authorities, products=products, hs_codes=hs_codes,
         platforms=(), seller_markets=(), programs=(),
-        source_types=("official_publication",), source_urls=(),
+        source_types=("official_publication",), source_urls=official_urls,
         queries=tuple(f"{authority} {subject} announcement rule consultation published" for authority in authorities),
         notes="Open and read every cited primary publication; record publication and effective dates separately.",
     ))

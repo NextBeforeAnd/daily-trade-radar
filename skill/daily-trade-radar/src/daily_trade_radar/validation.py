@@ -55,7 +55,24 @@ OPTIONAL_EVENT_FIELDS = {
     "deadline_at": (str, type(None)),
     "source_timezone": (str, type(None)),
     "level_override": (dict, type(None)),
+    "hs_codes": list,
+    "applicability": dict,
 }
+APPLICABILITY_FIELDS = {
+    "organization": str,
+    "status": str,
+    "matched_items": list,
+    "reason": str,
+}
+APPLICABILITY_STATUSES = {"matched", "needs_review", "no_match"}
+APPLICABILITY_MATCH_FIELDS = {
+    "sku": str,
+    "name": str,
+    "basis": list,
+    "matched_hs_codes": list,
+    "matched_terms": list,
+}
+APPLICABILITY_BASES = {"hs_prefix", "product_keyword"}
 LEVEL_OVERRIDE_FIELDS = {
     "level": str,
     "reason": str,
@@ -536,6 +553,56 @@ def validate(data: dict) -> list[str]:
         source_timezone = event.get("source_timezone")
         if isinstance(source_timezone, str) and not source_timezone.strip():
             errors.append(f"{label}.source_timezone: must not be blank")
+        hs_codes = event.get("hs_codes")
+        if isinstance(hs_codes, list):
+            for hs_index, hs_code in enumerate(hs_codes):
+                digits = re.sub(r"[.\s-]", "", hs_code) if isinstance(hs_code, str) else ""
+                if not digits.isdigit() or not 4 <= len(digits) <= 10:
+                    errors.append(f"{label}.hs_codes[{hs_index}]: expected 4-10 digits")
+        applicability = event.get("applicability")
+        if isinstance(applicability, dict):
+            for key, expected in APPLICABILITY_FIELDS.items():
+                if key not in applicability:
+                    errors.append(f"{label}.applicability: missing {key}")
+                elif not isinstance(applicability[key], expected):
+                    errors.append(f"{label}.applicability.{key}: wrong type")
+            if applicability.get("status") not in APPLICABILITY_STATUSES:
+                errors.append(f"{label}.applicability.status: invalid value")
+            for field in ("organization", "reason"):
+                value = applicability.get(field)
+                if isinstance(value, str) and not value.strip():
+                    errors.append(f"{label}.applicability.{field}: must not be blank")
+            matched_items = applicability.get("matched_items")
+            if applicability.get("status") == "matched" and isinstance(matched_items, list) and not matched_items:
+                errors.append(f"{label}.applicability.matched_items: matched status requires evidence")
+            if applicability.get("status") in {"needs_review", "no_match"} and matched_items:
+                errors.append(f"{label}.applicability.matched_items: non-matched status cannot contain matches")
+            if isinstance(matched_items, list):
+                for match_index, match in enumerate(matched_items):
+                    match_label = f"{label}.applicability.matched_items[{match_index}]"
+                    if not isinstance(match, dict):
+                        errors.append(f"{match_label}: must be an object")
+                        continue
+                    unexpected = match.keys() - APPLICABILITY_MATCH_FIELDS.keys()
+                    for key in sorted(unexpected):
+                        errors.append(f"{match_label}: unexpected {key}")
+                    for key, expected in APPLICABILITY_MATCH_FIELDS.items():
+                        if key not in match:
+                            errors.append(f"{match_label}: missing {key}")
+                        elif not isinstance(match[key], expected):
+                            errors.append(f"{match_label}.{key}: wrong type")
+                    for field in ("sku", "name"):
+                        value = match.get(field)
+                        if isinstance(value, str) and not value.strip():
+                            errors.append(f"{match_label}.{field}: must not be blank")
+                    basis = match.get("basis")
+                    if isinstance(basis, list):
+                        if not basis or any(item not in APPLICABILITY_BASES for item in basis):
+                            errors.append(f"{match_label}.basis: invalid or empty match basis")
+                    for field in ("matched_hs_codes", "matched_terms"):
+                        values = match.get(field)
+                        if isinstance(values, list) and any(not isinstance(item, str) or not item.strip() for item in values):
+                            errors.append(f"{match_label}.{field}: must contain nonblank strings")
         url = event.get("source_url")
         if isinstance(url, str):
             parsed = urlparse(url)

@@ -42,6 +42,15 @@ daily-trade-radar plan --validate research-plan.json
 
 A plan is not evidence. Do not mark a track complete until its direct sources have been opened and its acquisition receipts or explicit gaps exist.
 
+For a repeatable operator profile, use the one-command deterministic workflow:
+
+```text
+daily-trade-radar run --profile profile.json
+daily-trade-radar run --profile profile.json --events reviewed-events.json
+```
+
+The first command may stop at `research_required`; continue the primary-source research rather than treating that state as failure. The second command may match a configured HS/SKU catalog, validate, deduplicate, render, and build alerts. Never pass `--send-alerts` unless the user explicitly authorizes delivery in the current turn. A profile webhook is configuration, not standing authorization to contact an external system.
+
 ## Research current developments
 
 Browse because the task is time-sensitive. Search the source categories and query patterns in [references/source-map.md](references/source-map.md). Prefer primary official publications; use a platform's own announcement for marketplace rules. Use secondary reporting only to discover a primary source or to add clearly attributed context.

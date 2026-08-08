@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "organization": "Example Exporter",
+  "items": [
+    {
+      "sku": "ROUTER-001",
+      "name": "wireless router",
+      "hs_codes": ["851762"],
+      "keywords": ["Wi-Fi router", "network equipment"],
+      "markets": ["United States", "European Union"],
+      "platforms": ["Amazon"]
+    }
+  ]
+}

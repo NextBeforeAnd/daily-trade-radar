@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "id": "cn-mofcom",
+      "display_name": "中华人民共和国商务部",
+      "jurisdiction": "China",
+      "authority": "Ministry of Commerce",
+      "aliases": ["CN", "中国", "中华人民共和国"],
+      "routes": [
+        {
+          "label": "政策发布",
+          "url": "https://www.mofcom.gov.cn/zcfb/index.html",
+          "source_type": "official_publication",
+          "topics": ["对外贸易", "出口管制", "贸易救济", "许可与配额"]
+        },
+        {
+          "label": "政府信息公开",
+          "url": "https://www.mofcom.gov.cn/zfxxgk/index.html",
+          "source_type": "current_rule",
+          "topics": ["部令公告", "规范性文件", "政策解读"]
+        }
+      ]
+    },
+    {
+      "id": "cn-gacc",
+      "display_name": "中华人民共和国海关总署",
+      "jurisdiction": "China",
+      "authority": "General Administration of Customs",
+      "aliases": ["CN", "中国", "中华人民共和国"],
+      "routes": [
+        {
+          "label": "海关总署公告",
+          "url": "https://www.customs.gov.cn/customs/302249/2480148/index.html",
+          "source_type": "official_publication",
+          "topics": ["海关公告", "商品归类", "监管要求", "检验检疫"]
+        },
+        {
+          "label": "海关政务服务通知公告",
+          "url": "https://online.customs.gov.cn/index.html",
+          "source_type": "current_rule",
+          "topics": ["通关系统", "跨境电商", "口岸服务"]
+        }
+      ]
+    },
+    {
+      "id": "cn-sta",
+      "display_name": "国家税务总局",
+      "jurisdiction": "China",
+      "authority": "State Taxation Administration",
+      "aliases": ["CN", "中国", "中华人民共和国"],
+      "routes": [
+        {
+          "label": "政策法规库·最新政策",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c100027/list.html",
+          "source_type": "official_publication",
+          "topics": ["出口退税", "跨境税收", "增值税", "消费税"]
+        }
+      ]
+    },
+    {
+      "id": "cn-samr",
+      "display_name": "国家市场监督管理总局",
+      "jurisdiction": "China",
+      "authority": "SAMR",
+      "aliases": ["CN", "中国", "中华人民共和国"],
+      "routes": [
+        {
+          "label": "行政规范性文件",
+          "url": "https://www.samr.gov.cn/zw/zfxxgk/zc/xzgfxwj/index.html",
+          "source_type": "current_rule",
+          "topics": ["产品质量", "认证认可", "标准", "网络交易", "市场监管"]
+        },
+        {
+          "label": "国家标准全文公开系统",
+          "url": "https://openstd.samr.gov.cn/",
+          "source_type": "current_rule",
+          "topics": ["强制性国家标准", "推荐性国家标准", "产品合规"]
+        }
+      ]
+    }
+  ]
+}

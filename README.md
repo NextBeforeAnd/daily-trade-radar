@@ -4,7 +4,7 @@ Daily Trade Radar is a Chinese-first Codex Skill for researching, verifying, ded
 
 It monitors official trade-policy, customs, export-control, sanctions, tariff, tax, product-compliance, logistics, and marketplace-rule sources. The default deliverable is Markdown backed by validated JSON; a Word template is included for optional formal reports. Coverage will continue expanding to more countries, industries, and marketplace platforms.
 
-> Development version: `v0.3.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
+> Development version: `v0.4.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
 
 See [CHANGELOG.md](CHANGELOG.md) for development updates.
 
@@ -44,6 +44,10 @@ See [CHANGELOG.md](CHANGELOG.md) for development updates.
 - Builds focused event drill plans from one report or the history library, including current-source targets, amendments, dates, applicability, enforcement, and material-change questions.
 - Integrity-checks manifest/task identities, binds receipts to their exact routes, preserves immutable receipt history, and prevents failed or expired access results from becoming reusable cache hits.
 - Uses an available signed-in browser session for read-only Seller Center checks and retains credible unresolved platform leads in the watchlist.
+- Runs the deterministic workflow from one versioned JSON profile, stopping explicitly at `research_required` until reviewed event evidence is supplied.
+- Bundles machine-readable official routes for China's Ministry of Commerce, General Administration of Customs, State Taxation Administration, and SAMR.
+- Matches reviewed events to an organization catalog by HS-code prefix and product terms while preserving the exact match basis.
+- Builds deduplicated high-risk alert batches and delivers them to an HTTPS webhook only when the operator passes an explicit send flag.
 
 ## Repository layout
 
@@ -110,6 +114,34 @@ HS 9405, Amazon EU, product safety, customs duties, and marketplace rules.
 ```
 
 Useful inputs include target countries, products, HS codes, platforms, priority themes, timezone, language, and the previous report.
+
+For repeatable daily operation, start from the bundled profile and catalog examples:
+
+```bash
+daily-trade-radar run --profile examples/profile.example.json
+```
+
+The first run writes `research-plan.json`, platform manifests, and `run-status.json`. Without a reviewed candidate report it stops with `state: research_required`; this is intentional because a plan or fetched page is not policy evidence. After completing the primary-source research and producing valid event JSON, run the same profile with:
+
+```bash
+daily-trade-radar run --profile examples/profile.example.json --events reviewed-events.json
+```
+
+That command applies the catalog, validates, optionally deduplicates against `previous_report`, renders the configured formats, and writes `alerts.json`. Webhook delivery is opt-in and occurs only for eligible alerts:
+
+```bash
+daily-trade-radar run --profile examples/profile.example.json \
+  --events reviewed-events.json --send-alerts
+```
+
+Set an HTTPS `alerts.webhook` in a private profile before using `--send-alerts`. Do not commit webhook secrets. The alert state is advanced only after a successful delivery, so a preview cannot suppress a later real notification.
+
+The two focused commands are also available independently:
+
+```bash
+daily-trade-radar match reviewed-events.json --catalog catalog.json --output matched.json
+daily-trade-radar alert matched.json --min-level high --require-applicability-match --output alerts.json
+```
 
 Create and validate the research contract before a multi-scope run:
 
@@ -180,7 +212,7 @@ python -m pip install -e "skill/daily-trade-radar[docx]"
 daily-trade-radar validate examples/current.json
 ```
 
-The package also supports `python -m daily_trade_radar`. Commands are `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `plan`, `doctor`, `discover`, `library`, `drill`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
+The package also supports `python -m daily_trade_radar`. Commands include `run`, `match`, `alert`, `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `plan`, `doctor`, `discover`, `library`, `drill`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
 
 List the installed marketplace registry:
 
