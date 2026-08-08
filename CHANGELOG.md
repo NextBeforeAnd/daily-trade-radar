@@ -2,7 +2,21 @@
 
 All notable changes to Daily Trade Radar are documented in this file.
 
-## Unreleased (target: 0.3.0)
+## Unreleased (target: 0.4.0)
+
+### 2026-08-08
+
+#### Added
+
+- Added a validated JSON profile and `daily-trade-radar run` orchestration command that prepares the evidence contract, stops explicitly for research, and completes applicability matching, validation, deduplication, rendering, and alert generation when reviewed events are supplied.
+- Added a machine-readable China official-source registry covering verified entry routes for MOFCOM, GACC, the State Taxation Administration, and SAMR; scoped research plans now include those direct routes.
+- Added auditable organization-catalog matching by HS-code prefix, product term, market, and platform, exposed through `daily-trade-radar match`.
+- Added verified-event alert selection, applicability gating, signature-based duplicate suppression, preview JSON, and explicit HTTPS webhook delivery through `daily-trade-radar alert` and `run --send-alerts`.
+- Added example profile/catalog files and end-to-end regression tests for the new operational path.
+
+#### Changed
+
+- Bumped the package and development version to `0.4.0`.
 
 ### 2026-07-30
 

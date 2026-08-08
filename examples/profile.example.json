@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "name": "china-export-daily",
+  "scope": {
+    "language": "zh-CN",
+    "regions": ["China", "United States", "European Union"],
+    "products": ["wireless routers"],
+    "hs_codes": ["851762"],
+    "keywords": ["export control", "product compliance"],
+    "platforms": []
+  },
+  "catalog": "catalog.example.json",
+  "output": {
+    "directory": "../output/profile-run",
+    "basename": "daily-trade-radar",
+    "formats": ["markdown", "docx"]
+  },
+  "deduplication": {
+    "threshold": 0.82,
+    "review_threshold": 0.65
+  },
+  "alerts": {
+    "min_level": "high",
+    "require_applicability_match": true,
+    "state_file": "../output/alert-state.json"
+  }
+}
