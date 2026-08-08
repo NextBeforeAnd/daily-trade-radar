@@ -1,0 +1,13 @@
+[run]
+branch = True
+source = daily_trade_radar
+parallel = True
+patch = subprocess
+
+[report]
+show_missing = True
+skip_covered = True
+fail_under = 77
+exclude_lines =
+    if __name__ == .__main__.:
+    pragma: no cover

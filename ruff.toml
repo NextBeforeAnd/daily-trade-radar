@@ -1,0 +1,9 @@
+target-version = "py310"
+line-length = 100
+
+[lint]
+select = ["E4", "E7", "E9", "F"]
+
+[lint.per-file-ignores]
+"skill/daily-trade-radar/scripts/*.py" = ["E402"]
+"tests/*.py" = ["E402"]

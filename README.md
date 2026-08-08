@@ -1,411 +1,135 @@
-# Daily Trade Radar
+# Daily Trade Radar｜每日外贸雷达
 
-Daily Trade Radar is a Chinese-first Codex Skill for researching, verifying, deduplicating, prioritizing, and writing actionable foreign-trade intelligence. It is designed for cross-border e-commerce teams operating on Amazon, TikTok Shop, Temu, AliExpress, Jumia, Shopify and other global marketplaces.
+[![Tests](https://github.com/NextBeforeAnd/daily-trade-radar/actions/workflows/test.yml/badge.svg)](https://github.com/NextBeforeAnd/daily-trade-radar/actions/workflows/test.yml)
+![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-It monitors official trade-policy, customs, export-control, sanctions, tariff, tax, product-compliance, logistics, and marketplace-rule sources. The default deliverable is Markdown backed by validated JSON; a Word template is included for optional formal reports. Coverage will continue expanding to more countries, industries, and marketplace platforms.
+面向中国外贸企业和跨境电商团队的 Codex Skill：核验官方贸易政策、海关、制裁与出口管制、税费、产品合规、物流和平台规则变化，生成带来源、风险等级和负责人动作的中文日报。
 
-> Development version: `v0.5.0` (alpha quality). Use this project as an operational research aid, not as legal, tax, customs, or sanctions advice.
+> 当前开发版本：`v0.5.1`（Alpha）。它是运营研究辅助工具，不替代法律、税务、海关或制裁专业意见；报告发布前必须由业务人员核验关键事实。
 
-See [CHANGELOG.md](CHANGELOG.md) for development updates.
+![中文日报示例预览](examples/sample-radar-preview.png)
 
-## 中文简介
+[查看完整中文示例](examples/sample-radar.md) · [5 分钟上手](docs/quickstart.md) · [独立 CLI 能力边界](docs/standalone-cli.md) · [命令与高级功能](docs/advanced.md)
 
-每日外贸雷达是一套以中文用户为主的 Codex Skill，面向外贸企业和跨境电商团队，用于检索、核验、去重并输出可执行的外贸情报日报。当前注册表覆盖 Amazon、TikTok Shop、Temu、AliExpress（速卖通）、Shopify、Jumia、Shopee、Lazada、eBay 和 Walmart Marketplace；各平台的可验证来源深度会继续扩展。
-
-它会监测贸易政策、海关合规、出口管制、制裁、关税税务、产品合规、国际物流和平台规则，区分今日新增、今日生效、临近截止、持续关注和待核实事项，并为每条事件提供风险等级、业务影响、行动建议与官方来源。
-
-## What it does
-
-- Searches current primary and official sources.
-- Separates publication dates, effective dates, and deadlines.
-- Uses the previous report cutoff as the next reporting-window start, or a trailing 24-hour window when no prior report exists.
-- Preserves exact event timestamps and source timezones when official sources provide them.
-- Records force, exposure, urgency, consequence, and evidence as an auditable score breakdown, then validates the total and risk level.
-- Audits scoring against independently reviewed historical labels with sample gates, reviewer-agreement metrics, confusion matrices, and non-binding candidate thresholds.
-- Deduplicates findings against a previous radar.
-- Uses stable-ID-first, scope-aware, one-to-one weighted matching and retains low-confidence similarities for review instead of deleting them.
-- Separates material policy changes from effective-date/deadline refreshes and editorial rewrites.
-- Validates a stable UTF-8 JSON event format.
-- Generates a consistent Chinese Markdown radar.
-- Includes a privacy-scrubbed DOCX template for optional formal output.
-- Applies dedicated monitoring routes for TikTok Shop, Temu, Shopify, Jumia, Amazon, and AliExpress.
-- Grades platform source depth and requires every missing update, current-policy, or dashboard route to carry an explicit known-gap reason.
-- Stores normalized public-page snapshots, compares them with the prior capture, and records machine-readable change status plus saved text diffs.
-- Distinguishes authentication-required pages from pages blocked by access controls or anti-bot measures.
-- Produces a machine-readable platform coverage ledger for public updates, current-policy pages, and authenticated dashboard checks.
-- Extracts marketplace changes into a structured platform/market/program analysis and owner-level action checklist.
-- Runs a mandatory seven-day marketplace discovery pass, records every opened source URL, and rejects unsupported "checked" claims.
-- Builds registry-driven acquisition manifests and evidence receipts, with bounded HTTP retries, RSS/Atom/sitemap parsing, public-content caching, and automatic draft coverage ledgers.
-- Builds identity-bound research plans with separate official-publication, upcoming-deadline, product/HS-code, marketplace, and secondary-lead tracks.
-- Materializes scoped marketplace plan entries into the existing registry-driven acquisition manifests while preserving the mandatory seven-day platform window.
-- Audits source health through registry inventory, bounded public probes, and receipt-backed run postmortems without confusing access failure with “no update.”
-- Prioritizes and clusters early signals by recency, distinct-domain corroboration, business relevance, source quality, and evidenced momentum while keeping every lead unconfirmed and watch-level.
-- Indexes validated radar history in a local SQLite library with stable-ID sightings, FTS5 when available, portable fallback search, and idempotent run replacement.
-- Builds focused event drill plans from one report or the history library, including current-source targets, amendments, dates, applicability, enforcement, and material-change questions.
-- Integrity-checks manifest/task identities, binds receipts to their exact routes, preserves immutable receipt history, and prevents failed or expired access results from becoming reusable cache hits.
-- Uses an available signed-in browser session for read-only Seller Center checks and retains credible unresolved platform leads in the watchlist.
-- Runs the deterministic workflow from one versioned JSON profile, stopping explicitly at `research_required` until reviewed event evidence is supplied.
-- Bundles machine-readable official routes for China's Ministry of Commerce, General Administration of Customs, State Taxation Administration, and SAMR.
-- Matches reviewed events to an organization catalog by HS-code prefix and product terms while preserving the exact match basis.
-- Builds deduplicated high-risk alert batches and delivers them to an HTTPS webhook only when the operator passes an explicit send flag.
-- Initializes a safe single-region starter profile, scaffolds conservative platform registry entries, checks report-language consistency, and renders an actionable source-coverage dashboard.
-
-## Repository layout
+## 核心闭环
 
 ```text
-skill/daily-trade-radar/   The installable Skill and Python package
-examples/                  Offline example input and output
-tests/                     Standard-library workflow tests
-.github/workflows/         GitHub Actions validation
+确定范围 → 检索官方来源 → 人工核验 → 去重与评分 → 中文日报 → 明确负责人动作
 ```
 
-The repository wrapper contains user documentation and tests. Inside the installable Skill, deterministic logic lives under `src/daily_trade_radar`; the files under `scripts/` are backward-compatible entry points for existing Skill commands.
+Daily Trade Radar 将研究过程拆成可审计步骤：
 
-```text
-skill/daily-trade-radar/
-  src/daily_trade_radar/
-    models.py
-    scoring.py
-    validation.py
-    deduplication.py
-    platforms/
-      registry.py
-      data/                   One JSON playbook per platform
-    snapshots/
-    acquisition/              Manifests, receipts, adapters, cache, and coverage conversion
-    renderers/
-    cli.py
-  scripts/                  Backward-compatible thin wrappers
-  assets/
-  references/
-  pyproject.toml
-```
+- Codex 负责搜索、浏览和实质性研究；
+- Python CLI 负责确定性的规划、公开来源采集、校验、去重、评分、快照和渲染；
+- 人工负责确认适用范围、关键日期、义务、税率以及是否发布或发送告警。
 
-## Install
+## 5 分钟上手
 
-Codex can install skills from other repositories through `$skill-installer`. Ask Codex:
+### 在 Codex 中使用
+
+安装 Skill：
 
 ```text
 Use $skill-installer to install the daily-trade-radar skill from
 https://github.com/NextBeforeAnd/daily-trade-radar/tree/main/skill/daily-trade-radar
 ```
 
-For manual installation, copy `skill/daily-trade-radar` to one of Codex's discovery locations:
-
-- User scope: `$HOME/.agents/skills/daily-trade-radar`
-- Repository scope: `<repo>/.agents/skills/daily-trade-radar`
-
-Codex detects Skill changes automatically. Restart Codex if the Skill does not appear.
-
-## Use
-
-Invoke it explicitly:
+然后直接提出研究任务：
 
 ```text
-Use $daily-trade-radar to generate today's Chinese foreign-trade radar.
-Focus on the EU, United States, China export controls, and Amazon.
-Compare it with yesterday's report and cite primary official sources.
+Use $daily-trade-radar to 生成今日中文外贸雷达。
+关注欧盟、美国、中国出口管制和 Amazon，引用官方一手来源，
+与上一期比较并给出负责人动作。
 ```
 
-Or provide a narrower operating brief:
-
-```text
-Use $daily-trade-radar to monitor Germany and France for LED lighting products,
-HS 9405, Amazon EU, product safety, customs duties, and marketplace rules.
-```
-
-Useful inputs include target countries, products, HS codes, platforms, priority themes, timezone, language, and the previous report.
-
-For repeatable daily operation, start from the bundled profile and catalog examples:
+### 使用独立 CLI
 
 ```bash
-daily-trade-radar run --profile examples/profile.example.json
-```
-
-For a new pilot, generate a narrow China-only profile with no marketplaces, then edit it as needed:
-
-```bash
+python -m pip install -e "./skill/daily-trade-radar[docx]"
 daily-trade-radar init --directory my-radar
 daily-trade-radar run --profile my-radar/profile.json
 ```
 
-Create a catalog-backed single-product pilot directly:
+第一次运行会生成研究计划并停在 `research_required`。这是正常的安全门：计划或抓取到的页面不能自动变成政策结论。完成一手来源研究并准备好已复核事件后继续：
 
 ```bash
-daily-trade-radar init --directory router-pilot --name "Router Pilot" \
-  --region "European Union" --product "wireless router" --hs-code 851762 \
-  --platform Amazon --sku ROUTER-001
+daily-trade-radar run --profile my-radar/profile.json --events reviewed-events.json
 ```
 
-Generated profiles use strict language consistency by default. They do not translate event facts automatically; a mismatch stops the run at `language_review_required` for reviewed correction.
+完整步骤和输出说明见 [Quickstart](docs/quickstart.md)。
 
-The first run writes `research-plan.json`, platform manifests, and `run-status.json`. Without a reviewed candidate report it stops with `state: research_required`; this is intentional because a plan or fetched page is not policy evidence. After completing the primary-source research and producing valid event JSON, run the same profile with:
+## 两种运行模式
 
-```bash
-daily-trade-radar run --profile examples/profile.example.json --events reviewed-events.json
-```
+| 能力 | Codex Skill | 独立 CLI |
+|---|---:|---:|
+| 搜索网页与交互式浏览 | 支持 | 不支持 |
+| 公开 HTTP、RSS、Atom、Sitemap 采集 | 支持 | 支持 |
+| 实质阅读、语义研究与事实核验 | Codex + 人工 | 依赖外部输入 + 人工 |
+| 研究计划、来源覆盖和健康检查 | 支持 | 支持 |
+| 校验、去重、评分和报告渲染 | 支持 | 支持 |
+| 已审核报告的历史库与快照 | 支持 | 支持 |
+| 无人值守生成可靠政策结论 | 不支持 | 不支持 |
 
-That command applies the catalog, validates, optionally deduplicates against `previous_report`, renders the configured formats, and writes `alerts.json`. Webhook delivery is opt-in and occurs only for eligible alerts:
+独立 CLI 是完整的确定性处理工具，但不是通用爬虫，也不会替代研究员。详细限制见 [独立 CLI 模式](docs/standalone-cli.md)。
 
-```bash
-daily-trade-radar run --profile examples/profile.example.json \
-  --events reviewed-events.json --send-alerts
-```
+## 默认输出
 
-Set an HTTPS `alerts.webhook` in a private profile before using `--send-alerts`. Do not commit webhook secrets. The alert state is advanced only after a successful delivery, so a preview cannot suppress a later real notification.
+- UTF-8 JSON：事实和审计信息的唯一数据源；
+- 中文 Markdown：默认的人类可读日报；
+- DOCX：需要正式流转时可选；
+- 来源覆盖 HTML/Markdown/JSON：展示缺口和访问健康度，不代表已完成政策核验。
 
-The two focused commands are also available independently:
-
-```bash
-daily-trade-radar match reviewed-events.json --catalog catalog.json --output matched.json
-daily-trade-radar alert matched.json --min-level high --require-applicability-match --output alerts.json
-```
-
-Check language consistency independently or attach it to normal validation:
-
-```bash
-daily-trade-radar language-check reviewed-events.json --require-language zh-CN --strict --output language-quality.json
-daily-trade-radar validate reviewed-events.json --require-language zh-CN
-```
-
-Generate a static source-coverage dashboard from the registry alone, or enrich it with a `doctor` JSON report:
+示例：
 
 ```bash
+daily-trade-radar validate examples/current.json --require-language zh-CN
+daily-trade-radar deduplicate examples/current.json --previous examples/previous.json --output deduplicated.json
+daily-trade-radar markdown deduplicated.json --output radar.md
 daily-trade-radar coverage-dashboard --format html --output source-coverage.html
-daily-trade-radar doctor --json --output source-health.json
-daily-trade-radar coverage-dashboard --health source-health.json --format markdown --output source-coverage.md
 ```
 
-The dashboard ranks missing, conditional, and unhealthy routes for follow-up. It does not treat route availability as proof that a policy was substantively reviewed.
+## 安全边界
 
-Create and validate the research contract before a multi-scope run:
+- 优先使用官方一手来源，二手来源只能作为线索；
+- 报告必须披露检索截止时间、时区、范围和覆盖缺口；
+- 登录页面只记录访问结果，不持久化认证页面正文；
+- 相似但不确定的事件保留为 `review_required`，不会静默删除；
+- 语言不一致可以阻止发布，不自动翻译关键事实；
+- webhook 只有在操作者显式传入 `--send-alerts` 时才发送；
+- 评分是排序和复核工具，不是法律结论。
 
-```bash
-daily-trade-radar plan --scope scope.json --output research-plan.json --manifest-dir manifests
-daily-trade-radar plan --validate research-plan.json
-```
-
-Inspect configured routes, run bounded public checks, or diagnose a completed run:
-
-```bash
-daily-trade-radar doctor
-daily-trade-radar doctor --probe --platform Shopify
-daily-trade-radar doctor --postmortem radar-runs/2026-07-31 --json --output source-health.json
-```
-
-Public probes never access authenticated dashboards. A successful probe is still only an access signal; policy claims require substantive primary-source review and the normal snapshot and receipt workflow.
-
-Prioritize unresolved leads without mixing popularity into regulatory risk:
-
-```bash
-daily-trade-radar discover leads.json --output discovery.json
-```
-
-Build a local validated-report history and drill one event:
-
-```bash
-daily-trade-radar library ingest ../radar-runs --db radar-library.sqlite3
-daily-trade-radar library search "EU battery regulation" --db radar-library.sqlite3
-daily-trade-radar drill EVENT_ID --library radar-library.sqlite3 --refresh --output drill-plan.json
-```
-
-For marketplace monitoring, provide the seller market and operating model when possible—for example, TikTok Shop US local seller, Temu semi-managed, Shopify Managed Markets, or Jumia Nigeria Vendor Center. The workflow does not generalize a rule across markets or seller programs without evidence.
-
-## Output model
+## 项目结构
 
 ```text
-official research
-      ↓
-current.json
-      ↓ validate + deduplicate
-deduplicated.json
-      ↓
-daily-trade-radar.md
-      └─ optional DOCX/PDF
+skill/daily-trade-radar/   可安装的 Codex Skill 与 Python 包
+examples/                  离线输入、完整中文示例和预览图
+docs/                      Quickstart、独立模式和高级功能导航
+tests/                     标准库回归测试
+.github/workflows/         Python 版本矩阵、Ruff 与覆盖率检查
 ```
 
-JSON is the source of truth. Markdown is the default human-readable output. DOCX or PDF should be generated only when formal circulation or fixed-layout archiving is required.
+## 高级功能
 
-Marketplace-policy events can also carry a `platform_policy` object and `action_items` array. These fields preserve the verified seller scope, before/after state, enforcement consequence, action owner, time horizon, and completion evidence while keeping the legacy top-level `action` summary compatible with existing reports.
+平台配置、来源健康、历史库、聚焦钻取、校准、评测、Git/S3 快照等能力仍然保留，但不属于第一次运行必须理解的内容。参见：
 
-Every event includes `score_breakdown` with five 0-2 dimensions. Its sum must equal `score`, and the validator derives the expected risk band. A level outside the normal band requires a structured `level_override` reason; evidence 0 always remains `watch`.
+- [高级功能与命令导航](docs/advanced.md)
+- [平台注册表](skill/daily-trade-radar/references/platform-policy-monitoring.md)
+- [快照存储](skill/daily-trade-radar/references/snapshot-storage.md)
+- [评分校准](skill/daily-trade-radar/references/scoring-calibration.md)
+- [发布评测](skill/daily-trade-radar/references/evaluation.md)
 
-Set the root JSON field `language` to `zh-CN` for Chinese output or to `en`/`en-US` for English output. Event content is rendered as supplied; research should therefore write event fields in the requested output language.
-
-## Offline script workflow
-
-The validation, deduplication, and Markdown scripts use only the Python standard library. Word output uses `python-docx`; install it with:
+## 开发
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -e "./skill/daily-trade-radar[docx,dev]"
+ruff check .
+coverage run -m unittest discover -s tests -v
+coverage combine
+coverage report --fail-under=77
 ```
 
-For package development, install the Skill in editable mode with the Word extra:
-
-```bash
-python -m pip install -e "skill/daily-trade-radar[docx]"
-daily-trade-radar validate examples/current.json
-```
-
-The package also supports `python -m daily_trade_radar`. Commands include `init`, `run`, `match`, `alert`, `language-check`, `coverage-dashboard`, `validate`, `deduplicate`, `snapshot`, `snapshot-audit`, `markdown`, `docx`, `platforms`, `acquisition`, `plan`, `doctor`, `discover`, `library`, `drill`, `calibrate`, `calibration-scaffold`, `calibration-update`, `calibration-promote`, `calibration-rollback`, `evaluation-scaffold`, `evaluate`, and `evaluate-history`. Direct `scripts/*.py` usage remains supported and does not require package installation.
-
-List the installed marketplace registry:
-
-```bash
-python -m daily_trade_radar platforms
-python -m daily_trade_radar platforms --json
-```
-
-Platform coverage is data-driven. The bundled registry includes Amazon, TikTok Shop, Temu, Shopify, Jumia, AliExpress, Shopee, Lazada, eBay, and Walmart Marketplace. To add another registered channel, add one UTF-8 JSON file under `src/daily_trade_radar/platforms/data/` with names and aliases, seller markets, programs, official route starting points, dashboard checks, applicability dimensions, policy areas, and cautions. The validator discovers it automatically. Unregistered channels remain usable only when their platform-policy record is marked `custom` and requires official-entry verification.
-
-Generate a conservative template instead of writing that JSON from scratch:
-
-```bash
-daily-trade-radar platforms scaffold --id example-market --display-name "Example Market" \
-  --url https://seller.example.com/updates --source-type official_updates \
-  --market US --output example-market.json
-```
-
-The generated route is always `conditional` with `verify_before_use: true`, and every unconfigured source type receives an explicit gap. Open the official route, verify market ownership and scope, then update the file before installing it in the bundled registry.
-
-Each route also declares its stable ID, supported markets, access mode, evidence role, and verification status. `daily-trade-radar platforms --json` returns a `source_depth` assessment. Missing source types must be declared as known gaps, so a login-only platform cannot appear as fully covered merely because one Seller Center URL exists.
-
-Calibrate the deterministic scoring bands only with independently reviewed labels:
-
-```bash
-daily-trade-radar calibration-scaffold evaluation/drafts/manifest.json --output evaluation/calibration-review-scaffold.json
-daily-trade-radar calibration-scaffold evaluation/drafts/manifest.json --existing evaluation/calibration-review-scaffold.json --output evaluation/calibration-review-scaffold.next.json --diff-output evaluation/calibration-review-scaffold.diff.json --require-calibration-ready
-daily-trade-radar calibrate reviewed-history.json --minimum-samples 20 --minimum-per-level 3 --output calibration-report.json
-```
-
-The scaffold deduplicates stable event IDs across runs and also performs conservative cross-ID semantic clustering. Exact official-page/date matches, shared regulatory identifiers, and corroborated authority/date/title anchors can be merged automatically; ambiguous reused URLs are withheld in `semantic_duplicate_review_queue` for human adjudication. Cross-run and cross-alias level conflicts remain excluded. The scaffold carries over independently reviewed levels and deliberately blanks every score dimension. Generated scores are excluded. Calibration reports human agreement, label conflicts, score distributions, current-rule accuracy/macro-F1, and a non-binding candidate threshold set. They never edit scoring rules automatically.
-
-For later runs, pass the reviewed worksheet with `--existing` and write to a new output path. The
-incremental merge preserves complete or partial human scores only when the reviewed level and evidence
-fingerprint are unchanged. New events stay blank; changed evidence or labels are reset and listed in
-`incremental_merge.review_queue`; existing-only manual observations are retained. The audit counts make
-every preservation, reset, addition, and retention explicit.
-
-The merged worksheet embeds `incremental_diff`; `--diff-output` writes the same machine-readable report
-separately. It lists every preserved, new, reset, conflicting, and retained event. Its
-`calibration_gate` allows calibration only when all score breakdowns are complete and no semantic review
-item remains. `--require-calibration-ready` returns exit code `3` after writing both artifacts when human
-review is still required, and the `calibrate` command also rejects a blocked incremental worksheet.
-
-Run the complete incremental workflow into a new, immutable output directory:
-
-```bash
-daily-trade-radar calibration-update evaluation/drafts/manifest.json \
-  --existing evaluation/calibration-review-scaffold.json \
-  --previous-calibration evaluation/calibration-report.json \
-  --decision-record evaluation/calibration-readiness.json \
-  --output-dir evaluation/updates/2026-07-31
-```
-
-The command stages the bundle and then publishes the directory as one unit. A ready run contains the
-updated scaffold, diff, calibration report, and update summary. A blocked run returns exit code `3` and
-omits the calibration report; a ready run below the calibration sample gate returns `4`. Existing output
-directories are never overwritten. Calibration comparisons ignore metadata-only dataset-hash changes,
-and a prior human threshold decision is retained only when decision-relevant metrics are unchanged.
-
-After human review, explicitly promote a completed update into the formal baseline:
-
-```bash
-daily-trade-radar calibration-promote evaluation/updates/2026-07-31 \
-  --baseline-dir evaluation \
-  --backup-dir evaluation/backups/promotion-2026-07-31 \
-  --decision retain_current_thresholds \
-  --reviewed-by "workspace owner" \
-  --reason "Boundary evidence is still insufficient." \
-  --promoted-at "2026-07-31T18:00:00+08:00"
-```
-
-Promotion independently recomputes calibration, verifies cross-artifact identity and hashes, requires
-the incremental and sample gates, locks the formal baseline, publishes a verified backup, and checks the
-new files after writing. Any write failure triggers restoration from that backup. `defer` returns `3`
-without changing the baseline. `accept_candidate_thresholds` is refused unless those thresholds already
-exist in the tested runtime rules; promotion never edits scoring code or silently adopts a threshold.
-
-Roll back one completed promotion only when its live baseline has not drifted:
-
-```bash
-daily-trade-radar calibration-rollback evaluation/backups/promotion-2026-07-31 \
-  --baseline-dir evaluation \
-  --pre-rollback-dir evaluation/backups/pre-rollback-2026-07-31 \
-  --rolled-back-by "workspace owner" \
-  --reason "Regression detected after promotion." \
-  --rolled-back-at "2026-07-31T19:00:00+08:00"
-```
-
-Rollback verifies the promotion manifest, original backup hashes, and live post-promotion hashes before
-making any change. It snapshots the live baseline and original promotion manifest first, then restores
-the originals byte-for-byte under the same lock. A failed rollback restores the promoted state; a
-successful rollback marks the promotion `rolled_back`, preventing replay. Drifted baselines, changed
-backups, reused snapshot directories, and already-consumed promotions fail closed.
-
-Evaluate a complete radar against an independently reviewed closed candidate set:
-
-```bash
-daily-trade-radar evaluation-scaffold current.json deduplicated.json --dataset-name radar-2026-07-30 --output labels.json
-daily-trade-radar evaluate report.json labels.json --output evaluation.json
-daily-trade-radar evaluate-history evaluation/drafts/manifest.json ../radar-runs --output evaluation/history-evaluation.json
-```
-
-The default release gate requires at least 20 positive events, independently reviewed labels, precision and recall of 0.90, primary-source rate of 0.95, date accuracy of 0.98, deduplication accuracy of 0.90, and zero unsupported sources. See [`references/evaluation.md`](skill/daily-trade-radar/references/evaluation.md) for the label schema and draft-fixture workflow.
-
-Run the workflow:
-
-```bash
-python skill/daily-trade-radar/scripts/validate_events.py examples/current.json
-python skill/daily-trade-radar/scripts/deduplicate.py examples/current.json --previous examples/previous.json --output deduplicated.json
-python skill/daily-trade-radar/scripts/build_markdown.py deduplicated.json --output daily-trade-radar.md
-python skill/daily-trade-radar/scripts/build_docx.py deduplicated.json --template skill/daily-trade-radar/assets/radar-template.docx --output daily-trade-radar.docx
-python skill/daily-trade-radar/scripts/evaluate_report.py deduplicated.json evaluation-labels.json --output evaluation.json
-python skill/daily-trade-radar/scripts/evaluate_history.py evaluation/drafts/manifest.json ../radar-runs --output evaluation/history-evaluation.json
-python skill/daily-trade-radar/scripts/scaffold_calibration_reviews.py evaluation/drafts/manifest.json --output evaluation/calibration-review-scaffold.json
-```
-
-Deduplication defaults to an automatic-match threshold of `0.82` and a review threshold of `0.65`. Override them with `--threshold` and `--review-threshold` when calibrating against a labeled fixture set. Matches below the automatic threshold are retained with `review_required`; jurisdiction, platform, or seller-market conflicts are never matched.
-
-Capture a public platform page after the browser has extracted its visible text:
-
-```bash
-python skill/daily-trade-radar/scripts/snapshot_platform_page.py --platform Amazon --url "https://sellercentral.amazon.com/seller-forums/discussions" --content-file amazon-visible.txt --store snapshots --backend filesystem --output amazon-snapshot.json
-python skill/daily-trade-radar/scripts/snapshot_platform_page.py --platform Amazon --url "https://sellercentral.amazon.com/seller-forums/discussions" --content-file amazon-visible.txt --store radar-history.sqlite3 --backend sqlite --output amazon-snapshot.json
-python skill/daily-trade-radar/scripts/snapshot_platform_page.py --platform Amazon --url "https://sellercentral.amazon.com/seller-forums/discussions" --content-file amazon-visible.txt --store radar-history.git --backend git --output amazon-snapshot.json
-python skill/daily-trade-radar/scripts/snapshot_platform_page.py --platform Amazon --url "https://sellercentral.amazon.com/seller-forums/discussions" --content-file amazon-visible.txt --store "s3://private-radar/history" --backend s3 --s3-region ap-southeast-1 --output amazon-snapshot.json
-daily-trade-radar snapshot-audit --store radar-history.git --output snapshot-audit.json
-daily-trade-radar snapshot-audit --store "s3://private-radar/history" --backend s3 --s3-region ap-southeast-1 --output snapshot-audit.json
-```
-
-Snapshot persistence is exposed through a `SnapshotStore` protocol. The filesystem backend provides human-inspectable files, page locks, atomic replacement, and scan recovery. SQLite provides transactional WAL history for concurrent writers, compact backup, and querying. The Git backend initializes only a new empty, dedicated store; every capture is committed with hooks disabled and returns exact commit/tree provenance. The optional S3-compatible backend uses the standard SDK credential chain, encrypted create-only snapshot objects, and conditional ETag index updates; install it with `pip install -e ".[s3]"`. `snapshot-audit` verifies Git or S3 content hashes, predecessor chains, change semantics, indexes, diffs, and backend-specific integrity metadata. Git never configures or pushes a remote. Git and S3 stores are restricted to public page text.
-
-Codex still performs the substantive research with available browsing tools, including the in-app browser for interactive or authenticated seller pages. The acquisition package adds bounded public HTTP retrieval, supplied RSS/Atom/sitemap parsing, stable task receipts, and draft coverage-ledger conversion; it is not a general crawler. Platform coverage cannot be marked as checked unless the report records the direct page URL and access result. Public pages that were substantively checked must also carry snapshot metadata, and authenticated browser content is never persisted by the acquisition cache.
-
-## Quality and safety
-
-- Main-table events require a direct primary source.
-- Search-result snippets are not accepted as evidence.
-- Unconfirmed items stay out of the main action table.
-- Applicability must not be assumed when product, HS code, market, or channel data is missing.
-- Reports must disclose the search cutoff, timezone, scope, and coverage gaps.
-- Always verify consequential decisions with qualified legal, customs, tax, or sanctions professionals.
-
-## Development
-
-CI installs the package and runs the complete offline suite on Python 3.10, 3.11, and 3.12, matching the package's declared support range.
-
-Run the offline test suite:
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-## Follow / 关注
-
-外贸与跨境电商动态、实操笔记及项目更新：
-
-[老Hai外贸跨境笔记（@HaiNengGao）](https://x.com/HaiNengGao)
+CI 在 Python 3.10、3.11 和 3.12 上运行完整离线测试，同时检查 Ruff，并以当前实测的 77% 分支覆盖率为非回退门槛。版本变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## License
 

@@ -12,7 +12,7 @@ SRC = ROOT / "skill" / "daily-trade-radar" / "src"
 sys.path.insert(0, str(SRC))
 
 from daily_trade_radar.alerting import build_alert_batch, deliver_webhook
-from daily_trade_radar.applicability import load_catalog, match_report
+from daily_trade_radar.applicability import match_report
 from daily_trade_radar.official_sources import load_registry
 from daily_trade_radar.planning import build_research_plan
 from daily_trade_radar.profiles import load_profile

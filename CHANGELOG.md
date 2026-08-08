@@ -2,7 +2,21 @@
 
 All notable changes to Daily Trade Radar are documented in this file.
 
-## Unreleased (target: 0.5.0)
+## Unreleased (target: 0.5.1)
+
+### 2026-08-08 (onboarding and engineering confidence)
+
+#### Added
+
+- Added a five-minute Chinese quickstart, an explicit Codex-versus-standalone capability boundary, and an advanced-feature navigation page.
+- Added a complete Chinese report example preview for evaluating the output before installation.
+- Added Ruff checks and branch-aware coverage enforcement with downloadable HTML reports in the Python 3.10–3.12 CI matrix.
+
+#### Changed
+
+- Rebuilt the root README as a concise Chinese-first product entry point and moved calibration, snapshot, and evaluation detail behind progressive documentation links.
+- Marked calibration, Git snapshots, and S3 snapshots as advanced or experimental paths instead of first-run requirements.
+- Bumped the package and development version to `0.5.1`.
 
 ### 2026-08-08 (operator experience)
 

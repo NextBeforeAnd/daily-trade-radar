@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 import re
 import sqlite3
-from typing import Any, Iterable
+from typing import Any
 
 from .snapshots.filesystem import atomic_write_text
 from .validation import validate
